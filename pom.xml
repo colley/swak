@@ -27,7 +27,7 @@
     </modules>
 
     <properties>
-        <revision>2.4.1-SNAPSHOT</revision>
+        <revision>2.3.0-SNAPSHOT</revision>
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
         <file_encoding>UTF-8</file_encoding>
