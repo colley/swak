@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="js/elementUI/index.css"/>
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+<div class="main" id="app">
+    <div class="formwrap">
+        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="200px" class="demo-ruleForm">
+            <el-form-item label="证书版本" prop="edition">
+                <el-input v-model="form.edition"></el-input>
+            </el-form-item>
+            <el-form-item label="证书名称" prop="subject">
+                <el-input v-model="form.subject"></el-input>
+            </el-form-item>
+            <el-form-item label="秘钥口令" prop="keyPass">
+                <el-input v-model="form.keyPass"></el-input>
+            </el-form-item>
+            <el-form-item label="license有效期起始时间" prop="issuedTime">
+                <el-date-picker type="datetime" placeholder="选择license有效期起始时间"
+                                v-model="form.issuedTime"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="license有效期截止时间" prop="expiryTime">
+                <el-date-picker type="datetime" placeholder="选择license有效期截止时间"
+                                v-model="form.expiryTime"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="证书描述" prop="description">
+                <el-input v-model="form.description"></el-input>
+            </el-form-item>
+
+            <el-form-item label="证书所属人" prop="distinguishedName">
+                <el-input v-model="form.distinguishedName"></el-input>
+            </el-form-item>
+
+            <p>额外属性</p>
+            <el-form-item label="制程类型支持数" prop="processTypeAmount" style="width: 100%;">
+                <el-input v-model="form.processTypeAmount"></el-input>
+            </el-form-item>
+
+            <el-form-item label="设备支持数" prop="eqpAmount" style="width: 100%;">
+                <el-input v-model="form.eqpAmount"></el-input>
+            </el-form-item>
+
+            <el-form-item label="腔室支持数" prop="chamberAmount" style="width: 100%;">
+                <el-input v-model="form.chamberAmount"></el-input>
+            </el-form-item>
+
+            <el-form-item label="采集参数上限" prop="gatherAmount" style="width: 100%;">
+                <el-input v-model="form.gatherAmount"></el-input>
+            </el-form-item>
+
+            <el-form-item label="有效实例总数" prop="instanceAmount" style="width: 100%;">
+                <el-input v-model="form.instanceAmount"></el-input>
+            </el-form-item>
+
+            <el-form-item label="客户机IP" prop="ipAddress" style="width: 100%;">
+                <el-input v-model="form.ipAddress"></el-input>
+            </el-form-item>
+            <el-form-item label="客户机MAC地址" prop="macAddress" style="width: 100%;">
+                <el-input v-model="form.macAddress"></el-input>
+            </el-form-item>
+            <el-form-item style="width: 100%;">
+                <el-button type="primary" @click="scxk('ruleForm')" :disabled="issc">生成许可</el-button>
+<!--                <el-button type="primary" @click="xzxk()" :disabled="isdownload">下载许可</el-button>-->
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+<script src="js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/elementUI/index.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    let vm = new Vue({
+        el: '#app',
+        data() {
+            return {
+                ip: "",
+                isdownload: true,
+                issc: false,
+                form: {
+                    subject: "",//#证书subject
+                    keyPass: "",//#秘钥口令
+                    edition: "standard",//#秘钥口令
+                    issuedTime: "",//#license有效期起始时间
+                    expiryTime: "", //#license有效期截止时间
+                    ipAddress: "",//#客户机ip
+                    macAddress: "",//#客户机mac地址
+                    processTypeAmount:"20",
+                    eqpAmount:"30",
+                    chamberAmount:"40",
+                    instanceAmount:"-1",
+                    gatherAmount:"-1",
+                    description:"",
+                    distinguishedName:"CN=my.cn"
+
+                },
+                setdata: {
+                    subject: "",//#证书subject
+                    keyPass: "",//#秘钥口令
+                    edition: "",//#证书版本
+                    issuedTime: "",//#license有效期起始时间
+                    expiryTime: "",//#license有效期截止时间,
+                    description:"",
+                    distinguishedName:"",
+                    licenseCheckModel: {
+                        ipAddress:[],
+                        macAddress: [],
+                        processTypeAmount:"",
+                        eqpAmount:"",
+                        instanceAmount:"",
+                        gatherAmount:"",
+                        chamberAmount:""
+                    }
+                },
+                rules: {
+                    subject: [
+                        {required: true, message: '请输入证书名称', trigger: 'blur'},
+                    ],
+                    keyPass: [
+                        {required: true, message: '请输入秘钥口令', trigger: 'blur'},
+                    ],
+                    edition: [
+                        {required: true, message: '请输入证书版本', trigger: 'blur'},
+                    ],
+                    ipAddress: [
+                        {required: false, message: '请输入客户机ip', trigger: 'blur'},
+                    ],
+                    distinguishedName: [
+                        {required: true, message: '请输入证书归属人CN=xx', trigger: 'blur'},
+                    ],
+                    processTypeAmount: [
+                        {required:true,message:'请输入制程类型数量',trigger:'blur'}
+                    ],
+                    eqpAmount: [
+                        {required:true,message:'请输入设备数量',trigger:'blur'}
+                    ],
+                    chamberAmount: [
+                        {required:true,message:'请输入腔室数量',trigger:'blur'}
+                    ],
+                    macAddress: [
+                        {required: false, message: '请输入客户机mac地址', trigger: 'blur'},
+                    ],
+                    issuedTime: [
+                        {type: 'date', required: true, message: '请选择license有效期起始时间', trigger: 'change'}
+                    ],
+                    expiryTime: [
+                        {type: 'date', required: true, message: '请选择license有效期截止时间', trigger: 'change'}
+                    ],
+
+                }
+            }
+        },
+        computed: {},
+        created() {
+            this.ip = window.location.origin;
+        },
+        mounted() {
+            let _this = this;
+            $('document').ready(function () {
+            });
+        },
+        methods: {
+            scxk(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        debugger;
+                        //拼接参数
+                        this.setdata.subject = this.form.subject;
+                        this.setdata.keyPass = this.form.keyPass;
+                        this.setdata.issuedTime = this.dateFm(this.form.issuedTime);
+                        this.setdata.expiryTime = this.dateFm(this.form.expiryTime);
+                        this.setdata.edition = this.form.edition;
+                        this.setdata.description = this.form.description;
+                        this.setdata.distinguishedName = this.form.distinguishedName;
+                        if(this.form.ipAddress){
+                            this.setdata.licenseCheckModel.ipAddress = this.form.ipAddress.split(',')
+                        }
+                        if(this.form.macAddress){
+                            this.setdata.licenseCheckModel.macAddress=this.form.macAddress.split(',');
+                        }
+                        this.setdata.licenseCheckModel.processTypeAmount = this.form.processTypeAmount;
+                        this.setdata.licenseCheckModel.eqpAmount = this.form.eqpAmount;
+                        this.setdata.licenseCheckModel.chamberAmount = this.form.chamberAmount;
+                        this.setdata.licenseCheckModel.gatherAmount = this.form.gatherAmount;
+                        this.setdata.licenseCheckModel.instanceAmount = this.form.instanceAmount;
+
+                        //请求接口
+                        axios.post(this.ip + "/license/generateLicense", this.setdata).then(res => {
+                            var data = res.data;
+                            if (data.code == 0) {
+                                this.$message.success(data.msg);
+                                window.open(this.ip + "/license/download?licenseFileName="+data.data.licenseFileName);
+                            } else {
+                                this.$message.error(data.msg);
+                            }
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            xzxk() {
+                window.open(this.ip + "/license/download");
+            },
+            dateFm(date) {
+                var YY = date.getFullYear();
+                var MM = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+                var DD = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                var hh = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+                var mm = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+                var ss = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+                return YY + "-" + MM + "-" + DD + " " + hh + ":" + mm + ":" + ss;
+            }
+        }
+    })
+</script>
+</body>
+</html>

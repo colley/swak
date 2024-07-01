@@ -1,0 +1,60 @@
+debug: true
+server:
+  port: 8090
+  servlet:
+    context-path: /rest
+spring:
+  profiles:
+    active: dev
+  application:
+    name: swak-testcase-starter
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss.SSS
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 100
+      idle-timeout: 600000
+      max-lifetime: 3600000
+      connection-timeout: 60000
+      connection-test-query: SELECT 1
+  redis:
+    host: 10.74.170.215
+    port: 6379
+
+logging:
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%15.15t] %-40.40logger{39} : %X{GLOBAL_REQUEST_ID}%m%n"
+    console: ${logging.pattern.file}
+  file:
+    name: ${user.home}/logs/${spring.application.name}/${spring.application.name}.log
+  level:
+    com.swak.demo: WARN
+    com.swak.demo.mapper: INFO
+    com.swak: INFO
+  logback:
+    rollingpolicy:
+      max-history: 90
+      max-file-size: 1GB
+      total-size-cap: 20GB
+
+swak:
+  lock:
+    type: local_only
+    ignore-locking-exceptions: true
+    namespace: lock
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+db:
+  url: jdbc:p6spy:mysql://127.0.0.1:3306/swak_dev?allowMultiQueries=true&serverTimezone=Asia/Shanghai
+  username: root
+  password: 123456

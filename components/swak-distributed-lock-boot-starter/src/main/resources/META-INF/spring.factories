@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.swak.lock.spring.configuration.ZookeeperConfiguration,\
+com.swak.lock.spring.configuration.SwakLockAutoConfiguration

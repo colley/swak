@@ -1,0 +1,148 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.gitee.mcolley</groupId>
+        <artifactId>swak-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../swak-parent</relativePath>
+    </parent>
+
+    <groupId>io.gitee.mcolley</groupId>
+    <artifactId>swak-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>swak framework bom integration</description>
+    <url>https://github.com/colley/swak/swak-bom</url>
+
+    <properties>
+        <skip_maven_deploy>false</skip_maven_deploy>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- swak framework -->
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-i18n</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-mybatis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- swak-component start -->
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-job-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-excel-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-datarchiver-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-license-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-license-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-operatelog-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-security-jwt-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-extcache-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.gitee.mcolley</groupId>
+                <artifactId>swak-distributed-lock-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- swak-component end -->
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven_flatten_version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>oss</flattenMode>
+                    <pomElements>
+                        <parent>resolve</parent>
+                        <dependencyManagement>keep</dependencyManagement>
+                    </pomElements>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

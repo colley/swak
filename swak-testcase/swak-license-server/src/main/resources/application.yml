@@ -1,0 +1,13 @@
+server:
+  port: 9999
+  tomcat:
+    uri-encoding: UTF-8
+
+license:
+  #如果生成时不传，则使用默认license存储目录
+  privateKeysStorePath: ${privatePath} #密钥库存储路径
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8

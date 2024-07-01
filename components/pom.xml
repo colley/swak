@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.gitee.mcolley</groupId>
+		<artifactId>swak-parent</artifactId>
+		<version>${revision}</version>
+		<relativePath>../swak-parent</relativePath>
+	</parent>
+
+	<artifactId>components</artifactId>
+	<packaging>pom</packaging>
+
+	<name>${project.artifactId}</name>
+	<description>The components module of swak project</description>
+
+	<properties>
+		<skip_maven_deploy>true</skip_maven_deploy>
+	</properties>
+
+	<modules>
+		<module>swak-datarchiver-boot-starter</module>
+		<module>swak-excel-boot-starter</module>
+		<module>swak-job-boot-starter</module>
+		<module>swak-operatelog-boot-starter</module>
+		<module>swak-security-jwt-boot-starter</module>
+		<module>swak-extcache-boot-starter</module>
+		<module>swak-distributed-lock-boot-starter</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.gitee.mcolley</groupId>
+				<artifactId>swak-bom</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>${maven_flatten_version}</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>oss</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+						<phase>process-resources</phase>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<phase>clean</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

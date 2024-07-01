@@ -1,0 +1,12 @@
+/target/
+/.settings/
+/.classpath
+/.project
+/bin/
+.flattened-pom.xml
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

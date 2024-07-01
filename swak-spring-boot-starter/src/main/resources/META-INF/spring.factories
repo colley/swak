@@ -1,0 +1,11 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration =\
+com.swak.autoconfigure.spring.configuration.SwakAutoConfiguration,\
+com.swak.autoconfigure.spring.configuration.SwakExtensionAutoConfiguration,\
+com.swak.autoconfigure.spring.configuration.SwakDelegatingMvcConfiguration
+
+org.springframework.context.ApplicationListener=\
+com.swak.autoconfigure.event.SwakLogoApplicationListener
+
+# Run Listeners
+org.springframework.boot.SpringApplicationRunListener=\
+com.swak.autoconfigure.event.SwakApplicationRunListener
