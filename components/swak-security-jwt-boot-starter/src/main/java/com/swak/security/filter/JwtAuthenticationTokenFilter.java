@@ -3,9 +3,10 @@ package com.swak.security.filter;
 import com.swak.core.security.SecurityUtils;
 import com.swak.core.security.SwakAuthenticationFilter;
 import com.swak.core.security.SwakUserDetails;
+import com.swak.core.security.TokenJwtDetails;
 import com.swak.security.authentication.UserTokenService;
 import com.swak.security.config.JwtConstants;
-import com.swak.security.dto.JwtToken;
+import com.swak.security.converter.UserDetailsConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +28,9 @@ import java.util.*;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private UserTokenService userTokenService;
+
+    @Resource
+    private UserDetailsConverter userDetailsConverter;
 
     private  List<SwakAuthenticationFilter> authenticationFilters = new ArrayList<>();
 
@@ -42,16 +47,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
         if(Objects.isNull(SecurityUtils.getAuthentication())){
-            SwakUserDetails loginUser = userTokenService.getUserDetails(token);
-            if(Objects.nonNull(loginUser)){
-                JwtToken jwtToken = userTokenService.verifyToken(loginUser);
-                if(!Objects.equals(loginUser.getToken(),jwtToken.getAccess_token())){
-                    // 主动刷新token，并返回给前端
-                    String refreshToken = userTokenService.getJwtTokenConfig().getToken().getRefreshToken();
-                    response.addHeader(refreshToken, jwtToken.getAccess_token());
-                }
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null,
-                        loginUser.getAuthorities());
+            TokenJwtDetails tokenJwtDetails = userTokenService.getUserDetails(token);
+            if(Objects.nonNull(tokenJwtDetails)){
+               userTokenService.verifyToken(tokenJwtDetails);
+                SwakUserDetails swakUserDetails = userDetailsConverter.toUserDetails(tokenJwtDetails);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(swakUserDetails, null,
+                        swakUserDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 for (SwakAuthenticationFilter tokenFilter : authenticationFilters) {

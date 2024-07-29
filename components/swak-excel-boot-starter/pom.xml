@@ -17,7 +17,7 @@
     <description>swak component of excel spring boot starter</description>
 
     <properties>
-        <easyexcel.version>3.1.5</easyexcel.version>
+        <easyexcel.version>3.2.1</easyexcel.version>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
     <dependencies>

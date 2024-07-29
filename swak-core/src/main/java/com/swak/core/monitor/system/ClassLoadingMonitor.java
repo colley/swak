@@ -20,9 +20,6 @@ public class ClassLoadingMonitor {
 
     /**
      * 获取类加载情况
-     * 
-     * @return
-     * @throws Exception
      */
     public static ClassLoading classLoading() throws Exception {
 

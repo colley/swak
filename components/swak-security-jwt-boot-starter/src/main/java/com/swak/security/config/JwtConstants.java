@@ -12,17 +12,10 @@ public class JwtConstants {
     /**
      * 令牌前缀
      */
-    public static final String USER_NAME = "userName";
-
-    public static final String USER_ID = "userId";
-
-    /**
-     * 令牌前缀
-     */
     public static final String TOKEN_PREFIX = "Bearer ";
 
 
-    public static final long MILLIS_SECOND = 1000;
+    public static final long MILLIS_SECOND = 1000L;
 
     public interface  AuthWhiteList {
         /**

@@ -7,12 +7,11 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 /**
- * AwareProcessorComposite
+ * AwareProcessorComposite.java
  * 
- * @ClassName: AwareProcessorComposite.java
- * @author: colley.ma
- * @date: 2022/01/26
- */
+ * @author colley.ma
+ * @since 2.4.0
+ **/
 @Slf4j
 public class AwareProcessorComposite implements SwakAwareProcessor {
 

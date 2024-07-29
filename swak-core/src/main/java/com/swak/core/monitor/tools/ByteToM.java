@@ -9,7 +9,6 @@ public class ByteToM {
      * 
      * @param cd
      * @param name
-     * @return
      */
     public static String convert(CompositeData cd, String name) {
         long size = JmxTools.getLongAttr(cd, name);

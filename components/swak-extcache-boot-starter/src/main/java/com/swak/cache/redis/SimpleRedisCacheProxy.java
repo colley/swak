@@ -249,6 +249,6 @@ public class SimpleRedisCacheProxy implements DistributedCacheProxy, Initializin
 
     @Override
     public void afterPropertiesSet() {
-        SwakAssert.notNull(redisTemplate, "RedisTemplate cannot be null");
+        SwakAssert.notNull(redisTemplate, "[Swak-Cache] RedisTemplate cannot be null");
     }
 }

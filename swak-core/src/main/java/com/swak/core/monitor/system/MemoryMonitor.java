@@ -25,9 +25,6 @@ public class MemoryMonitor {
 
     /**
      * 获取内存使用情况
-     * 
-     * @return
-     * @throws Exception
      */
     public static Memory getMemory() throws Exception {
 

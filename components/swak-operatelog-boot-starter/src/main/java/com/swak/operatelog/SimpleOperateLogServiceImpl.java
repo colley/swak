@@ -13,7 +13,7 @@ public class SimpleOperateLogServiceImpl implements OperateLogService {
     @Override
     public Response<Void> addOperationLogs(List<OperateDataLog> operateDataLogs) {
         if (log.isDebugEnabled()) {
-            log.debug("{}", JSON.toJSONString(operateDataLogs));
+            log.debug("[Swak-OpLog] {}", JSON.toJSONString(operateDataLogs));
         }
         return Response.success();
     }

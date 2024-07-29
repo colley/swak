@@ -53,7 +53,6 @@ public class SwakTemplateExecutorImpl implements SwakTemplateExecutor {
      * 根据where条件查询总条数
      *
      * @param sql
-     * @return
      * @throws DataAccessException
      */
     @Override
@@ -65,7 +64,6 @@ public class SwakTemplateExecutorImpl implements SwakTemplateExecutor {
      * 获取表的maxId
      *
      * @param sql
-     * @return
      * @throws DataAccessException
      */
     @Override
@@ -82,7 +80,6 @@ public class SwakTemplateExecutorImpl implements SwakTemplateExecutor {
      * 批量删除
      *
      * @param sql
-     * @return
      * @throws DataAccessException
      */
     @Override

@@ -1,32 +1,29 @@
 package com.swak.security.authentication;
 
-import com.swak.core.security.SwakUserDetails;
+import com.swak.core.security.TokenJwtDetails;
 import com.swak.security.config.JwtTokenConfig;
 import com.swak.security.dto.JwtToken;
 import com.swak.security.dto.LoginExtInfo;
 import com.swak.security.service.SecurityAuthClientService;
-import com.swak.security.service.UserTokenStore;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 public interface UserTokenService {
 
-    SwakUserDetails getUserDetails(String  token);
+    TokenJwtDetails getUserDetails(String  token);
 
      String getToken(HttpServletRequest request);
 
-    JwtToken refreshToken(SwakUserDetails userDetails);
+    JwtToken refreshToken(TokenJwtDetails userDetails);
 
-    JwtToken verifyToken(SwakUserDetails userDetails);
+    JwtToken verifyToken(TokenJwtDetails userDetails);
 
     LoginExtInfo getLoginExtInfo(HttpServletRequest request);
 
-     JwtToken createToken(SwakUserDetails userDetails);
+    String createTokenJwt(TokenJwtDetails userDetails);
 
      JwtTokenConfig getJwtTokenConfig();
-
-    UserTokenStore getUserDetailsStore();
 
     SecurityAuthClientService getAuthClientService();
 

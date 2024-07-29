@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 责任链模式工厂
  * @author colley.ma
- * @date 2018/04/17
+ * @since 2.4.0
  */
 public class FilterChainFactory {	
 	

@@ -7,11 +7,8 @@ import java.math.BigDecimal;
 
 /**
  * The type Money util.
- *
- * @author ColleyMa
- * @version V1.0
- * @Title: MoneyUtil.java
- * @Description: 货币类型常用方法支持
+ * @author colley.ma
+ * @since 2.4.0
  */
 public class MoneyUtil {
 	/**

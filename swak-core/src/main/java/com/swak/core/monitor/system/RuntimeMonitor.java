@@ -23,9 +23,6 @@ public class RuntimeMonitor {
 
     /**
      * 获取运行时数据
-     * 
-     * @return
-     * @throws Exception
      */
     public static RuntimeInformation getRuntimeInformation() throws Exception {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();

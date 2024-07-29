@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author colley.ma
@@ -26,7 +27,8 @@ import java.util.List;
 public final class JacksonUtils {
     static ObjectMapper mapper = new ObjectMapper();
 
-    public JacksonUtils() {}
+    public JacksonUtils() {
+    }
 
     public static String toJSONString(Object obj) {
         try {
@@ -34,6 +36,15 @@ public final class JacksonUtils {
         } catch (JsonProcessingException var2) {
             throw new SwakException(var2);
         }
+    }
+
+    public static Map<String, Object> convertValue(Object obj) {
+        return convertValue(obj, new TypeReference<Map<String, Object>>() {
+        });
+    }
+
+    public static <T> T convertValue(Object obj, TypeReference<T> toValueTypeRef) {
+        return mapper.convertValue(obj, toValueTypeRef);
     }
 
     public static byte[] toJsonBytes(Object obj) {
@@ -44,13 +55,14 @@ public final class JacksonUtils {
         }
     }
 
-    public static <T> List<T>  parseArray(byte[] json, Class<T> cls){
+    public static <T> List<T> parseArray(byte[] json, Class<T> cls) {
         return parseArray(StringUtils.toEncodedString(json, Charset.forName("UTF-8")), cls);
     }
 
-    public static <T> List<T>  parseArray(String json, Class<T> cls) {
+    public static <T> List<T> parseArray(String json, Class<T> cls) {
         try {
-            return mapper.readValue(json, new TypeReference<List<T>>() {});
+            return mapper.readValue(json, new TypeReference<List<T>>() {
+            });
         } catch (IOException var3) {
             throw new SwakException(var3);
         }

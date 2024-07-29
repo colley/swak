@@ -11,6 +11,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.redisson.Redisson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,7 +34,7 @@ public class ZookeeperLockConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DistributedLock.class)
-    public DistributedLock distributedLock(CuratorFramework curatorFramework, LockProperties lockProperties) {
+    public DistributedLock distributedLock(CuratorFramework curatorFramework, @Autowired(required = false)LockProperties lockProperties) {
         return new ZookeeperLock(curatorFramework, lockProperties);
     }
 }

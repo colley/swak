@@ -41,7 +41,7 @@ public class EasyJobTrigger {
                     .scheduleType(jobInfo.getScheduleType()).build();
             Response<Void> response = easyJobHandler.execute(context);
             if (!response.isSuccess()) {
-                log.warn("easy-job execute error,jobName:{},context:{}", jobInfo.getJobName(), JSON.toJSONString(context));
+                log.warn("[Swak-Job] execute error,jobName:{},context:{}", jobInfo.getJobName(), JSON.toJSONString(context));
             }
         }
     }

@@ -2,10 +2,9 @@ package com.swak.core.aware;
 
 /**
  * SwakAware 处理
- * 
- * @ClassName: SwakAwareProcessor.java
- * @author: colley.ma
- * @date: 2022/01/24
+ *
+ * @author colley.ma
+ * @since 2.4.0
  */
 public interface SwakAwareProcessor {
 

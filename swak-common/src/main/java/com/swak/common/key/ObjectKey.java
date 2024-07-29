@@ -25,6 +25,13 @@ public class ObjectKey implements Comparable<ObjectKey>, Serializable {
         this.hashCode = Arrays.deepHashCode(this.params);
     }
 
+    public <T> T get(int index) {
+        if (index >= params.length) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + params.length);
+        }
+        return (T) params[index];
+    }
+
     public static ObjectKey asKey(Object... elements) {
         return new ObjectKey(elements);
     }

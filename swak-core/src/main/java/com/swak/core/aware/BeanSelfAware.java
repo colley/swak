@@ -8,12 +8,8 @@ package com.swak.core.aware;
 
 /**
  * BeanSelfAware.java
- * 
- * @author ColleyMa
- * @date 20-5-21 下午4:06
- * @version v1.0
- *
- * @param <T> DOCUMENT ME!
+ * @author colley.ma
+ * @since 2.4.0
  */
 public interface BeanSelfAware<T> {
 

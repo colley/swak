@@ -21,7 +21,6 @@ public class ProbabilityUtils {
 	 * 根据传入的概率，判断当前这次是否命中 该方法是基于随机数的
 	 * 
 	 * @param probability
-	 * @return
 	 */
 	private final static Random random = ThreadLocalRandom.current();
 
@@ -29,11 +28,6 @@ public class ProbabilityUtils {
 
 	/**
 	 * 判断概率是否命中
-	 * 
-	 * @param @param  probability
-	 * @param @param  maxPool
-	 * @param @return
-	 * @return boolean
 	 */
 	public static boolean hit(double probability, int maxBoundPool) {
 		if (probability <= 0d) {

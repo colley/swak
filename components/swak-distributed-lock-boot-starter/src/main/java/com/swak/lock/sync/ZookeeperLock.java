@@ -73,7 +73,7 @@ public class ZookeeperLock implements DistributedLock {
                 interProcessLock.release();
             }
         } catch (Exception e) {
-            log.error("Failed to releaseLock for lockId: {}", lockId, e);
+            log.error("[Swak-Lock] Failed to releaseLock for lockId: {}", lockId, e);
         } finally {
             interProcessLockMap.remove(lockId);
         }
@@ -85,7 +85,7 @@ public class ZookeeperLock implements DistributedLock {
     }
 
     private boolean handleAcquireLockFailure(String lockId, Exception e) {
-        log.error("Failed to acquireLock for lockId: {}", lockId, e);
+        log.error("[Swak-Lock] Failed to acquireLock for lockId: {}", lockId, e);
         Monitors.recordAcquireLockFailure(e.getClass().getName());
         // A Valid failure to acquire lock when another thread has acquired it returns false.
         // However, when an exception is thrown while acquiring lock, due to connection or others

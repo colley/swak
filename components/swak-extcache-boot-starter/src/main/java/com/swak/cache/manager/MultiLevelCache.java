@@ -15,8 +15,8 @@ public class MultiLevelCache implements Cache {
     private final Cache secondCache;
     
     protected MultiLevelCache(Cache firstCache, Cache secondCache) {
-        Assert.notNull(firstCache, "firstCache cannot be null");
-        Assert.notNull(secondCache, "secondCache cannot be null");
+        Assert.notNull(firstCache, "[Swak-Cache] firstCache cannot be null");
+        Assert.notNull(secondCache, "[Swak-Cache] secondCache cannot be null");
         this.firstCache = firstCache;
         this.secondCache = secondCache;
     }

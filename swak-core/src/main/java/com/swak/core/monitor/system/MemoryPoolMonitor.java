@@ -23,9 +23,6 @@ import java.util.Set;
 public class MemoryPoolMonitor {
     /**
      * 获取内存分代信息
-     * 
-     * @return
-     * @throws Exception
      */
     public static List<MemoryPool> getPools() throws Exception {
 

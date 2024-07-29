@@ -44,7 +44,7 @@ public final class SwakConstants {
     // swak base order
     public final static int ORDER_PRECEDENCE = Ordered.HIGHEST_PRECEDENCE + 50;
 
-    public final static int SPI_PRIORITY = 100;
+
 
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");

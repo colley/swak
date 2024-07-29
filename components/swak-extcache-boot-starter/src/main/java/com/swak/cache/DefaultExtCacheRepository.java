@@ -54,7 +54,7 @@ public class DefaultExtCacheRepository implements ExtCacheRepository {
 		if (CollectionUtils.isEmpty(operation)) {
 			return;
 		}
-		log.info("[swak-cache] - Found ExtCacheable ,size:{}", operation.size());
+		log.info("[Swak-Cache] - Found ExtCacheable ,size:{}", operation.size());
 		operation.forEach(DefaultExtCacheRepository::doRegistration);
 	}
 

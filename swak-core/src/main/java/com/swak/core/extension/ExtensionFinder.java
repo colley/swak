@@ -20,7 +20,6 @@ public interface ExtensionFinder {
 	 * find ExtensionPoint by targetClass
 	 * 
 	 * @param targetClass
-	 * @return
 	 */
 	default Collection<ExtensionOperation> find(Class<?> targetClass) {
 		return Collections.emptyList();

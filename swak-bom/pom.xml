@@ -4,12 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.gitee.mcolley</groupId>
-        <artifactId>swak-parent</artifactId>
+        <artifactId>swak</artifactId>
         <version>${revision}</version>
-        <relativePath>../swak-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>io.gitee.mcolley</groupId>
     <artifactId>swak-bom</artifactId>
     <packaging>pom</packaging>
 
@@ -42,11 +41,11 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>io.gitee.mcolley</groupId>
-                <artifactId>swak-mybatis</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>io.gitee.mcolley</groupId>-->
+<!--                <artifactId>swak-mybatis</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>io.gitee.mcolley</groupId>
@@ -85,6 +84,12 @@
                 <version>${project.version}</version>
             </dependency>
 
+<!--            <dependency>-->
+<!--                <groupId>io.gitee.mcolley</groupId>-->
+<!--                <artifactId>swak-formula</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
+
             <dependency>
                 <groupId>io.gitee.mcolley</groupId>
                 <artifactId>swak-operatelog-boot-starter</artifactId>
@@ -111,38 +116,4 @@
             <!-- swak-component end -->
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>${maven_flatten_version}</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>oss</flattenMode>
-                    <pomElements>
-                        <parent>resolve</parent>
-                        <dependencyManagement>keep</dependencyManagement>
-                    </pomElements>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <phase>clean</phase>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

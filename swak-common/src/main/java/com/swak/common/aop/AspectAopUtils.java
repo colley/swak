@@ -15,9 +15,9 @@ import java.lang.reflect.Type;
 
 /**
  * AopUtils 常用类
- * @ClassName: AspectAopUtils.java
- * @author: colley.ma
- * @date: 2022/01/25
+ *  AspectAopUtils.java
+ * @author colley.ma
+ * @since 2.4.0
  */
 public abstract class AspectAopUtils {
 

@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.gitee.mcolley</groupId>
-        <artifactId>swak-parent</artifactId>
+        <artifactId>swak</artifactId>
         <version>${revision}</version>
-        <relativePath>../swak-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>swak-openid4j</artifactId>
@@ -73,9 +73,8 @@
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
-            <version>1.9.10</version>
+            <version>1.9.22</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.hibernate.validator</groupId>

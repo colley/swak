@@ -13,9 +13,9 @@ import java.util.Set;
 
 /**
  * 扩展点默认实现
- * @ClassName: DefaultExtensionExecutor.java
- * @author: colley.ma
- * @date: 2022/02/15
+ *  DefaultExtensionExecutor.java
+ * @author colley.ma
+ * @since 2.4.0
  */
 @Slf4j
 public class DefaultExtensionExecutor implements ExtensionExecutor {

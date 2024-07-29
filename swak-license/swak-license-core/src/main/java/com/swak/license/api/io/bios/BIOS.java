@@ -104,7 +104,7 @@ public final class BIOS {
     }
 
     /**
-     * Returns a filter which buffers I/O using a buffer size of {@value Store#BUFSIZE} bytes.
+     * Returns a filter which buffers I/O using a buffer size of  bytes.
      */
     public static Filter buffer() {
         return buffer(Store.BUFSIZE);
@@ -541,7 +541,7 @@ public final class BIOS {
 
     /**
      * Returns a deep clone of the given object by serializing it to a memory store and de-serializing it again.
-     * The memory store uses {@value Store#BUFSIZE} bytes as its initial buffer size.
+     * The memory store uses  bytes as its initial buffer size.
      *
      * @see #serialization()
      * @see #memory()

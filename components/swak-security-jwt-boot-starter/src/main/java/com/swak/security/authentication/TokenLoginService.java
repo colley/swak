@@ -1,7 +1,6 @@
 package com.swak.security.authentication;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
 import com.swak.security.dto.JwtToken;
 import org.springframework.security.core.Authentication;
 

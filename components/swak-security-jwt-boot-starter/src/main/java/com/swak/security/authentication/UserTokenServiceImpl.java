@@ -3,7 +3,8 @@ package com.swak.security.authentication;
 import com.google.common.collect.Sets;
 import com.swak.common.exception.SwakAssert;
 import com.swak.common.util.GetterUtil;
-import com.swak.core.security.SwakUserDetails;
+import com.swak.core.security.JwtTokenUtils;
+import com.swak.core.security.TokenJwtDetails;
 import com.swak.core.web.AddressUtils;
 import com.swak.core.web.ServletUtils;
 import com.swak.security.config.JwtConstants;
@@ -11,23 +12,26 @@ import com.swak.security.config.JwtTokenConfig;
 import com.swak.security.config.WhitelistConfig;
 import com.swak.security.dto.JwtToken;
 import com.swak.security.dto.LoginExtInfo;
+import com.swak.security.enums.TokenResultCode;
 import com.swak.security.exception.JwtTokenException;
 import com.swak.security.service.SecurityAuthClientService;
-import com.swak.security.service.UserTokenStore;
+import com.swak.security.spi.TokenJwtExchange;
 import eu.bitwalker.useragentutils.UserAgent;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 public class UserTokenServiceImpl implements UserTokenService, InitializingBean {
-
-    private UserTokenStore userTokenStore;
 
     private JwtTokenConfig jwtTokenConfig;
 
@@ -35,13 +39,6 @@ public class UserTokenServiceImpl implements UserTokenService, InitializingBean 
 
     @Autowired(required = false)
     private WhitelistConfig whitelistConfig;
-
-    private Claims parseToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtTokenConfig.getToken().getSecret())
-                .parseClaimsJws(token)
-                .getBody();
-    }
 
     @Override
     public String getToken(HttpServletRequest request) {
@@ -52,11 +49,19 @@ public class UserTokenServiceImpl implements UserTokenService, InitializingBean 
         return GetterUtil.getString(token);
     }
 
-    public JwtToken refreshToken(SwakUserDetails loginUser) {
-        return createToken(loginUser);
+    public JwtToken refreshToken(TokenJwtDetails userDetails) {
+        Long expiresIn = jwtTokenConfig.getToken().getExpireSeconds();
+        long expireMillis = expiresIn * JwtConstants.MILLIS_SECOND;
+        userDetails.setExpireTime(System.currentTimeMillis() + expireMillis);
+        String tokenJwt = createTokenJwt(userDetails);
+        TokenJwtExchange.getTokenJwtExchange().refresh(userDetails.getToken(), tokenJwt, expiresIn);
+        return  new JwtToken()
+                .setAccess_token(userDetails.getToken())
+                .setLoginTime(userDetails.getLoginTime())
+                .setExpires_in(expiresIn);
     }
 
-    public JwtToken verifyToken(SwakUserDetails loginUser) {
+    public JwtToken verifyToken(TokenJwtDetails loginUser) {
         long expireTime = loginUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
         if (expireTime <= currentTime) {
@@ -65,66 +70,34 @@ public class UserTokenServiceImpl implements UserTokenService, InitializingBean 
         return new JwtToken()
                 .setAccess_token(loginUser.getToken())
                 .setLoginTime(loginUser.getLoginTime())
-                .setExpires_in(jwtTokenConfig.getToken().getExpireTime());
+                .setExpires_in(jwtTokenConfig.getToken().getExpireSeconds());
     }
 
     @Override
-    public JwtToken createToken(SwakUserDetails userDetails) {
-        JwtToken jwtToken = new JwtToken();
-        Long expiresIn = jwtTokenConfig.getToken().getExpireTime();
-        long expireMillis = expiresIn * JwtConstants.MILLIS_SECOND;
-        userDetails.setExpireTime(System.currentTimeMillis() + expireMillis);
+    public String createTokenJwt(TokenJwtDetails userDetails) {
         String secret = jwtTokenConfig.getToken().getSecret();
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(JwtConstants.USER_NAME, userDetails.getUsername());
-        claims.put(JwtConstants.USER_ID, userDetails.getUserId());
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .compressWith(CompressionCodecs.DEFLATE)
-                .setIssuedAt(new Date(userDetails.getLoginTime()))
-                .setExpiration(new Date(userDetails.getExpireTime()))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
-        userDetails.setToken(token);
-        jwtToken.setAccess_token(token);
-        jwtToken.setLoginTime(userDetails.getLoginTime());
-        jwtToken.setExpires_in(expiresIn);
-        return jwtToken;
+        return JwtTokenUtils.encode(userDetails, secret);
     }
 
-
     @Override
-    public SwakUserDetails getUserDetails(String token) {
+    public TokenJwtDetails getUserDetails(String token) {
         if (StringUtils.isEmpty(token)) {
             return null;
         }
-        try {   // 获取请求携带的令牌
-            Claims claims = parseToken(token);
-            // 解析对应的权限以及用户信息
-            String username = claims.get(JwtConstants.USER_NAME, String.class);
-            Long userId = claims.get(JwtConstants.USER_ID, Long.class);
-            //签发时间
-            long issuedAt = claims.getIssuedAt().getTime();
-            // token过期时间
-            long expirationTime = claims.getExpiration().getTime();
-            SwakUserDetails userDetails = userTokenStore.take(userId);
-            if (Objects.nonNull(userDetails)) {
-                userDetails.setUserId(userId);
-                userDetails.setUsername(username);
-                userDetails.setToken(token);
-                userDetails.setLoginTime(issuedAt);
-                userDetails.setExpireTime(expirationTime);
+        try { // 获取请求携带的令牌
+            String secret = jwtTokenConfig.getToken().getSecret();
+            String userJwt = TokenJwtExchange.getTokenJwtExchange().takeTokenJwt(token);
+            if (StringUtils.isEmpty(userJwt)) {
+                return null;
             }
-            return userDetails;
+            return JwtTokenUtils.decode(userJwt, secret);
         } catch (ExpiredJwtException e) {
             // 异常捕获、发送到ExpiredJwtException
-            log.error("token解析用户信息异常", e);
-            throw new JwtTokenException("Token凭证已过期");
+            throw new JwtTokenException(TokenResultCode.TOKEN_EXPIRED, e);
         } catch (SignatureException e) {
-            log.error("token解析用户信息异常", e);
-            throw new JwtTokenException("Token凭证签名不正确");
+            throw new JwtTokenException(TokenResultCode.TOKEN_SIGN, e);
         } catch (Exception e) {
-            log.error("token解析用户信息异常", e);
-            throw new JwtTokenException("非法的Token凭证");
+            throw new JwtTokenException(TokenResultCode.TOKEN_ILLEGAL, e);
         }
     }
 
@@ -132,11 +105,6 @@ public class UserTokenServiceImpl implements UserTokenService, InitializingBean 
     @Override
     public JwtTokenConfig getJwtTokenConfig() {
         return jwtTokenConfig;
-    }
-
-    @Override
-    public UserTokenStore getUserDetailsStore() {
-        return userTokenStore;
     }
 
     @Override
@@ -177,10 +145,6 @@ public class UserTokenServiceImpl implements UserTokenService, InitializingBean 
         return extInfo;
     }
 
-    public void setUserDetailsStore(UserTokenStore userTokenStore) {
-        this.userTokenStore = userTokenStore;
-    }
-
 
     public void setJwtTokenConfig(JwtTokenConfig jwtTokenConfig) {
         this.jwtTokenConfig = jwtTokenConfig;
@@ -194,10 +158,7 @@ public class UserTokenServiceImpl implements UserTokenService, InitializingBean 
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        SwakAssert.notNull(securityAuthClientService, "securityAuthClientService cannot be null");
-        SwakAssert.notNull(jwtTokenConfig, "jwtTokenConfig cannot be null");
-        if (Objects.isNull(userTokenStore)) {
-            this.userTokenStore = new DefaultUserTokenStore(securityAuthClientService);
-        }
+        SwakAssert.notNull(securityAuthClientService, "[Swak-Security] securityAuthClientService cannot be null");
+        SwakAssert.notNull(jwtTokenConfig, "[Swak-Security] jwtTokenConfig cannot be null");
     }
 }

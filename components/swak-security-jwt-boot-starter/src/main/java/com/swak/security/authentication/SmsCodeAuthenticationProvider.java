@@ -1,9 +1,8 @@
 package com.swak.security.authentication;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
 import com.swak.core.security.SwakUserDetails;
-import com.swak.security.config.TokenResultCode;
+import com.swak.security.enums.TokenResultCode;
 import com.swak.security.exception.UserAccountException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,8 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -23,7 +20,7 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
-    private SwakUserDetailsService swakUserDetailsService;
+    private final SwakUserDetailsService swakUserDetailsService;
 
     public SmsCodeAuthenticationProvider(SwakUserDetailsService swakUserDetailsService) {
         this.swakUserDetailsService = swakUserDetailsService;
@@ -65,9 +62,5 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
         authenticationToken.setDetails(authentication.getDetails());
         return authenticationToken;
-    }
-
-    public void setSwakUserDetailsService(SwakUserDetailsService swakUserDetailsService) {
-        this.swakUserDetailsService = swakUserDetailsService;
     }
 }

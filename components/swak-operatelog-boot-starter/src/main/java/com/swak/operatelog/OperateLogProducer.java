@@ -48,7 +48,7 @@ public class OperateLogProducer {
                 EVENT_FACTORY,
                 BigDecimal.valueOf(2).pow(
                         BigDecimal.valueOf(Math.log(maxActive) / Math.log(2)).setScale(0, RoundingMode.CEILING).intValue()).intValue()
-                        * cacheRatio, new NamedThreadFactory("operate-log", true));
+                        * cacheRatio, new NamedThreadFactory("Swak-OpLog", true));
         this.disruptor.handleEventsWithWorkerPool(operateLogEventHandler);
         this.recordContainer = disruptor.getRingBuffer();
         this.disruptor.start();
@@ -66,7 +66,7 @@ public class OperateLogProducer {
             eventContainer.setValue(message);
             recordContainer.publish(next);
         } catch (Throwable e) {
-            log.error("LogEventProducer error", e);
+            log.error("[Swak-OpLog] LogEventProducer error", e);
         }
     }
 }

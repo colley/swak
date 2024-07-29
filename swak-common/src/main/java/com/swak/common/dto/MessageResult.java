@@ -6,7 +6,7 @@ import com.swak.common.enums.IResultCode;
  * @author colley.ma
  * @since 3.0.0
  */
-public class MessageResult<T> extends ResponseResult<T> implements MessageResp<T> {
+public class MessageResult<T> extends Result<T> implements MessageResp<T> {
     private String messageType;
 
     public MessageResult(IResultCode errCode) {

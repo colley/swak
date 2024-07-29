@@ -1,6 +1,7 @@
 package com.swak.demo.extension;
 
 import com.google.common.collect.Lists;
+import com.swak.common.enums.BasicErrCode;
 import com.swak.core.extension.annotation.Extension;
 import com.swak.demo.dto.RpcParamRequest;
 
@@ -14,4 +15,6 @@ public class BuyRebateMyConpon implements MyConponExtPt {
     public List<String> invoke(RpcParamRequest request) {
         return Lists.newArrayList("rebate");
     }
+
+
 }

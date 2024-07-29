@@ -1,6 +1,5 @@
 package com.swak.common.exception.core;
 
-import com.swak.common.enums.BasicErrCode;
 import com.swak.common.enums.IResultCode;
 import com.swak.common.util.GetterUtil;
 import org.apache.commons.lang3.ArrayUtils;

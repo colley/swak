@@ -3,9 +3,9 @@ package com.swak.core.extension;
 /**
  * 
  * 扩展执行器 ClassName: ExtensionHandler.java
- * 
+ *
  * @author colley.ma
- * @date 2021年3月19日 上午11:20:25
+ * @since 2.4.0
  */
 public interface ExtCaseHandler<O, I> extends ExtensionPoint {
 

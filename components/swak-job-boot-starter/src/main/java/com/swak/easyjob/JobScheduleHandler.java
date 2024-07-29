@@ -73,21 +73,6 @@ public class JobScheduleHandler {
     }
 
     /**
-     * 测试
-     *
-     * @param args
-     * @throws ParseException
-     */
-    public static void main(String[] args) throws ParseException {
-        CronExpression cronExpression = new CronExpression("0 */1 * * * ?");
-        Date nextDate = cronExpression.getNextValidTimeAfter(new Date());
-        for (int i = 0; i < 10; i++) {
-            nextDate = cronExpression.getNextValidTimeAfter(nextDate);
-            System.out.println(LocalDateTime.ofInstant(nextDate.toInstant(), ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        }
-    }
-
-    /**
      * 启动
      */
     public void start() {
@@ -105,7 +90,7 @@ public class JobScheduleHandler {
                     log.error(e.getMessage(), e);
                 }
             }
-            log.info(">>>>>>>>> init easy job scheduler success.");
+            log.info("[Swak-Job] >>>>>>>>> init Swak Job scheduler success.");
             while (!scheduleThreadToStop) {
                 // Scan Job
                 long start = System.currentTimeMillis();
@@ -125,15 +110,15 @@ public class JobScheduleHandler {
                     List<EasyJobInfo> scheduleList = easyJobMapper.scheduleJobQuery(nowTime + PRE_READ_MS);
                     if (CollectionUtils.isNotEmpty(scheduleList)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("EasyJobInfo list :{}", JSON.toJSONString(scheduleList));
+                            log.debug("[Swak-Job] EasyJobInfo list :{}", JSON.toJSONString(scheduleList));
                         }
                         for (EasyJobInfo jobInfo : scheduleList) {
                             // time-ring jump
                             //105  101  5
-                            log.debug(">>>>>>>>>  easy job infos,jobName = {}", jobInfo.getJobName());
+                            log.debug("[Swak-Job] >>>>>>>>>  Job infos,jobName = {}", jobInfo.getJobName());
                             if (nowTime > jobInfo.getTriggerNextTime() + PRE_READ_MS) {
                                 // 2.1、trigger-expire > 5s：pass && make next-trigger-time
-                                log.warn(">>>>>>>>>>> easy-job, schedule misfire, jobName = " + jobInfo.getJobName());
+                                log.warn("[Swak-Job] >>>>>>>>>>>  schedule misfire, jobName = " + jobInfo.getJobName());
                                 jobTriggerPoolHandler.trigger(jobInfo.getJobName());
                                 // 2、fresh next
                                 refreshNextValidTime(jobInfo, new Date());
@@ -141,7 +126,7 @@ public class JobScheduleHandler {
                                 // 2.2、trigger-expire < 5s：direct-trigger && make next-trigger-time
                                 // 1、trigger
                                 jobTriggerPoolHandler.trigger(jobInfo.getJobName());
-                                log.debug(">>>>>>>>>>> easy-job, schedule push trigger : jobId = " + jobInfo.getId());
+                                log.debug("[Swak-Job] >>>>>>>>>>> schedule push trigger : jobId = " + jobInfo.getId());
                                 // 2、fresh next
                                 refreshNextValidTime(jobInfo, new Date());
                             } else {
@@ -164,7 +149,7 @@ public class JobScheduleHandler {
                     // tx stop
                 } catch (Exception e) {
                     if (!scheduleThreadToStop) {
-                        log.error(">>>>>>>>>>> easy-job, JobScheduleHandler#scheduleThread error", e);
+                        log.error("[Swak-Job] >>>>>>>>>>> JobScheduleHandler#scheduleThread error", e);
                     }
                 } finally {
 
@@ -217,12 +202,12 @@ public class JobScheduleHandler {
                     }
                 }
             }
-            log.debug(">>>>>>>>>>> easy-job, JobScheduleHandler#scheduleThread stop");
+            log.debug("[Swak-Job] >>>>>>>>>>> JobScheduleHandler#scheduleThread stop");
 
         });
 
         scheduleThread.setDaemon(true);
-        scheduleThread.setName("EasyJob-scheduleThread");
+        scheduleThread.setName("SwakJob-scheduleThread");
         scheduleThread.start();
 
     }
@@ -250,7 +235,7 @@ public class JobScheduleHandler {
                         }
                     }
                     // ring trigger
-                    log.debug(">>>>>>>>>>> easy-job, time-ring beat : " + nowSecond + " = " + Collections.singletonList(ringItemData));
+                    log.debug("[Swak-Job] >>>>>>>>>>> time-ring beat : " + nowSecond + " = " + Collections.singletonList(ringItemData));
                     if (ringItemData.size() > 0) {
                         // do trigger
                         for (String jobName : ringItemData) {
@@ -262,14 +247,14 @@ public class JobScheduleHandler {
                     }
                 } catch (Exception e) {
                     if (!ringThreadToStop) {
-                        log.error(">>>>>>>>>>> easy-job, JobScheduleHandler#ringThread error", e);
+                        log.error("[Swak-Job] >>>>>>>>>>> JobScheduleHandler#ringThread error", e);
                     }
                 }
             }
-            log.debug(">>>>>>>>>>> easy-job, JobScheduleHandler#ringThread stop");
+            log.debug("[Swak-Job] >>>>>>>>>>> JobScheduleHandler#ringThread stop");
         });
         ringThread.setDaemon(true);
-        ringThread.setName("EasyJob-RingThread");
+        ringThread.setName("SwakJob-RingThread");
         ringThread.start();
     }
 
@@ -277,7 +262,7 @@ public class JobScheduleHandler {
         // push async ring
         List<String> ringItemData = ringData.computeIfAbsent(ringSecond, k -> new ArrayList<>());
         ringItemData.add(jobName);
-        log.debug(">>>>>>>>>>> easy-job, schedule push time-ring : " + ringSecond + " = " + Arrays.asList(ringItemData));
+        log.debug("[Swak-Job] >>>>>>>>>>> schedule push time-ring : " + ringSecond + " = " + Arrays.asList(ringItemData));
     }
 
     /**
@@ -336,7 +321,7 @@ public class JobScheduleHandler {
             }
         }
         jobTriggerPoolHandler.stop();
-        log.debug(">>>>>>>>>>> easy-job, JobScheduleHandler stop");
+        log.debug("[Swak-Job] >>>>>>>>>>> JobScheduleHandler stop");
     }
 
     private void refreshNextValidTime(EasyJobInfo jobInfo, Date fromTime) throws Exception {
@@ -347,7 +332,7 @@ public class JobScheduleHandler {
         } else {
             jobInfo.setTriggerLastTime(0);
             jobInfo.setTriggerNextTime(0);
-            log.warn(">>>>>>>>>>> easy-job, refreshNextValidTime fail for job: jobId={}, scheduleType={}, scheduleConf={}",
+            log.warn("[Swak-Job] >>>>>>>>>>> refreshNextValidTime fail for job: jobId={}, scheduleType={}, scheduleConf={}",
                     jobInfo.getId(), jobInfo.getScheduleType(), jobInfo.getScheduleConf());
         }
     }

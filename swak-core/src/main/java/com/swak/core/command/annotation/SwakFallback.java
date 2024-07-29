@@ -15,9 +15,9 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @ClassName: SwakFallback.java
- * @author: colley.ma
- * @date: 2022/01/20
+ *  SwakFallback.java
+ * @author colley.ma
+ * @since 2.4.0
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.TYPE})

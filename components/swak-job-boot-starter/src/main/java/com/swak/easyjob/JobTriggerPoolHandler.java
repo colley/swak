@@ -45,7 +45,7 @@ public class JobTriggerPoolHandler {
                 60L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(2000),
-                r -> new Thread(r, "easyJob-Pool-" + r.hashCode()));
+                r -> new Thread(r, "SwakJob-" + r.hashCode()));
     }
 
 
@@ -54,7 +54,7 @@ public class JobTriggerPoolHandler {
      */
     public void stop() {
         triggerPool.shutdownNow();
-        log.debug(">>>>>>>>> easy-job trigger thread pool shutdown success.");
+        log.debug("[Swak-Job] >>>>>>>>> trigger thread pool shutdown success.");
     }
 
     /**
@@ -84,12 +84,12 @@ public class JobTriggerPoolHandler {
             //设置开关，默认开启
             Boolean enabled = jobScheduleHandler.resolveAsBoolean(jobInfo.getScheduleEnabled());
             if (!Optional.ofNullable(enabled).orElse(true)) {
-                log.debug("[easy-job]#任务调度未开启，jobName:{}", jobInfo.getJobName());
+                log.debug("[Swak-Job] 任务调度未开启，jobName:{}", jobInfo.getJobName());
                 return;
             }
             this.addTrigger(jobInfo);
         } else {
-            log.warn("easy-job not found,jobName:{}", jobName);
+            log.warn("[Swak-Job] Job not found,jobName:{}", jobName);
         }
     }
 }

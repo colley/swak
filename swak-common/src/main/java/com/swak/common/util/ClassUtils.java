@@ -267,7 +267,6 @@ public class ClassUtils {
      *
      * @param type
      * @param value
-     * @return
      */
     public static boolean isTypeMatch(Class<?> type, String value) {
         if ((type == boolean.class || type == Boolean.class)

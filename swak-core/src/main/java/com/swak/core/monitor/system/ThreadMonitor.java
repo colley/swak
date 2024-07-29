@@ -25,9 +25,6 @@ public class ThreadMonitor {
 
     /**
      * 获取线程运行信息
-     * 
-     * @return
-     * @throws Exception
      */
     public static List<SunThread> geThreads() throws Exception {
         List<SunThread> threads = null;

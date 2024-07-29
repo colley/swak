@@ -10,16 +10,16 @@ import java.util.List;
 
 /**
  * Excel import and export Handler Service
+ * 
  * @author colley.ma
- * @date 2022/9/20 11:55
- */
+ * @since 2.4.0
+ **/
 public interface ExcelHandlerService<Q, C,S extends BaseRow> {
 
 	/**
 	 * 导出
 	 * 
 	 * @param query
-	 * @return
 	 */
 	default ExcelWriteData<S> getExportData(Q query) {
 		throw new UnsupportedOperationException("unsupported excel file export");
@@ -30,7 +30,6 @@ public interface ExcelHandlerService<Q, C,S extends BaseRow> {
 	 * 
 	 * @param commandInput
 	 * @param sheetData
-	 * @return
 	 */
 	default Response<RowErrResult> importRegister(C commandInput, List<S> sheetData) {
 		throw new UnsupportedOperationException("unsupported excel upload import");
@@ -39,7 +38,6 @@ public interface ExcelHandlerService<Q, C,S extends BaseRow> {
 	/**
 	 * 校验
 	 * @param rowDataList
-	 * @return
 	 */
 	default  ValidationResult validate(C commandInput, List<S> rowDataList) {
 		return new ValidationResult(true);

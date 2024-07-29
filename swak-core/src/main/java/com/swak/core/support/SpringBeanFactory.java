@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * SpringBeanFactory
- *
+ * SpringBeanFactory.java
+ * 
  * @author colley.ma
- * @date 2022/07/13 17:02:06
- */
+ * @since 2.4.0
+ **/
 @Slf4j
 public class SpringBeanFactory implements ApplicationContextAware {
 

@@ -1,7 +1,6 @@
 package com.swak.security.handle;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
 import com.swak.common.enums.BasicErrCode;
 import com.swak.common.util.ResponseRender;
 import org.springframework.security.authentication.*;

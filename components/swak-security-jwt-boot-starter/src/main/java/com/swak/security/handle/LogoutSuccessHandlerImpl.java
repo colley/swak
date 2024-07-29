@@ -2,10 +2,8 @@ package com.swak.security.handle;
 
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
 import com.swak.common.util.ResponseRender;
 import com.swak.core.security.AuthenticationListener;
-import com.swak.core.security.SwakUserDetails;
 import com.swak.security.authentication.UserTokenService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 自定义退出处理类 返回成功
@@ -24,12 +21,10 @@ import java.util.Objects;
 
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
 
-    private final UserTokenService userTokenService;
-
-    private List<AuthenticationListener> authenticationListeners = new ArrayList<>();
+    private final List<AuthenticationListener> authenticationListeners = new ArrayList<>();
 
     public LogoutSuccessHandlerImpl(UserTokenService userTokenService,List<AuthenticationListener> authenticationListeners) {
-        this.userTokenService = userTokenService;
+        this.authenticationListeners.add(new LoginSuccessAuthenticationListener(userTokenService));
         if (!CollectionUtils.isEmpty(authenticationListeners)) {
             this.authenticationListeners.addAll(authenticationListeners);
         }
@@ -40,11 +35,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
      */
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        SwakUserDetails userDetails = (SwakUserDetails) authentication.getPrincipal();
-        if(Objects.nonNull(userDetails)){
-            userTokenService.getUserDetailsStore().remove(userDetails.getUserId());
-            authenticationListeners.forEach(listener -> listener.onLogoutSuccess(request,response));
-        }
+        authenticationListeners.forEach(listener -> listener.onLogoutSuccess(request,response));
         ResponseRender.renderJson(Response.success(),response);
     }
 }

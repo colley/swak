@@ -32,8 +32,8 @@ public class ExtRedisCache extends AbstractValueAdaptingCache {
 
 	public ExtRedisCache(String name, DistributedCacheProxy cache, long entryTimeout, boolean allowNullValues) {
 		super(allowNullValues);
-		Assert.notNull(cache, "RedisCacheProxy is required; it must not be null");
-		Assert.notNull(name, "name is required; it must not be null");
+		Assert.notNull(cache, "[Swak-Cache] DistributedCacheProxy is required; it must not be null");
+		Assert.notNull(name, "[Swak-Cache] name is required; it must not be null");
 		this.name = name;
 		this.cache = cache;
 	}
@@ -58,7 +58,7 @@ public class ExtRedisCache extends AbstractValueAdaptingCache {
 	public void evict(final Object key) {
 		final String lastKey = String.valueOf(key);
 		if (logger.isDebugEnabled()) {
-			logger.debug("Removing from cache, key " + (lastKey.endsWith("*") ? "pattern:" : ":") + lastKey);
+			logger.debug("[Swak-Cache] Removing from cache, key " + (lastKey.endsWith("*") ? "pattern:" : ":") + lastKey);
 		}
 		cache.delete(lastKey);
 	}

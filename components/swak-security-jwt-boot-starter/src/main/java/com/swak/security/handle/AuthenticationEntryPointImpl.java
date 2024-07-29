@@ -1,10 +1,9 @@
 package com.swak.security.handle;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
+import com.swak.common.enums.BasicErrCode;
 import com.swak.common.util.GetterUtil;
 import com.swak.common.util.ResponseRender;
-import com.swak.security.config.TokenResultCode;
 import com.swak.security.exception.JwtTokenException;
 import com.swak.security.exception.UserAccountException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -27,7 +26,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, S
         Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
         String requestUri = (String) request.getAttribute("javax.servlet.forward.request_uri");
         Exception lastException = Objects.nonNull(exception)? exception : e;
-        Response<String> result = Response.build(TokenResultCode.ACCESS_DENIED);
+        Response<String> result = Response.build(BasicErrCode.ACCESS_DENIED);
         if(lastException instanceof JwtTokenException ) {
             JwtTokenException accountException = (JwtTokenException) lastException;
             result.setMsg(accountException.getMessage());

@@ -13,7 +13,6 @@ public interface IdGeneratorFactory {
      * 这个接口相当于网关的作用
      * 
      * @param bizTag
-     * @return
      */
      Long getNextIdByBiz(String bizTag);
 

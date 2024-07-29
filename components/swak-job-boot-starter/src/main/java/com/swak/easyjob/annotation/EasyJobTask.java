@@ -33,7 +33,7 @@ public class EasyJobTask implements Runnable {
     public void run() {
         Boolean enabled = jobScheduleHandler.resolveAsBoolean(easyJobInfo.getScheduleEnabled());
         if (!Optional.ofNullable(enabled).orElse(true)) {
-            log.debug("[easy-job]#任务调度未开启，jobName:{}", easyJobInfo.getJobName());
+            log.debug("[Swak-Job] 任务调度未开启，jobName:{}", easyJobInfo.getJobName());
             return;
         }
         //非分布式
@@ -49,7 +49,7 @@ public class EasyJobTask implements Runnable {
                     .scheduleType(easyJobInfo.getScheduleType()).build();
             Response<Void> response = easyJobHandler.execute(context);
             if (!response.isSuccess()) {
-                log.warn("easy-job execute error,jobName:{},context:{}", easyJobInfo.getJobName(), JSON.toJSONString(context));
+                log.warn("[Swak-Job] execute error,jobName:{},context:{}", easyJobInfo.getJobName(), JSON.toJSONString(context));
             }
         }
     }

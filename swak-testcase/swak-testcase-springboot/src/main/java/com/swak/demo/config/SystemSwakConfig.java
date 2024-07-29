@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.swak.autoconfigure.config.AsyncProperties;
 import com.swak.core.environment.SystemEnvironmentConfigurable;
 import com.swak.core.eventbus.EventBusConfig;
 import com.swak.core.web.JacksonSerializerFeatureCompatible;
@@ -64,6 +65,7 @@ public class SystemSwakConfig implements WebMvcConfigurer {
         eventBusConfig.setQueueCapacity(100);
         return eventBusConfig;
     }
+
 
     @Bean
     @ConditionalOnMissingBean(SwakJdbcTemplate.class)

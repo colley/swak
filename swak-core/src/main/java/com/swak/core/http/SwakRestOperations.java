@@ -16,23 +16,12 @@ public interface SwakRestOperations {
 
     /**
      * GET请求
-     * 
-     * @param url
-     * @param params
-     * @param responseType
-     * @param <T>
-     * @return
+     *
      */
     public <T> T getRequest(String url, Map<String, Object> params, Class<T> responseType);
 
     /**
      * POST请求
-     * 
-     * @param url
-     * @param params
-     * @param responseType
-     * @param <T>
-     * @return
      */
     public <T> T postRequest(String url, Map<String, Object> params, Class<T> responseType);
 
@@ -41,12 +30,7 @@ public interface SwakRestOperations {
 
     /**
      * POST请求
-     * 
-     * @param url
-     * @param params
-     * @param responseType
-     * @param <T>
-     * @return
+     *
      */
     public <T> T postRequest(String url, Map<String, Object> params, Class<T> responseType,
         Charset charset);
@@ -62,7 +46,6 @@ public interface SwakRestOperations {
      * @param url the URL
      * @param responseType the type of the return value
      * @param uriVariables the variables to expand the template
-     * @return the converted object
      */
     <T> T getForObject(String url, Class<T> responseType, Object... uriVariables)
         throws RestClientException;

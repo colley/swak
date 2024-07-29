@@ -2,35 +2,34 @@ package com.swak.common.dto;
 
 import com.swak.common.enums.BasicErrCode;
 import com.swak.common.enums.IResultCode;
-import lombok.Data;
 
 /**
  * @author colley
  */
-public class ResponseResult<T> implements Response<T> {
+public class Result<T> implements Response<T> {
     private Integer code;
     private String msg;
     private T data;
 
-    public ResponseResult(Integer code, String msg) {
+    public Result(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public ResponseResult(T data) {
+    public Result(T data) {
         this();
         this.data = data;
     }
 
-    public ResponseResult(IResultCode errCode) {
+    public Result(IResultCode errCode) {
         this(errCode.getCode(), errCode.getI18nMsg());
     }
 
-    public ResponseResult(IResultCode errCode, Object... args) {
+    public Result(IResultCode errCode, Object... args) {
         this(errCode.getCode(), errCode.getI18nMsg(args));
     }
 
-    public ResponseResult() {
+    public Result() {
         this(BasicErrCode.SUCCESS);
     }
 

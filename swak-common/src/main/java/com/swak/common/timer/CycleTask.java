@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @ClassName: CycleTimerTask.java
- * @author: colley.ma
- * @date: 2022/01/27
+ *  CycleTimerTask.java
+ * @author colley.ma
+ * @since 2.4.0
  */
 @Slf4j
 public abstract class CycleTask implements TimerTask {

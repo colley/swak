@@ -45,7 +45,7 @@ public class ExtCacheManager extends AbstractCacheManager {
 				.dynamic(dynamic).cacheRepository(cacheRepository).build();
 		this.extRedisCacheManager = new ExtRedisCacheManager.Builder().cacheRepository(cacheRepository)
 				.customCache(redisCacheProxy).build();
-		log.info(" found defaultCacheManager [{}]", defaultCacheManager);
+		log.info("[Swak-Cache] found defaultCacheManager [{}]", defaultCacheManager);
 		initializeCaches();
 	}
 

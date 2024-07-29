@@ -12,9 +12,9 @@ import java.util.LinkedHashSet;
 
 /**
  *
- * @Description: NetUtils 获取IP等信息
+ * NetUtils 获取IP等信息
  * @author colley.ma
- * @date 2021年3月15日
+ * @since 2.4.0
  */
 @Slf4j
 public final class NetUtils {

@@ -12,8 +12,6 @@ import com.swak.security.handle.LogoutSuccessHandlerImpl;
 import com.swak.security.handle.RestfulAccessDeniedHandler;
 import com.swak.security.handle.RestfulFailureHandler;
 import com.swak.security.service.SecurityAuthClientService;
-import com.swak.security.service.UserTokenStore;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -68,12 +66,10 @@ public abstract class SwakJwtSecurityAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(UserTokenService.class)
-    public UserTokenService userTokenService(SecurityAuthClientService securityAuthClientService,
-                                             @Autowired(required = false) UserTokenStore userTokenStore) {
+    public UserTokenService userTokenService(SecurityAuthClientService securityAuthClientService) {
         UserTokenServiceImpl userTokenService = new UserTokenServiceImpl();
         userTokenService.setJwtTokenConfig(jwtTokenConfig);
         userTokenService.setSecurityAuthClientService(securityAuthClientService);
-        userTokenService.setUserDetailsStore(userTokenStore);
         return userTokenService;
     }
 

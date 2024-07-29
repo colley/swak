@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.gitee.mcolley</groupId>
-        <artifactId>swak-parent</artifactId>
+        <artifactId>swak</artifactId>
         <version>${revision}</version>
-        <relativePath>../swak-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>swak-i18n</artifactId>

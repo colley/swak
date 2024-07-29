@@ -26,6 +26,11 @@ spring:
   redis:
     host: 10.74.170.215
     port: 6379
+task:
+  async:
+    corePoolSize: 20
+    maxPoolSize: 30
+    queueCapacity: 2000
 
 logging:
   pattern:
@@ -55,6 +60,6 @@ spring:
     activate:
       on-profile: dev
 db:
-  url: jdbc:p6spy:mysql://127.0.0.1:3306/swak_dev?allowMultiQueries=true&serverTimezone=Asia/Shanghai
+  url: jdbc:p6spy:mysql://10.74.170.215:3306/fdc_dev?allowMultiQueries=true&serverTimezone=Asia/Shanghai
   username: root
   password: 123456

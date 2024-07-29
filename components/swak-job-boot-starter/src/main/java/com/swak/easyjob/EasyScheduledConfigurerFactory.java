@@ -60,11 +60,11 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
      */
     public EasyScheduledConfigurerFactory(EasyJobConfig easyJobConfig,SystemEnvironmentConfigurable systemConfig) {
         this.easyJobConfig = easyJobConfig;
-        Assert.notNull(easyJobConfig, "easyJobConfig is required!");
-        Assert.hasLength(easyJobConfig.getAppName(), "appName is required!");
-        Assert.notNull(easyJobConfig.getJdbcTemplate(), "JdbcTemplate is required!");
-        Assert.hasLength(easyJobConfig.getJobInfoTableName(), "jobInfoTableName is required");
-        Assert.hasLength(easyJobConfig.getJobLockTableName(), "JobLockTableName is required");
+        Assert.notNull(easyJobConfig, "[Swak-Job] easyJobConfig is required!");
+        Assert.hasLength(easyJobConfig.getAppName(), "[Swak-Job] appName is required!");
+        Assert.notNull(easyJobConfig.getJdbcTemplate(), "[Swak-Job] JdbcTemplate is required!");
+        Assert.hasLength(easyJobConfig.getJobInfoTableName(), "[Swak-Job] jobInfoTableName is required");
+        Assert.hasLength(easyJobConfig.getJobLockTableName(), "[Swak-Job] JobLockTableName is required");
         this.easyJobMapper = new EasyJobMapperImpl(easyJobConfig);
         this.jobScheduleHandler = new JobScheduleHandler(this.easyJobConfig, easyJobMapper, this);
         this.systemConfig = systemConfig;
@@ -80,7 +80,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
                 List<EasyJobInfo> easyJobInfos = getAllEasyJobInfos(beanName, (EasyJobHandler) swakJobBean);
                 allEasyJobInfos.addAll(easyJobInfos);
             } catch (ParseException e) {
-                throw new RuntimeException("job表达解析异常", e);
+                throw new RuntimeException("[Swak-Job] job表达解析异常", e);
             }
         });
         return allEasyJobInfos;
@@ -94,7 +94,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
             String[] cron = swakJob.cron();
             if (ArrayUtils.isNotEmpty(cron)) {
                 if (cron.length != swakJob.shardingCount()) {
-                    Assert.state(cron.length != swakJob.shardingCount(), "sharding count illegal");
+                    Assert.state(cron.length != swakJob.shardingCount(), "[Swak-Job] sharding count illegal");
                 }
                 for (int i = 0; i < swakJob.shardingCount(); i++) {
                    String resolveCronStr = resolveAsString(cron[i]);
@@ -119,7 +119,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
             long[] fixedRate = swakJob.fixedRate();
             if (ArrayUtils.isNotEmpty(fixedRate)) {
                 if (cron.length != swakJob.shardingCount()) {
-                    Assert.state(fixedRate.length != swakJob.shardingCount(), "sharding count illegal");
+                    Assert.state(fixedRate.length != swakJob.shardingCount(), "[Swak-Job] sharding count illegal");
                 }
                 for (int i = 0; i < swakJob.shardingCount(); i++) {
                     EasyJobInfo easyJobInfo = EasyJobInfo.builder()
@@ -171,7 +171,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
             List<EasyJobInfo> easyJobInfos = doRegistration().stream().filter(item -> item.isDistributed()).collect(Collectors.toList());
             return easyJobMapper.register(easyJobInfos);
         } catch (Exception e) {
-            log.error("register job infos error,message:" + e.getMessage(), e);
+            log.error("[Swak-Job] register job infos error,message:" + e.getMessage(), e);
         } finally {
             // commit
             if (conn != null) {
@@ -269,7 +269,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
             result = Boolean.parseBoolean((String) resolved);
         } else if (resolved != null) {
             throw new IllegalStateException(
-                    "The must resolve to a Boolean or a String that can be parsed as a Boolean. "
+                    "[Swak-Job] The must resolve to a Boolean or a String that can be parsed as a Boolean. "
                             + "Resolved to [" + resolved.getClass() + "] for [" + value + "]");
         }
         return result;

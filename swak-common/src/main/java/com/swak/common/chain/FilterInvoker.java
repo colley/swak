@@ -2,7 +2,7 @@ package com.swak.common.chain;
 
 /**
  * @author colley.ma
- * @date 2018/04/17
+ * @since 2.4.0
  */
 public interface FilterInvoker<T> {
 

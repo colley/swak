@@ -54,7 +54,7 @@ public class SwakLockAnnotationParser implements LockAnnotationParser {
 
     private void validateLockOperation(AnnotatedElement ae, LockOperation operation) {
         if (StringUtils.hasText(operation.getKey())) {
-            throw new IllegalStateException("Invalid Lockable annotation configuration on '" + ae.toString()
+            throw new IllegalStateException("[Swak-Lock] Invalid Lockable annotation configuration on '" + ae.toString()
                 + "'.'key' attributes have been set. These attributes are mutually exclusive: either set the SpEL expression used to"
                 + "compute the key at runtime to use.");
         }

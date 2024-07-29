@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.gitee.mcolley</groupId>
-        <artifactId>swak-parent</artifactId>
+        <artifactId>swak</artifactId>
         <version>${revision}</version>
-        <relativePath>../swak-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>swak-mybatis</artifactId>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
-            <version>5.2.0</version>
+            <version>5.3.3</version>
         </dependency>
 
         <dependency>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
-            <version>3.4.2</version>
+            <version>3.5.3.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

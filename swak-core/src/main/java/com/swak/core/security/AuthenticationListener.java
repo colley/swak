@@ -23,7 +23,7 @@ public interface AuthenticationListener {
      * @param response
      * @param userDetails
      */
-    default void onLoginSuccess(HttpServletRequest request, HttpServletResponse response, SwakUserDetails userDetails) {}
+    default void onLoginSuccess(HttpServletRequest request, HttpServletResponse response, TokenJwtDetails userDetails) {}
 
     /**
      * 登出成功的处理

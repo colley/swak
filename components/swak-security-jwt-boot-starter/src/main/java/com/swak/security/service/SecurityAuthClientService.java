@@ -1,7 +1,6 @@
 package com.swak.security.service;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
 import com.swak.security.dto.UserAuthInfo;
 
 import java.util.Collections;

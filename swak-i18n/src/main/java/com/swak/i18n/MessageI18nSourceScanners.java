@@ -1,21 +1,16 @@
 package com.swak.i18n;
 
-import com.google.common.collect.Sets;
 import com.swak.common.dto.base.I18nCode;
-import com.swak.common.enums.BasicErrCode;
-import com.swak.common.enums.EnumType;
-import com.swak.common.enums.IResultCode;
 import com.swak.common.util.OrderedProperties;
 import com.swak.core.support.ClassScanners;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.reflections.util.ConfigurationBuilder;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author colley.ma
@@ -60,11 +55,5 @@ public class MessageI18nSourceScanners {
             }
         }
         return false;
-    }
-
-
-    public static void main(String[] args) throws IOException {
-        String result = MessageI18nSourceScanners.i18nScanner(new String[]{"com.swak"}, IResultCode.class);
-        System.out.println(result);
     }
 }

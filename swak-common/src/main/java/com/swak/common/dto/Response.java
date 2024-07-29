@@ -45,11 +45,11 @@ public interface Response<T> extends java.io.Serializable {
     }
 
     static <T> Response<T> build(IResultCode errCode) {
-        return new ResponseResult<>(errCode);
+        return new Result<>(errCode);
     }
 
     static <T> Response<T> build(Integer code, String msg) {
-        return new ResponseResult<>(code, msg);
+        return new Result<>(code, msg);
     }
 
     static <T> Response<T> build() {
@@ -57,15 +57,15 @@ public interface Response<T> extends java.io.Serializable {
     }
 
     static <T> Response<T> fail(Integer code, String msg) {
-        return new ResponseResult<>(code, msg);
+        return new Result<>(code, msg);
     }
 
     static <T> Response<T> fail(IResultCode resultCode, Object... args) {
-        return new ResponseResult<>(resultCode, args);
+        return new Result<>(resultCode, args);
     }
 
     static <T> Response<T> fail(IResultCode resultCode) {
-        return new ResponseResult<>(resultCode, ArrayUtils.EMPTY_OBJECT_ARRAY);
+        return new Result<>(resultCode, ArrayUtils.EMPTY_OBJECT_ARRAY);
     }
 
     static <T> Response<T> success() {
@@ -73,7 +73,7 @@ public interface Response<T> extends java.io.Serializable {
     }
 
     static <T> Response<T> success(T data) {
-        return new ResponseResult<>(data);
+        return new Result<>(data);
     }
 
     static <U,T> Response<T> compose(Response<U> result) {
@@ -110,7 +110,7 @@ public interface Response<T> extends java.io.Serializable {
     }
 
     default <U> Response<U> copy() {
-        Response<U> response = new ResponseResult<>();
+        Response<U> response = new Result<>();
         response.setMsg(this.getMsg());
         response.setCode(this.getCode());
         return response;

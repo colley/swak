@@ -4,7 +4,7 @@ package com.swak.common.chain;
  * 拦截器链
  * ClassName: FilterChain.java 
  * @author colley.ma
- * @date 2021年3月19日 下午6:04:39
+ * @since 2.4.0
  */
 public class FilterChain<T>{
 
