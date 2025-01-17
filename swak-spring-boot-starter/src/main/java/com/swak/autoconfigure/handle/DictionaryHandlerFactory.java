@@ -36,17 +36,17 @@ public class DictionaryHandlerFactory implements SmartInitializingSingleton {
         if (Objects.isNull(dictionaryHandler)) {
             return sources;
         }
-        List<SelectDataVo> onFilter = dictionaryHandler.onFilter(sources);
-        return dictionaryHandler.onSorted(onFilter);
+        List<SelectDataVo> onFilter = dictionaryHandler.onFilter(sources,dictCategory);
+        return dictionaryHandler.onSorted(onFilter,dictCategory);
     }
 
     @Override
     public void afterSingletonsInstantiated() {
         SpiServiceFactory.load(DictionaryHandler.class).forEach(handler -> {
-            if (CollectionUtils.isEmpty(handler.dictCategory()) && Objects.isNull(defaultDictionaryHandler)) {
+            if (CollectionUtils.isEmpty(handler.supportType()) && Objects.isNull(defaultDictionaryHandler)) {
                 this.defaultDictionaryHandler = handler;
             }
-            handler.dictCategory().forEach(dictCategory ->
+            handler.supportType().forEach(dictCategory ->
                     this.enumTypeDictHandlerMap.put(dictCategory, handler));
         });
     }

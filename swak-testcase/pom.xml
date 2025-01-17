@@ -18,10 +18,11 @@
 	<description>The swak framework testcase</description>
 
 	<properties>
-		<swak.version>2.4.1-SNAPSHOT</swak.version>
-		<mybatis-plus.version>3.5.6</mybatis-plus.version>
+		<swak.version>2.4.2-SNAPSHOT</swak.version>
+		<mybatis-plus.version>3.4.2</mybatis-plus.version>
 		<mapstruct.version>1.5.3.Final</mapstruct.version>
 	</properties>
+
 
 	<modules>
 		<module>swak-testcase-springboot</module>

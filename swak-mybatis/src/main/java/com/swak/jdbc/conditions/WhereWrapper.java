@@ -1,8 +1,8 @@
 package com.swak.jdbc.conditions;
 
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.swak.common.util.StringEscape;
 import com.swak.common.util.StringPool;
+import com.swak.jdbc.metadata.SFunction;
 import com.swak.jdbc.toolkit.JdbcRestrictions;
 import com.swak.jdbc.enums.PrefixEnum;
 import com.swak.jdbc.enums.SqlKeyword;

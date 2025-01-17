@@ -23,9 +23,7 @@ spring:
       max-lifetime: 3600000
       connection-timeout: 60000
       connection-test-query: SELECT 1
-  redis:
-    host: 10.74.170.215
-    port: 6379
+
 task:
   async:
     corePoolSize: 20
@@ -47,19 +45,15 @@ logging:
       max-history: 90
       max-file-size: 1GB
       total-size-cap: 20GB
-
 swak:
   lock:
     type: local_only
-    ignore-locking-exceptions: true
-    namespace: lock
-
 ---
 spring:
   config:
     activate:
       on-profile: dev
 db:
-  url: jdbc:p6spy:mysql://10.74.170.215:3306/fdc_dev?allowMultiQueries=true&serverTimezone=Asia/Shanghai
+  url: jdbc:p6spy:mysql://127.0.0.1:3306/swak?allowMultiQueries=true&serverTimezone=Asia/Shanghai
   username: root
   password: 123456

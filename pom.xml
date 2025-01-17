@@ -14,10 +14,10 @@
 
     <modules>
         <module>swak-common</module>
-        <module>swak-openid4j</module>
+<!--        <module>swak-openid4j</module>-->
         <module>swak-core</module>
         <module>swak-i18n</module>
-        <!--        <module>swak-formula</module>-->
+<!--        <module>swak-formula</module>-->
         <module>swak-mybatis</module>
         <module>swak-spring-boot-starter</module>
         <module>components</module>
@@ -28,13 +28,14 @@
     </modules>
 
     <properties>
-        <revision>2.4.1-SNAPSHOT</revision>
+        <revision>2.3.1</revision>
+        <swak.version>${revision}</swak.version>
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
         <file_encoding>UTF-8</file_encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <spring-security.version>5.7.11</spring-security.version>
+        <spring-security.version>6.3.1</spring-security.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-collections4.version>4.3</commons-collections4.version>
         <commons-fileupload.version>1.5</commons-fileupload.version>
@@ -52,13 +53,13 @@
         <hystrix.version>1.5.18</hystrix.version>
         <redisson.version>3.18.0</redisson.version>
         <spring-boot.version>2.7.18</spring-boot.version>
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <groovy.version>3.0.17</groovy.version>
         <jwt.version>0.9.1</jwt.version>
 
-        <logback.version>1.3.14</logback.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
+        <logback.version>1.5.6</logback.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
 
         <!-- 定义Maven插件版本 -->
         <maven_jar_version>3.3.0</maven_jar_version>
@@ -66,7 +67,7 @@
         <maven_source_version>3.2.1</maven_source_version>
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <maven_flatten_version>1.5.0</maven_flatten_version>
-        <skip_properties>keep</skip_properties>
+        <skip_properties>interpolate</skip_properties>
     </properties>
 
     <dependencyManagement>
@@ -79,7 +80,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
@@ -229,12 +229,12 @@
                 <repository>
                     <id>releases</id>
                     <name>Nexus Release Repository</name>
-                    <url>http://127.0.0.1:8081/repository/releases/</url>
+                    <url>http://10.74.20.125:8081/repository/ees-releases/</url>
                 </repository>
                 <snapshotRepository>
                     <id>snapshots</id>
                     <name>Nexus Snapshot Repository</name>
-                    <url>http://127.0.0.1:8081/repository/snapshots/</url>
+                    <url>http://10.74.20.125:8081/repository/ees-snapshots/</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>

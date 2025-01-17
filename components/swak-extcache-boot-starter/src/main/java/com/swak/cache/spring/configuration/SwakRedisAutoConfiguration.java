@@ -1,8 +1,11 @@
 package com.swak.cache.spring.configuration;
 
+import com.swak.autoconfigure.condition.ConditionalExtOnProperty;
+import com.swak.autoconfigure.condition.ConditionalSymbol;
 import com.swak.cache.redis.SimpleRedisCacheProxy;
+import com.swak.core.SwakConstants;
 import com.swak.core.cache.DistributedCacheProxy;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -24,12 +27,13 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 @EnableConfigurationProperties(RedisProperties.class)
 @ConditionalOnMissingClass("org.redisson.Redisson")
 @AutoConfigureBefore(RedisAutoConfiguration.class)
+@ConditionalExtOnProperty(prefix = "spring.redis", name = "host",symbol = ConditionalSymbol.IS_NOT_EMPTY)
 public class SwakRedisAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "swakRedisTemplate")
     @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-    public RedisTemplate<String, Object> swakRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> swakRedisTemplate(@Autowired(required = false) RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setKeySerializer(RedisSerializer.string());
         template.setConnectionFactory(redisConnectionFactory);
@@ -39,8 +43,7 @@ public class SwakRedisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(DistributedCacheProxy.class)
     @ConditionalOnBean(RedisTemplate.class)
-    public DistributedCacheProxy redisCacheProxy(@Qualifier("swakRedisTemplate")
-                                                       RedisTemplate<String, Object> swakRedisTemplate) {
+    public DistributedCacheProxy redisCacheProxy(@Autowired(required = false) RedisTemplate<String, Object> swakRedisTemplate) {
         return new SimpleRedisCacheProxy(swakRedisTemplate);
     }
 }

@@ -1,7 +1,7 @@
 package com.swak.jdbc.common;
 
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.swak.common.exception.SwakException;
+import com.swak.jdbc.metadata.TableInfo;
 
 
 public class TableAssert {

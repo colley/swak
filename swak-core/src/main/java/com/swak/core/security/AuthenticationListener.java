@@ -1,6 +1,8 @@
 package com.swak.core.security;
 
 
+import com.swak.common.listener.SwakEventListener;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version v1.0
  * @since 2024/3/13 10:25
  **/
-public interface AuthenticationListener {
+public interface AuthenticationListener extends SwakEventListener{
 
     /**
      * 登录成功的处理

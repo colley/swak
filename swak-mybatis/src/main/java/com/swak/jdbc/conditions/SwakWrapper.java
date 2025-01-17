@@ -27,4 +27,6 @@ public interface SwakWrapper<T>  extends SqlSegment {
     default SqlKeyword getSqlKeyword() {
         return SqlKeyword.APPLY;
     }
+
+    default void setSqlKeyword(SqlKeyword sqlKeyword){}
 }

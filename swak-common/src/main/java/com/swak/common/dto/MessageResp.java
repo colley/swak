@@ -18,13 +18,9 @@ public interface MessageResp<T> extends Response<T> {
         return new MessageResult<>(errCode);
     }
     static <T> MessageResp<T> build(T data,String messageType) {
-        MessageResp messageResp = new MessageResult<>(BasicErrCode.SUCCESS);
+        MessageResp<T> messageResp = new MessageResult<>(BasicErrCode.SUCCESS);
         messageResp.setMessageType(messageType);
         messageResp.setData(data);
         return messageResp;
-    }
-
-    static <T> Response<T> build(Integer code, String msg) {
-        return new MessageResult(code, msg);
     }
 }

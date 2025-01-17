@@ -20,16 +20,6 @@ public final class Tuple2<T1, T2> extends Tuple {
         this(tuple.v1, tuple.v2);
     }
 
-    @Deprecated
-    public T1 getFirst() {
-        return v1;
-    }
-
-    @Deprecated
-    public T2 getSecond() {
-        return v2;
-    }
-
     public T1 getV1() {
         return v1;
     }

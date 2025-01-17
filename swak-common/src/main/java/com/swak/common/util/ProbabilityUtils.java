@@ -9,11 +9,11 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * 随机概率生产
+ * ProbabilityUtils.java
+ * 
  * @author colley.ma
- * @date 2022/07/13 16:33:59
- *
- */
+ * @since 2.4.0
+ **/
 @Slf4j
 public class ProbabilityUtils {
 

@@ -1,1 +1,2 @@
 com.swak.core.spi.SpringServiceLoader
+com.swak.core.spi.LocalServiceLoader

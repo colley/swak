@@ -1,6 +1,6 @@
 package com.swak.jdbc.toolkit;
 
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.swak.jdbc.metadata.SFunction;
 import com.swak.jdbc.toolkit.support.IdeaProxyLambdaMeta;
 import com.swak.jdbc.toolkit.support.LambdaMeta;
 import com.swak.jdbc.toolkit.support.ReflectLambdaMeta;
@@ -12,6 +12,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class LambdaUtils {
+
+    /**
+     * SerializedLambda 反序列化缓存
+     */
     public static <T> String getName(SFunction<T, ?> fn) {
         LambdaMeta extract = extract(fn);
         return PropertyNamer.methodToProperty(extract.getImplMethodName());

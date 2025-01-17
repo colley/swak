@@ -1,6 +1,7 @@
 
 package com.swak.jdbc.segments;
 
+import com.google.common.collect.Lists;
 import com.swak.common.util.StringPool;
 import com.swak.jdbc.ParamNameValuePairs;
 import com.swak.jdbc.enums.MatchSegment;
@@ -26,7 +27,7 @@ public  class MergeSegments implements SqlSegment{
     protected GroupBySegment groupBy = new GroupBySegment();
 
     public void add(SqlSegment... sqlSegments) {
-        List<SqlSegment> list = Arrays.asList(sqlSegments);
+        List<SqlSegment> list = Lists.newArrayList(sqlSegments);
         SqlSegment firstSqlSegment = list.get(0);
         if (MatchSegment.ORDER_BY.match(firstSqlSegment)) {
             list.remove(0);
@@ -58,7 +59,8 @@ public  class MergeSegments implements SqlSegment{
     public String getSqlSegment(ParamNameValuePairs valuePairs) {
         StringBuilder buf = new StringBuilder();
         if (CollectionUtils.isNotEmpty(normal)) {
-            buf.append(normal.getSqlSegment(valuePairs));
+            buf.append(getSqlKeyword().getKeyword())
+                    .append(normal.getSqlSegment(valuePairs));
         }
         //增加groupBy和order
         if (groupBy != null) {
@@ -74,7 +76,7 @@ public  class MergeSegments implements SqlSegment{
         if (CollectionUtils.isNotEmpty(orderBys)) {
             List<String> orderByList = orderBys.stream().map(orderSegment -> orderSegment.getSqlSegment(paramNameValuePairs))
                     .collect(Collectors.toList());
-            return StringUtils.join(orderByList, ",");
+            return SqlKeyword.ORDER_BY.getKeyword() + StringUtils.join(orderByList, ",");
         }
         return StringPool.EMPTY;
     }

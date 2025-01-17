@@ -1,10 +1,5 @@
 package com.swak.jdbc.common;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-@Data
-@Accessors(chain = true)
 public class SharedInteger extends SharedValue<Integer> {
 
     public SharedInteger() {

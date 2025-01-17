@@ -28,6 +28,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.gitee.mcolley</groupId>
             <artifactId>swak-spring-boot-starter</artifactId>
         </dependency>

@@ -2,6 +2,7 @@ package com.swak.common.spi;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class SpiServiceFactory<S extends SpiPriority> {
     private static final Map<Class<?>, SpiServiceFactory> SPI_SERVICE_FACTORY = new ConcurrentHashMap<>();
-    private final List<SwakServiceLoader> swakServiceLoaders = new ArrayList<>();
+    private volatile List<SwakServiceLoader> swakServiceLoaders;
     private final Map<String, List<S>> providers = new ConcurrentHashMap<>();
 
     public static <S> List<S> load(Class<S> service) {
@@ -55,11 +56,10 @@ public class SpiServiceFactory<S extends SpiPriority> {
         if (CollectionUtils.isNotEmpty(swakServiceLoaders)) {
             return swakServiceLoaders;
         }
-        Map<String, SwakServiceLoader> ultimateMap = Maps.newHashMap();
+        Map<String, SwakServiceLoader> ultimateMap = new ConcurrentHashMap<>();
         ServiceLoader.load(SwakServiceLoader.class).forEach(bean -> ultimateMap.put(bean.getClass().getName(), bean));
-        List<SwakServiceLoader> serviceLoaders = ultimateMap.values().stream()
+        this.swakServiceLoaders = ultimateMap.values().stream()
                 .sorted(Comparator.comparingInt(SwakServiceLoader::priority)).collect(Collectors.toList());
-        this.swakServiceLoaders.addAll(serviceLoaders);
         return this.swakServiceLoaders;
     }
 }

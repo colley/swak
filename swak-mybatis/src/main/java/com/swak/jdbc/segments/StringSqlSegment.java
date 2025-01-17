@@ -1,6 +1,8 @@
 package com.swak.jdbc.segments;
 
+import com.swak.jdbc.ParamNameValuePairTranslator;
 import com.swak.jdbc.ParamNameValuePairs;
+import com.swak.jdbc.common.Constants;
 import com.swak.jdbc.common.IbsStringHelper;
 import com.swak.jdbc.enums.SqlKeyword;
 import lombok.Getter;
@@ -8,7 +10,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class StringSqlSegment implements SqlSegment {
 
-    private final static String WRAPPER_PARAM = "SWAKVAL";
+
 
     @Getter
     private String sqlStr;
@@ -36,7 +38,7 @@ public class StringSqlSegment implements SqlSegment {
     public String getSqlSegment(ParamNameValuePairs valuePairs) {
         if (ArrayUtils.isNotEmpty(params)) {
             for (int i = 0; i < params.length; ++i) {
-                String genParamName = valuePairs.addParameter(WRAPPER_PARAM, params[i]);
+                String genParamName = valuePairs.addParameter(Constants.WRAPPER_PARAM, params[i]);
                 sqlStr = sqlStr.replace(String.format("{%s}", i),
                         IbsStringHelper.repeatParamFormat(genParamName));
             }
@@ -47,5 +49,11 @@ public class StringSqlSegment implements SqlSegment {
     @Override
     public SqlKeyword getSqlKeyword() {
         return SqlKeyword.APPLY;
+    }
+
+    public static void main(String[] args) {
+        ParamNameValuePairs valuePairs = new ParamNameValuePairTranslator();
+        StringSqlSegment sqlSegment = new StringSqlSegment("{0}={1}",new String[]{"name","colley"});
+        System.out.println(sqlSegment.getSqlSegment(valuePairs));
     }
 }

@@ -27,7 +27,7 @@ import static com.swak.jdbc.enums.SqlKeyword.*;
 import static java.util.stream.Collectors.joining;
 
 public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>> implements CompareStr<Children,String>,
-        FuncStr<Children,String>,Join<Children>,Nested<Children, Children>,SqlSegment{
+        FuncStr<Children>,Join<Children>,Nested<Children, Children>,SqlSegment{
     /**
      * 主表别名
      */
@@ -471,7 +471,7 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
      * @param params 参数集
      * @return sql
      */
-    protected final SqlSegment formatSql(String sqlStr, Object... params) {
+    protected SqlSegment formatSql(String sqlStr, Object... params) {
         return formatSqlIfNeed(true, sqlStr, params);
     }
 }

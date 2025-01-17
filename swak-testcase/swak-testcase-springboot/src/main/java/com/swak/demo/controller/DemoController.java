@@ -7,8 +7,8 @@ import com.swak.common.util.DateTimeUtils;
 import com.swak.core.sync.DistributedLock;
 import com.swak.demo.entity.DetectionParameter;
 import com.swak.demo.mapper.DetectionParameterMapper;
-import com.swak.jdbc.query.LambdaJoinWrapper;
-import com.swak.jdbc.query.SwakJdbcTemplate;
+import com.swak.jdbc.conditions.query.LambdaQueryWrapper;
+import com.swak.jdbc.spi.SwakJdbcTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,7 +73,7 @@ public class DemoController {
     @GetMapping("/detection/list/v2")
     public Response<Pagination<DetectionParameter>> detectionListV2(){
         long start = System.currentTimeMillis();
-        LambdaJoinWrapper<DetectionParameter> queryWrapper = new LambdaJoinWrapper<>(DetectionParameter.class)
+        LambdaQueryWrapper<DetectionParameter> queryWrapper = new LambdaQueryWrapper<>(DetectionParameter.class)
                 .selectAll(DetectionParameter.class);
         SwakPage<DetectionParameter> parameterSwakPage = swakJdbcTemplate.selectPage(SwakPage.of(1, 10), queryWrapper);
         String result =" Consume Time：" + (System.currentTimeMillis() -start) + " ms "  +

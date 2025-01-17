@@ -7,6 +7,7 @@ import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.google.common.collect.Lists;
+import com.swak.common.exception.SwakAssert;
 import com.swak.excel.builder.SwakExcelWriterBuilder;
 import com.swak.excel.metadata.ExcelWriteData;
 import com.swak.excel.metadata.ExcelWriteDynamicData;
@@ -23,7 +24,6 @@ public class ExcelWriteHandler {
     private SwakExcelWriterBuilder excelWriterBuilder;
 
     private WriteExcelParams writeExcelParams;
-
 
 
     public ExcelWriteHandler(SwakExcelWriterBuilder excelWriterBuilder) {
@@ -46,9 +46,9 @@ public class ExcelWriteHandler {
 
     //设置需要导出的头部信息
     public ExcelWriteHandler includeColumnFieldNames(Collection<String> includeColumnFieldNames) {
-         if(CollectionUtils.isNotEmpty(includeColumnFieldNames)){
-             excelWriterBuilder.includeColumnFieldNames(includeColumnFieldNames);
-         }
+        if (CollectionUtils.isNotEmpty(includeColumnFieldNames)) {
+            excelWriterBuilder.includeColumnFieldNames(includeColumnFieldNames);
+        }
         return this;
     }
 
@@ -59,7 +59,8 @@ public class ExcelWriteHandler {
 
     public ExcelWriteHandler dynamicTitleHeader(Map<String, String> dynamicHeader) {
         if (MapUtils.isNotEmpty(dynamicHeader)) {
-            excelWriterBuilder.dynamicTitleHeader(dynamicHeader,writeExcelParams);
+            SwakAssert.notNull(writeExcelParams, "writeExcelParams is null,please ExcelWriteHandler.writeExcelParams(new WriteExcelParams()) before");
+            excelWriterBuilder.dynamicTitleHeader(dynamicHeader, writeExcelParams);
         }
         return this;
     }
@@ -92,17 +93,17 @@ public class ExcelWriteHandler {
         try (ExcelWriter excelWriter = excelWriterBuilder.defaultWriteHandler(writeExcelParams).build()) {
             for (int i = 0; i < excelWriteDataList.size(); i++) {
                 ExcelWriteData<?> excelWriteData = excelWriteDataList.get(i);
-                String sheetName = StringUtils.firstNonBlank(excelWriteData.getSheetName(),writeExcelParams.getSheetName());
+                String sheetName = StringUtils.firstNonBlank(excelWriteData.getSheetName(), writeExcelParams.getSheetName());
                 ExcelWriterSheetBuilder writerSheetBuilder = EasyExcel.writerSheet(i, sheetName).head(excelWriteData.getHeadClazz());
-                if(CollectionUtils.isNotEmpty(excelWriteData.getIncludeColumnFieldNames())){
+                if (CollectionUtils.isNotEmpty(excelWriteData.getIncludeColumnFieldNames())) {
                     writerSheetBuilder.includeColumnFieldNames(excelWriteData.getIncludeColumnFieldNames());
                 }
-                writerSheetBuilder.registerWriteHandler(new I18nHeadNameHandler(excelWriteData.getHeadClazz(),writeExcelParams))
+                writerSheetBuilder.registerWriteHandler(new I18nHeadNameHandler(excelWriteData.getHeadClazz(), writeExcelParams))
                         .registerWriteHandler(new DataValidationCellWriteHandler(excelWriteData));
-                if(MapUtils.isNotEmpty(excelWriteData.getDynamicTitleHeader())){
-                    writerSheetBuilder.registerWriteHandler(new DynamicCustomerHandler(excelWriteData.getDynamicTitleHeader(),writeExcelParams));
+                if (MapUtils.isNotEmpty(excelWriteData.getDynamicTitleHeader())) {
+                    writerSheetBuilder.registerWriteHandler(new DynamicCustomerHandler(excelWriteData.getDynamicTitleHeader(), writeExcelParams));
                 }
-                excelWriter.write(Optional.ofNullable(excelWriteData.getData()).orElse(Collections.emptyList()),writerSheetBuilder.build());
+                excelWriter.write(Optional.ofNullable(excelWriteData.getData()).orElse(Collections.emptyList()), writerSheetBuilder.build());
             }
             excelWriter.finish();
         }
@@ -132,7 +133,7 @@ public class ExcelWriteHandler {
         if (Objects.nonNull(writeData.getHeadClazz())) {
             excelWriterBuilder.head(writeData.getHeadClazz());
         }
-        if(CollectionUtils.isNotEmpty(writeData.getIncludeColumnFieldNames())){
+        if (CollectionUtils.isNotEmpty(writeData.getIncludeColumnFieldNames())) {
             excelWriterBuilder.includeColumnFieldNames(writeData.getIncludeColumnFieldNames());
         }
         String sheetName = StringUtils.firstNonBlank(writeData.getSheetName(),
@@ -143,7 +144,7 @@ public class ExcelWriteHandler {
 
     public void doDynamicWrite(ExcelWriteDynamicData writeData) {
         excelWriterBuilder.head(writeData.getHeads());
-        try (ExcelWriter excelWriter = excelWriterBuilder.defaultWriteHandler(writeExcelParams,writeData).build()) {
+        try (ExcelWriter excelWriter = excelWriterBuilder.defaultWriteHandler(writeExcelParams, writeData).build()) {
             String sheetName = StringUtils.firstNonBlank(writeData.getSheetName(),
                     writeExcelParams.getSheetName());
             WriteSheet writeSheet = EasyExcel.writerSheet(0, sheetName).build();

@@ -36,6 +36,7 @@ public class SwakExcelReadBuilder extends ExcelReaderBuilder {
 	public SwakExcelReadBuilder() {
 		super();
 		this.excelAnalysisDataHandler = new ExcelAnalysisDataHandler();
+		super.autoTrim(true);
 	}
 
 	private static ExcelTypeEnum getExcelType(String fileName) {

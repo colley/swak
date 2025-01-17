@@ -32,9 +32,9 @@ public class LocalDictionaryServiceImpl implements LocalDictionaryService {
     @Override
     public Map<String, Collection<SelectDataVo>> getBathDictCode(Set<String> categoryTypes) {
         Map<String, Collection<SelectDataVo>> result = Maps.newHashMap();
-        categoryTypes.forEach(localCategory -> {
-            List<SelectDataVo> localCodeList = getLocalDictCode(localCategory, null);
-            result.put(localCategory, localCodeList);
+        categoryTypes.forEach(categoryType -> {
+            List<SelectDataVo> localCodeList = getLocalDictCode(categoryType, null);
+            result.put(categoryType, localCodeList);
         });
         return result;
     }

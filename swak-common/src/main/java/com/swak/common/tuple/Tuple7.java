@@ -33,40 +33,6 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Tuple {
         this(tuple.v1, tuple.v2, tuple.v3, tuple.v4, tuple.v5, tuple.v6, tuple.v7);
     }
 
-    @Deprecated
-    public T1 getFirst() {
-        return v1;
-    }
-
-    @Deprecated
-    public T2 getSecond() {
-        return v2;
-    }
-
-    @Deprecated
-    public T3 getThird() {
-        return v3;
-    }
-
-    @Deprecated
-    public T4 getFourth() {
-        return v4;
-    }
-
-    @Deprecated
-    public T5 getFifth() {
-        return v5;
-    }
-
-    @Deprecated
-    public T6 getSixth() {
-        return v6;
-    }
-
-    @Deprecated
-    public T7 getSeventh() {
-        return v7;
-    }
 
     public T1 getV1() {
         return v1;

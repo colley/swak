@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *OperateLogProducer
@@ -29,6 +30,8 @@ public class OperateLogProducer {
     private Disruptor<CarrierValue<OperateDataLog>> disruptor;
     private RingBuffer<CarrierValue<OperateDataLog>> recordContainer;
 
+    private final AtomicBoolean started = new AtomicBoolean(false);
+
     public OperateLogProducer(OperateLogService operateLogService) {
         this.operateLogService = operateLogService;
         this.operateLogEventHandler = new OperateLogEventHandler(operateLogService);
@@ -40,33 +43,36 @@ public class OperateLogProducer {
     }
 
     public void startWork() {
-        //未开启日志记录
         if (!operateLogService.isOperateLogEnabled()) {
             return;
         }
-        this.disruptor = new Disruptor<>(
-                EVENT_FACTORY,
-                BigDecimal.valueOf(2).pow(
-                        BigDecimal.valueOf(Math.log(maxActive) / Math.log(2)).setScale(0, RoundingMode.CEILING).intValue()).intValue()
-                        * cacheRatio, new NamedThreadFactory("Swak-OpLog", true));
-        this.disruptor.handleEventsWithWorkerPool(operateLogEventHandler);
-        this.recordContainer = disruptor.getRingBuffer();
-        this.disruptor.start();
+        if (started.compareAndSet(false, true)) {
+            //未开启日志记录
+            this.disruptor = new Disruptor<>(
+                    EVENT_FACTORY,
+                    BigDecimal.valueOf(maxActive).pow(BigDecimal.valueOf(1.0).intValue()).intValue()
+                            * cacheRatio, new NamedThreadFactory("SOperate-Log", true));
+            this.disruptor.handleEventsWithWorkerPool(operateLogEventHandler);
+            this.recordContainer = disruptor.getRingBuffer();
+            this.disruptor.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+        }
     }
 
     public void sendLogMessage(OperateDataLog message) {
+        long next = recordContainer.next();
         try {
             OperateLogContext contextHolder = new OperateLogContext();
             operateLogService.preHandle(contextHolder);
             message.setCreateTime(new Date());
             message.setUserId(contextHolder.getUserId());
             message.setContextHolder(contextHolder);
-            long next = recordContainer.next();
             CarrierValue<OperateDataLog> eventContainer = recordContainer.get(next);
             eventContainer.setValue(message);
-            recordContainer.publish(next);
         } catch (Throwable e) {
             log.error("[Swak-OpLog] LogEventProducer error", e);
+        }finally {
+            recordContainer.publish(next);
         }
     }
 }

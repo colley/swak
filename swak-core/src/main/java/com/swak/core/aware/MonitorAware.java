@@ -1,7 +1,9 @@
 
 package com.swak.core.aware;
 
-public interface MonitorAware {
+import com.swak.common.listener.SwakEventListener;
+
+public interface MonitorAware extends SwakEventListener {
 
     void startup();
 

@@ -7,21 +7,20 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.swak.autoconfigure.config.AsyncProperties;
+import com.swak.common.util.GetterUtil;
 import com.swak.core.environment.SystemEnvironmentConfigurable;
 import com.swak.core.eventbus.EventBusConfig;
 import com.swak.core.web.JacksonSerializerFeatureCompatible;
-import com.swak.jdbc.query.SwakJdbcTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.sql.DataSource;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -66,13 +65,6 @@ public class SystemSwakConfig implements WebMvcConfigurer {
         return eventBusConfig;
     }
 
-
-    @Bean
-    @ConditionalOnMissingBean(SwakJdbcTemplate.class)
-    public SwakJdbcTemplate swakJdbcTemplate(@Autowired(required = false) DataSource dataSource) {
-        return new SwakJdbcTemplate(dataSource);
-    }
-
     @Bean
     public SystemEnvironmentConfigurable systemConfig() {
         SystemEnvironmentConfigurable systemConfig = new SystemEnvironmentConfigurable("com.swak.demo");
@@ -82,4 +74,11 @@ public class SystemSwakConfig implements WebMvcConfigurer {
         return systemConfig;
     }
 
+    @Bean
+    public RedissonClient redissonClient(){
+        Config config = new Config();
+        String[] addresses = GetterUtil.getSplitStr("redis://10.74.170.215:6379,redis://10.74.170.216:6379,redis://10.74.170.217:6379,redis://10.74.170.218:6379,redis://10.74.170.219:6379,redis://10.74.170.220:6379");
+        config.useClusterServers().addNodeAddress(addresses);
+        return Redisson.create(config);
+    }
 }

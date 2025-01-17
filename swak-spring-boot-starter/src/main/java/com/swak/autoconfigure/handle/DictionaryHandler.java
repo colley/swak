@@ -12,11 +12,11 @@ import java.util.Set;
  * @since 2.4.0
  */
 public interface DictionaryHandler extends SpiPriority {
-    List<SelectDataVo> onSorted(List<SelectDataVo> enumTypeDict);
+    List<SelectDataVo> onSorted(List<SelectDataVo> enumTypeDict,String categoryType);
 
-    List<SelectDataVo> onFilter(List<SelectDataVo> enumTypeDict);
+    List<SelectDataVo> onFilter(List<SelectDataVo> enumTypeDict,String categoryType);
 
-    default Set<String> dictCategory() {
+    default Set<String> supportType() {
         return Collections.emptySet();
     }
 

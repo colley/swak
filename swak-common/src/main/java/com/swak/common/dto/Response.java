@@ -12,7 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
  * @since 2024/3/11 15:24
  **/
 public interface Response<T> extends java.io.Serializable {
-
     /**
      *  code
      * @return Integer

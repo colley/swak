@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.swak.common.util.StringPool.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * 公共方法 处理 字符串转数据，日期等
@@ -217,7 +218,7 @@ public final class GetterUtil {
     }
 
     public static Double get(String value, Double defaultValue) {
-        if (StringUtils.isBlank(value)) {
+        if (isBlank(value)) {
             return defaultValue;
         }
         try {
@@ -228,7 +229,7 @@ public final class GetterUtil {
     }
 
     public static Float get(String value, Float defaultValue) {
-        if (StringUtils.isBlank(value)) {
+        if (isBlank(value)) {
             return defaultValue;
         }
         try {
@@ -239,7 +240,7 @@ public final class GetterUtil {
     }
 
     public static Integer get(String value, Integer defaultValue) {
-        if (StringUtils.isBlank(value)) {
+        if (isBlank(value)) {
             return defaultValue;
         }
         try {
@@ -250,7 +251,7 @@ public final class GetterUtil {
     }
 
     public static Long get(String value, Long defaultValue) {
-        if (StringUtils.isBlank(value)) {
+        if (isBlank(value)) {
             return defaultValue;
         }
         try {
@@ -261,7 +262,7 @@ public final class GetterUtil {
     }
 
     public static Short get(String value, Short defaultValue) {
-        if (StringUtils.isBlank(value)) {
+        if (isBlank(value)) {
             return defaultValue;
         }
         try {
@@ -273,7 +274,7 @@ public final class GetterUtil {
 
     public static String get(String value, String defaultValue) {
         String lastValue = StringUtils.trimToEmpty(value);
-        if (StringUtils.isBlank(lastValue) ||
+        if (isBlank(lastValue) ||
                 Objects.equals("null", lastValue)) {
             return defaultValue;
         }
@@ -352,7 +353,7 @@ public final class GetterUtil {
     }
 
     public static Integer[] getSplit2IntegerArray(String codes, String splitChar) {
-        if (StringUtils.isBlank(codes)) {
+        if (isBlank(codes)) {
             return null;
         }
 
@@ -371,7 +372,7 @@ public final class GetterUtil {
     }
 
     public static List<String> getSplit2List(String codes, String splitChar) {
-        if (StringUtils.isBlank(codes)) {
+        if (isBlank(codes)) {
             return new ArrayList<>(0);
         }
 
@@ -383,7 +384,7 @@ public final class GetterUtil {
     }
 
     public static List<Long> getSplit2Long(String codes, String splitChar) {
-        if (StringUtils.isBlank(codes)) {
+        if (isBlank(codes)) {
             return new ArrayList<>(0);
         }
 
@@ -409,7 +410,7 @@ public final class GetterUtil {
     }
 
     public static List<Integer> getSplit2Integer(String codes, String splitChar) {
-        if (StringUtils.isBlank(codes)) {
+        if (isBlank(codes)) {
             return new ArrayList<>(0);
         }
 
@@ -424,7 +425,7 @@ public final class GetterUtil {
     }
 
     public static String[] getSplitStr(String codes, String splitChar) {
-        if (StringUtils.isBlank(codes)) {
+        if (isBlank(codes)) {
             return new String[0];
         }
 
@@ -571,7 +572,7 @@ public final class GetterUtil {
     }
 
     public static String hideAccount(String account, int beforeLen, int endLen, int star) {
-        if (StringUtils.isBlank(account)) {
+        if (isBlank(account)) {
             return account;
         }
         int length = account.length();
@@ -606,7 +607,7 @@ public final class GetterUtil {
 
     public static <T> List<T> getList(String value, Class<T> clazz) {
         value = getString(value);
-        if (StringUtils.isBlank(value) || !(value.startsWith("[") && value.endsWith("]"))) {
+        if (isBlank(value) || !(value.startsWith("[") && value.endsWith("]"))) {
             return Collections.emptyList();
         }
         JSONArray array = JSONArray.parseArray(value);
@@ -723,7 +724,6 @@ public final class GetterUtil {
      * @return 克隆后的对象
      * @throws RuntimeException IO异常和ClassNotFoundException封装
      */
-    @SuppressWarnings("unchecked")
     public static <T> T cloneByStream(T obj) {
         if (!(obj instanceof Serializable)) {
             return null;
@@ -780,17 +780,88 @@ public final class GetterUtil {
         return source;
     }
 
-    public static String capitalizeFirstLetter(String str) {
+    public static String firstToUpperCase(String str) {
         if (str == null || str.isEmpty()) {
             return str;
         }
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public static String lowerFirstLetter(String str) {
-        if (str == null || str.isEmpty()) {
+    /**
+     * 首字母转换小写
+     *
+     * @param param 需要转换的字符串
+     * @return 转换好的字符串
+     */
+    public static String firstToLowerCase(String param) {
+        if (isBlank(param)) {
+            return EMPTY;
+        }
+        return param.substring(0, 1).toLowerCase() + param.substring(1);
+    }
+
+
+    public static String camelToUnderline(String param) {
+        if (isBlank(param)) {
+            return EMPTY;
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = param.charAt(i);
+            if (Character.isUpperCase(c) && i > 0) {
+                sb.append(UNDERLINE);
+            }
+            sb.append(Character.toLowerCase(c));
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 字符串下划线转驼峰格式
+     *
+     * @param param 需要转换的字符串
+     * @return 转换好的字符串
+     */
+    public static String underlineToCamel(String param) {
+        if (isBlank(param)) {
+            return EMPTY;
+        }
+        String temp = param.toLowerCase();
+        int len = temp.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = temp.charAt(i);
+            if (c == UNDERLINE.charAt(0)) {
+                if (++i < len) {
+                    sb.append(Character.toUpperCase(temp.charAt(i)));
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 拼接字符串第二个字符串第一个字母大写
+     */
+    public static String concatCapitalize(String concatStr, final String str) {
+        if (isBlank(concatStr)) {
+            concatStr = EMPTY;
+        }
+        if (str == null || str.length() == 0) {
             return str;
         }
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
+
+        final char firstChar = str.charAt(0);
+        if (Character.isTitleCase(firstChar)) {
+            // already capitalized
+            return str;
+        }
+
+        return concatStr + Character.toTitleCase(firstChar) + str.substring(1);
     }
+
 }

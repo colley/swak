@@ -20,10 +20,6 @@ public final class Tuple1<T1> extends Tuple {
         this(tuple.v1);
     }
 
-    @Deprecated
-    public T1 getFirst() {
-        return v1;
-    }
 
     public T1 getV1() {
         return v1;

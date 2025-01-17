@@ -1,5 +1,6 @@
 package com.swak.license.spi.event;
 
+import com.swak.common.listener.SwakEventListener;
 import com.swak.license.api.License;
 import com.swak.license.api.LicenseValidationException;
 import com.swak.license.api.io.bios.BIOS;
@@ -17,7 +18,7 @@ import java.text.SimpleDateFormat;
  * 在项目启动时安装证书
  */
 @Slf4j
-public class LicenseCheckListener implements ApplicationListener<ContextRefreshedEvent> {
+public class LicenseCheckListener implements ApplicationListener<ContextRefreshedEvent>, SwakEventListener {
 
     private LicenseVerifyService licenseVerifyService;
 

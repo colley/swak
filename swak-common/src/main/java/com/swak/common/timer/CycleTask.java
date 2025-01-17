@@ -5,6 +5,7 @@ import com.swak.common.exception.ThrowableWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *  CycleTimerTask.java
@@ -14,23 +15,37 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class CycleTask implements TimerTask {
 
-	protected volatile boolean cancel = false;
+	protected volatile AtomicBoolean cancel = new AtomicBoolean(false);
 	private Long tick;
 	private TimeUnit timeUnit;
 
-	private boolean runJob;
+	public CycleTask(){
+	}
 
-	public CycleTask config(Integer tick, TimeUnit timeUnit, boolean runJob) {
+	public CycleTask(Long tick,TimeUnit timeUnit){
+		this.tick = tick;
+		this.timeUnit = timeUnit;
+	}
+
+	public CycleTask config(Integer tick, TimeUnit timeUnit,boolean isRun) {
 		this.tick = tick.longValue();
 		this.timeUnit = timeUnit;
-		this.runJob = runJob;
+		if(isRun){
+			cancel.set(false);
+		}else{
+			cancel.set(true);
+		}
 		return this;
 	}
 	
-	public CycleTask config(Long tick, TimeUnit timeUnit, boolean runJob) {
+	public CycleTask config(Long tick, TimeUnit timeUnit,boolean isRun) {
 		this.tick = tick;
 		this.timeUnit = timeUnit;
-		this.runJob = runJob;
+		if(isRun){
+			cancel.set(false);
+		}else{
+			cancel.set(true);
+		}
 		return this;
 	}
 	
@@ -41,16 +56,20 @@ public abstract class CycleTask implements TimerTask {
 	}
 
 	public void cancel() {
-		this.cancel = true;
+		this.cancel.set(true);
+	}
+
+	public boolean isCancelled() {
+		return this.cancel.get();
+	}
+
+	public void start() {
+		this.cancel.set(false);
 	}
 
 	@Override
 	public void run(Timeout timeout) throws Exception {
-		if (!runJob) {
-			log.warn("[swak-timer] - CycleTask job is disabled status:{}", runJob);
-			return;
-		}
-		if(cancel) {
+		if(cancel.get()) {
 			log.warn("[swak-timer] - CycleTask job is canceled");
 			return;
 		}
@@ -67,7 +86,7 @@ public abstract class CycleTask implements TimerTask {
 			throw new IllegalArgumentException();
 		}
 
-		if (cancel) {
+		if(cancel.get()) {
 			return;
 		}
 

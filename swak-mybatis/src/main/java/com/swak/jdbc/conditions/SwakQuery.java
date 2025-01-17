@@ -1,17 +1,18 @@
 package  com.swak.jdbc.conditions;
 
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.swak.common.util.StringPool;
 import com.swak.jdbc.common.SharedBool;
 import com.swak.jdbc.common.SharedInteger;
 import com.swak.jdbc.common.SharedString;
 import com.swak.jdbc.common.TableAssert;
 import com.swak.jdbc.enums.SqlKeyword;
+import com.swak.jdbc.metadata.SFunction;
 import com.swak.jdbc.metadata.SelectCache;
+import com.swak.jdbc.metadata.TableInfo;
 import com.swak.jdbc.segments.AliasColumnSegment;
 import com.swak.jdbc.segments.ClassColumnSegment;
 import com.swak.jdbc.segments.ColumnSegment;
+import com.swak.jdbc.segments.ConstColumnSegment;
 import com.swak.jdbc.toolkit.LambdaUtils;
 import com.swak.jdbc.toolkit.TableHelper;
 import com.swak.jdbc.toolkit.support.ColumnCache;
@@ -20,6 +21,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,10 @@ public interface SwakQuery<Children> extends Serializable {
 
     SharedString getAlias();
 
-     Children from(String tableName);
+    default Children from(String tableName) {
+        return from(tableName,null);
+    }
+    Children from(String tableName,String tableAlias);
 
     default <E> Children from(Class<E> entityClass) {
         TableInfo info = TableHelper.get(entityClass);
@@ -75,6 +80,12 @@ public interface SwakQuery<Children> extends Serializable {
     default Children select(String... columns) {
         getSelectFrom().addAll(Arrays.stream(columns).map(i ->
                 AliasColumnSegment.alias(i,getHasAlias().isTrue(), getAlias().getValue())).collect(Collectors.toList()));
+        return getChildren();
+    }
+
+
+    default Children selectConst(Object... values) {
+        getSelectFrom().addAll(Arrays.stream(values).map(i ->ConstColumnSegment.constant(i)).collect(Collectors.toList()));
         return getChildren();
     }
 

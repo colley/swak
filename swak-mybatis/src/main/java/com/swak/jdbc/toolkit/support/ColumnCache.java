@@ -1,7 +1,6 @@
 package com.swak.jdbc.toolkit.support;
 
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-
+import com.swak.jdbc.metadata.TableInfo;
 import com.swak.jdbc.common.TableAssert;
 import com.swak.jdbc.metadata.SelectCache;
 import com.swak.jdbc.toolkit.FieldStringMap;
@@ -33,9 +32,7 @@ public class ColumnCache {
             TableAssert.hasTable(tableInfo,clazz);
             List<SelectCache> list = new ArrayList<>();
             list.addAll(tableInfo.getFieldList().stream().map(f -> new SelectCache(clazz, f.getColumn(),
-                    f.getPropertyType(), f.getProperty(), f)).collect(Collectors.toList()));
-            list.add(new SelectCache(clazz, tableInfo.getKeyColumn(),
-                    tableInfo.getKeyType(), tableInfo.getKeyProperty(), null));
+                    f.getColumnType(), f.getProperty(), f)).collect(Collectors.toList()));
             return list;
         });
     }

@@ -9,7 +9,7 @@ public interface Converter<T> {
     T convert(Object value, T defaultValue, String... dataFormats);
 
     default T convert(Object value, T defaultValue) {
-        return convert(value, defaultValue, null);
+        return convert(value, defaultValue, (String) null);
     }
 
     default T convert(Object value) {

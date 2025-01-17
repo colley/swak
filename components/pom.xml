@@ -26,7 +26,7 @@
 		<module>swak-excel-boot-starter</module>
 		<module>swak-job-boot-starter</module>
 		<module>swak-operatelog-boot-starter</module>
-		<module>swak-security-jwt-boot-starter</module>
+<!--		<module>swak-security-jwt-boot-starter</module>-->
 		<module>swak-extcache-boot-starter</module>
 		<module>swak-distributed-lock-boot-starter</module>
 	</modules>
