@@ -1,5 +1,5 @@
 
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">SWAK v2.3.0</h1>
+<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">SWAK v2.3.x</h1>
 <h4 align="center">基于SpringBoot多组件集成的Java快速开发框架</h4>
 <p align="center">
 	<a href="https://search.maven.org/search?q=g:io.gitee.mcolley%20a:swak*"><img src="https://img.shields.io/maven-central/v/io.gitee.mcolley/swak-core.svg"></a>
