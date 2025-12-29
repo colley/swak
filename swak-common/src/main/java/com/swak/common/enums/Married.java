@@ -46,8 +46,12 @@ public enum Married {
 	}
 
 	public static Integer convert(Boolean value) {
+		return convert( value, Married.NO.getValue());
+	}
+
+	public static Integer convert(Boolean value,Integer defaultVal) {
 		if (value == null) {
-			return Married.NO.getValue();
+			return defaultVal;
 		}
 		return value ? Married.YES.getValue() : Married.NO.getValue();
 	}
