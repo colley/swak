@@ -49,7 +49,7 @@ public class AsyncThreadPoolConfiguration {
         threadPool.setMaxPoolSize(asyncConfigProperties.getMaxPoolSize());// 最大线程数
         threadPool.setQueueCapacity(asyncConfigProperties.getQueueCapacity());
         threadPool.setWaitForTasksToCompleteOnShutdown(true);
-        threadPool.setAwaitTerminationSeconds(60 * 10);// 等待时间 （默认为0，此时立即停止），并没等待xx秒后强制停止
+        threadPool.setAwaitTerminationSeconds(60);// 等待时间 （默认为0，此时立即停止），并没等待xx秒后强制停止
         threadPool.setThreadNamePrefix("SwakAsync-threadPool-");
         threadPool.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         threadPool.initialize(); // 初始化

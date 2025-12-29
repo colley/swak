@@ -7,14 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.swak.common.util.GetterUtil;
 import com.swak.core.environment.SystemEnvironmentConfigurable;
 import com.swak.core.eventbus.EventBusConfig;
 import com.swak.core.web.JacksonSerializerFeatureCompatible;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -66,19 +62,11 @@ public class SystemSwakConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SystemEnvironmentConfigurable systemConfig() {
+    public SystemEnvironmentConfigurable systemEnvironmentConfigurable() {
         SystemEnvironmentConfigurable systemConfig = new SystemEnvironmentConfigurable("com.swak.demo");
         systemConfig.setInitializeLocalType(true);
         systemConfig.setDefaultLocale(Locale.SIMPLIFIED_CHINESE);
         systemConfig.setDefaultTimeZone(TimeZone.getTimeZone("GMT+8"));
         return systemConfig;
-    }
-
-    @Bean
-    public RedissonClient redissonClient(){
-        Config config = new Config();
-        String[] addresses = GetterUtil.getSplitStr("redis://10.74.170.215:6379,redis://10.74.170.216:6379,redis://10.74.170.217:6379,redis://10.74.170.218:6379,redis://10.74.170.219:6379,redis://10.74.170.220:6379");
-        config.useClusterServers().addNodeAddress(addresses);
-        return Redisson.create(config);
     }
 }

@@ -50,7 +50,7 @@ public class CaseSegment extends AbstractSqlSegment {
     @Override
     public String getSqlSegment(ParamNameValuePairs paramNameValuePairs) {
         String parameterName = paramNameValuePairs.addParameter("caseExpress", value);
-        StringBuffer fragment = new StringBuffer("(CASE ");
+        StringBuilder fragment = new StringBuilder("(CASE ");
         // 设置when parameterName
         for (SqlSegment whenExpression : whenExpressions) {
             fragment.append(whenExpression.getSqlSegment(paramNameValuePairs));
@@ -110,7 +110,7 @@ public class CaseSegment extends AbstractSqlSegment {
 
         @Override
         public String getSqlSegment(ParamNameValuePairs valuePairs) {
-            StringBuffer fragment = new StringBuffer();
+            StringBuilder fragment = new StringBuilder();
             fragment.append(getSqlKeyword().getSqlSegment(valuePairs));
             if (sqlSegmentList.size() > 1) {
                 fragment.append("(");

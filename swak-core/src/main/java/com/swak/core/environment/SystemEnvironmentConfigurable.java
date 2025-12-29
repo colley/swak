@@ -53,6 +53,14 @@ public class SystemEnvironmentConfigurable implements EnvironmentAware, Initiali
      */
     private Boolean initializeLocalType = false;
 
+    @Getter
+    @Setter
+    private Long maxUploadSize =Long.valueOf(31 * 1024 * 1024);
+
+    @Getter
+    @Setter
+    private Integer  maxInMemorySize =40960;
+
     public SystemEnvironmentConfigurable(String basePackage) {
         this.basePackages = new String[]{basePackage};
     }

@@ -10,7 +10,13 @@ public interface SpiPriority {
 
     int SPI_PRIORITY = 100;
 
+    String SPI_NAME = "SpiPriority";
+
     default int priority() {
         return SPI_PRIORITY;
+    }
+
+    default String getName() {
+        return "SpiPriority";
     }
 }

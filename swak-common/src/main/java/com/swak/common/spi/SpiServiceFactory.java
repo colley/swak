@@ -2,7 +2,6 @@ package com.swak.common.spi;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,15 +18,28 @@ public class SpiServiceFactory<S extends SpiPriority> {
     private volatile List<SwakServiceLoader> swakServiceLoaders;
     private final Map<String, List<S>> providers = new ConcurrentHashMap<>();
 
-    public static <S> List<S> load(Class<S> service) {
+    public static <S extends SpiPriority> List<S> load(Class<S> service) {
         SpiServiceFactory spiServiceFactory = SPI_SERVICE_FACTORY.
                 computeIfAbsent(service, v -> new SpiServiceFactory<>());
         return spiServiceFactory.loadProviders(service);
     }
 
-    public static <S> S loadFirst(Class<S> service) {
+    public static <S extends SpiPriority> S loadFirst(Class<S> service) {
         List<S> providersList = load(service);
         if (CollectionUtils.isNotEmpty(providersList)) {
+            return providersList.get(0);
+        }
+        return null;
+    }
+
+    public static <S extends SpiPriority> S loadFirstByName(Class<S> service, String name) {
+        List<S> providersList = load(service);
+        if (CollectionUtils.isNotEmpty(providersList)) {
+            for (S provider : providersList) {
+                if (Objects.equals(provider.getName(), name)) {
+                    return provider;
+                }
+            }
             return providersList.get(0);
         }
         return null;
@@ -38,12 +50,12 @@ public class SpiServiceFactory<S extends SpiPriority> {
         if (Objects.nonNull(providersList)) {
             return providersList;
         }
-        //去重
+        //去重 beanName + priority
         Map<String, S> ultimateMap = Maps.newHashMap();
         List<SwakServiceLoader> swakServiceLoaders = loadServiceLoader();
         if (CollectionUtils.isNotEmpty(swakServiceLoaders)) {
             for (SwakServiceLoader swakServiceLoader : swakServiceLoaders) {
-                swakServiceLoader.load(service).forEach(bean -> ultimateMap.put(bean.getClass().getName(), bean));
+                swakServiceLoader.load(service).forEach(bean -> ultimateMap.put(bean.getClass().getName() + bean.priority(), bean));
             }
         }
         providersList = ultimateMap.values().stream()
@@ -62,4 +74,6 @@ public class SpiServiceFactory<S extends SpiPriority> {
                 .sorted(Comparator.comparingInt(SwakServiceLoader::priority)).collect(Collectors.toList());
         return this.swakServiceLoaders;
     }
+
+
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.swak.autoconfigure.config.AsyncProperties;
-import com.swak.core.environment.SystemEnvironmentConfigurable;
+import com.swak.core.environment.SwakEnvConfigurable;
 import com.swak.core.eventbus.EventBusConfig;
 import com.swak.core.web.JacksonSerializerFeatureCompatible;
 import lombok.extern.slf4j.Slf4j;
@@ -56,8 +56,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SystemEnvironmentConfigurable systemConfig() {
-        SystemEnvironmentConfigurable systemConfig = new SystemEnvironmentConfigurable("com.swak.license.server");
+    public SwakEnvConfigurable systemConfig() {
+        SwakEnvConfigurable systemConfig = new SwakEnvConfigurable("com.swak.license.server");
         systemConfig.setInitializeLocalType(true);
         systemConfig.setDefaultLocale(Locale.SIMPLIFIED_CHINESE);
         systemConfig.setDefaultTimeZone(TimeZone.getTimeZone("GMT+8"));

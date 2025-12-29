@@ -20,6 +20,7 @@ public class SharedBool extends SharedValue<Boolean> {
         return new SharedBool(false);
     }
 
+    @Override
     public void toEmpty() {
         toNull();
     }
@@ -29,6 +30,7 @@ public class SharedBool extends SharedValue<Boolean> {
     }
 
 
+    @Override
     public void toNull() {
         value = null;
     }

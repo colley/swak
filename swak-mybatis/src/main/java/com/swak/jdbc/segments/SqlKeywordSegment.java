@@ -4,9 +4,14 @@ import com.swak.jdbc.ParamNameValuePairs;
 import com.swak.jdbc.common.IbsStringHelper;
 import com.swak.jdbc.enums.SqlKeyword;
 
+
+/**
+ * @author colley.ma
+ * @since 2.3.3
+ **/
 public class SqlKeywordSegment extends AbstractSqlSegment{
 
-    private  Object value;
+    private final Object value;
 
     public SqlKeywordSegment(String property, SqlKeyword sqlKeyword,Object value) {
         super(property, sqlKeyword);
@@ -22,8 +27,7 @@ public class SqlKeywordSegment extends AbstractSqlSegment{
     @Override
     public String getSqlSegment(ParamNameValuePairs valuePairs) {
         String parameterName = valuePairs.addParameter(property, value);
-        String fragment = property + getSqlKeyword().getSqlSegment(valuePairs) +
+        return property + getSqlKeyword().getSqlSegment(valuePairs) +
                 IbsStringHelper.repeatParamFormat(parameterName);
-        return fragment;
     }
 }

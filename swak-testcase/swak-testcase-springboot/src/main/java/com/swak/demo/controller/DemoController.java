@@ -39,6 +39,7 @@ public class DemoController {
     @GetMapping("/infos")
     public Response<String> infos(){
         String lockKey = "infos.lock";
+        final long start = System.currentTimeMillis();
         try {
             if(distributedLock.acquireLock(lockKey,10L, TimeUnit.SECONDS)){
                 try {
@@ -46,11 +47,14 @@ public class DemoController {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                System.out.println("ok");
                 return Response.success("OK");
             }
+            System.out.println("lock ........");
             return Response.success("lock");
         }finally {
             distributedLock.releaseLock(lockKey);
+            System.err.println((System.currentTimeMillis() - start) + "ms");
         }
     }
 

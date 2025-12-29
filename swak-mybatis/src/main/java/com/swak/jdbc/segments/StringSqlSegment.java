@@ -15,7 +15,7 @@ public class StringSqlSegment implements SqlSegment {
     @Getter
     private String sqlStr;
 
-    private Object[] params;
+    private final Object[] params;
 
     public StringSqlSegment(String sqlStr) {
         this(sqlStr,null);

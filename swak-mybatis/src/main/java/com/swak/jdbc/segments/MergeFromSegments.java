@@ -61,6 +61,7 @@ public  class MergeFromSegments implements SelectSegment {
         return select(tableAlias,Arrays.asList(columns));
     }
 
+    @Override
     public SelectSegment select(String... columns) {
         if (ArrayUtils.isNotEmpty(columns)) {
             select(StringPool.EMPTY,columns);

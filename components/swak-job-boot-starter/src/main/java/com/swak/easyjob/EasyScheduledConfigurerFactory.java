@@ -2,7 +2,7 @@ package com.swak.easyjob;
 
 import com.google.common.collect.Lists;
 import com.swak.common.util.GetterUtil;
-import com.swak.core.environment.SystemEnvironmentConfigurable;
+import com.swak.core.environment.SwakEnvConfigurable;
 import com.swak.easyjob.annotation.EasyJobInfo;
 import com.swak.easyjob.annotation.EasyJobTask;
 import com.swak.easyjob.annotation.ScheduleType;
@@ -50,7 +50,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
     private BeanExpressionContext expressionContext;
     private ApplicationContext applicationContext;
 
-    private SystemEnvironmentConfigurable systemConfig;
+    private SwakEnvConfigurable systemConfig;
 
 
     /**
@@ -58,7 +58,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
      *
      * @param easyJobConfig the easy job config
      */
-    public EasyScheduledConfigurerFactory(EasyJobConfig easyJobConfig,SystemEnvironmentConfigurable systemConfig) {
+    public EasyScheduledConfigurerFactory(EasyJobConfig easyJobConfig, SwakEnvConfigurable systemConfig) {
         this.easyJobConfig = easyJobConfig;
         Assert.notNull(easyJobConfig, "[Swak-Job] easyJobConfig is required!");
         Assert.hasLength(easyJobConfig.getAppName(), "[Swak-Job] appName is required!");

@@ -47,13 +47,17 @@ logging:
       total-size-cap: 20GB
 swak:
   lock:
-    type: local_only
+    type: zk
+  zookeeper:
+    connectionStr: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
+    namespace: lock
+
 ---
 spring:
   config:
     activate:
       on-profile: dev
 db:
-  url: jdbc:p6spy:mysql://127.0.0.1:3306/swak?allowMultiQueries=true&serverTimezone=Asia/Shanghai
+  url: jdbc:p6spy:mysql://127.0.0.1:3306/fdc_R1?allowMultiQueries=true&serverTimezone=Asia/Shanghai
   username: root
   password: 123456

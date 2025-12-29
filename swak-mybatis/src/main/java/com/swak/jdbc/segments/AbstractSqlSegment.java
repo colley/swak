@@ -64,9 +64,8 @@ public abstract class AbstractSqlSegment  implements SqlSegment {
             if (MatchSegment.AND_OR.match(whereScope.get(whereScope.size()-1))) {
                 whereScope.remove(whereScope.size()-1);
             }
-            Iterator<SqlSegment> iter = whereScope.iterator();
-            while (iter.hasNext()) {
-                buffer.append((iter.next()).getSqlSegment(paramNameValuePairs)).append(SPACE);
+            for (SqlSegment sqlSegment : whereScope) {
+                buffer.append(sqlSegment.getSqlSegment(paramNameValuePairs)).append(SPACE);
             }
         }
         return buffer.toString();

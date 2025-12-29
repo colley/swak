@@ -18,9 +18,11 @@
 	<description>The swak framework testcase</description>
 
 	<properties>
-		<swak.version>2.4.2-SNAPSHOT</swak.version>
+		<swak.version>2.3.3</swak.version>
 		<mybatis-plus.version>3.4.2</mybatis-plus.version>
 		<mapstruct.version>1.5.3.Final</mapstruct.version>
+		<skip_maven_deploy>true</skip_maven_deploy>
+		<curator.version>4.3.0</curator.version>
 	</properties>
 
 
@@ -60,6 +62,12 @@
 				<groupId>com.baomidou</groupId>
 				<artifactId>mybatis-plus-extension</artifactId>
 				<version>${mybatis-plus.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.curator</groupId>
+				<artifactId>curator-recipes</artifactId>
+				<version>${curator.version}</version>
 			</dependency>
 
 		</dependencies>

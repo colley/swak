@@ -37,9 +37,8 @@ public class SimpleSegment extends AbstractSqlSegment {
     @Override
     public String getSqlSegment(ParamNameValuePairs paramNameValuePairs) {
         String parameterName = paramNameValuePairs.addParameter(property, value);
-        String fragment = property +
+        return property +
                 getSqlKeyword().getSqlSegment(paramNameValuePairs) +
                 IbsStringHelper.repeatParamFormat(parameterName);
-        return fragment;
     }
 }

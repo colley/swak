@@ -15,8 +15,7 @@ import java.util.List;
 /**
  * group by name,age
  * @author colley.ma
- * @version v1.0
- * @since 2024/3/6 15:07
+ * @since 2.3.3
  **/
 public class GroupBySegment extends AbstractSqlSegment {
     private final List<SqlSegment> groupByColumnList = new ArrayList<>();

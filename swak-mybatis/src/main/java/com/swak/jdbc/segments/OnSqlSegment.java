@@ -6,11 +6,11 @@ import com.swak.common.util.StringPool;
 
 public class OnSqlSegment extends AbstractSqlSegment {
 
-    private  String firstAlias;
+    private final String firstAlias;
 
-    private  String secondAlias;
+    private final String secondAlias;
 
-    private String secondProperty;
+    private final String secondProperty;
 
     public OnSqlSegment(String firstAlias,String firstProperty,String secondAlias,String secondProperty,SqlKeyword sqlKeyword) {
         super(firstProperty, sqlKeyword);
