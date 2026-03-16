@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Zookeeper锁实现
- * @author: colley.ma
+ * @author colley.ma
  * @since 2.3.3
  */
 @Slf4j

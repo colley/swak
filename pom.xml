@@ -22,7 +22,6 @@
         <module>components</module>
         <module>swak-license</module>
         <module>swak-bom</module>
-        <module>swak-testcase</module>
 
     </modules>
 
@@ -222,22 +221,6 @@
     </dependencyManagement>
 
     <profiles>
-        <profile>
-            <id>snapshot-deploy</id>
-            <distributionManagement>
-                <repository>
-                    <id>releases</id>
-                    <name>Nexus Release Repository</name>
-                    <url>http://10.74.20.125:8081/repository/ees-releases/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>snapshots</id>
-                    <name>Nexus Snapshot Repository</name>
-                    <url>http://10.74.20.125:8081/repository/ees-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-
         <profile>
             <id>central-deploy</id>
             <build>

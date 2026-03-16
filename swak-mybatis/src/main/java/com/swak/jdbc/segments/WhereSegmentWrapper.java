@@ -7,6 +7,7 @@ import com.swak.jdbc.common.ConfigProperties;
 import com.swak.jdbc.common.SharedBool;
 import com.swak.jdbc.common.SharedString;
 import com.swak.jdbc.conditions.WhereWrapper;
+import com.swak.jdbc.enums.SqlKeyword;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -44,7 +45,11 @@ public abstract class WhereSegmentWrapper<Children extends WhereSegmentWrapper<C
     @Override
     public Children where(SqlSegment... sqlSegments) {
         if (ArrayUtils.isNotEmpty(sqlSegments)) {
-            expression.add(sqlSegments);
+            if(sqlSegments.length==1){
+                expression.add(SqlKeyword.APPLY, sqlSegments[0]);
+            }else{
+                expression.add(sqlSegments);
+            }
         }
         return getChildren();
     }

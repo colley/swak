@@ -1,6 +1,6 @@
 package com.swak.easyjob.spring.configuration;
 
-import com.swak.core.environment.SwakEnvConfigurable;
+import com.swak.core.environment.SystemEnvironmentConfigurable;
 import com.swak.easyjob.EasyJobConfig;
 import com.swak.easyjob.EasyScheduledConfigurerFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +16,7 @@ public class EasyJobAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(EasyScheduledConfigurerFactory.class)
     @ConditionalOnBean(EasyJobConfig.class)
-    public EasyScheduledConfigurerFactory easyScheduledConfigurerFactory(EasyJobConfig easyJobConfig, SwakEnvConfigurable systemConfig) {
+    public EasyScheduledConfigurerFactory easyScheduledConfigurerFactory(EasyJobConfig easyJobConfig, SystemEnvironmentConfigurable systemConfig) {
         if (StringUtils.isEmpty(easyJobConfig.getAppName())) {
             easyJobConfig.setAppName(systemConfig.getAppName());
         }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.gitee.mcolley</groupId>
+  <artifactId>swak-license</artifactId>
+  <version>2.3.3</version>
+  <packaging>pom</packaging>
+  <name>swak-license</name>
+  <description>The module of swak license</description>
+  <url>https://github.com/colley/swak/swak-license</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>colley.ma</name>
+      <email>418234751@qq.com</email>
+      <organization>https://gitee.com/mcolley</organization>
+      <timezone>+8</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/colley/swak.git/swak-license</connection>
+    <developerConnection>scm:git:https://github.com/colley/swak.git/swak-license</developerConnection>
+    <url>git:https://github.com/colley/swak.git/swak-license</url>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.gitee.mcolley</groupId>
+        <artifactId>swak-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
