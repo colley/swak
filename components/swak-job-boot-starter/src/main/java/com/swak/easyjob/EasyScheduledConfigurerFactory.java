@@ -58,7 +58,7 @@ public class EasyScheduledConfigurerFactory implements EasyScheduledConfigurer, 
      *
      * @param easyJobConfig the easy job config
      */
-    public EasyScheduledConfigurerFactory(EasyJobConfig easyJobConfig,SystemEnvironmentConfigurable systemConfig) {
+    public EasyScheduledConfigurerFactory(EasyJobConfig easyJobConfig, SystemEnvironmentConfigurable systemConfig) {
         this.easyJobConfig = easyJobConfig;
         Assert.notNull(easyJobConfig, "[Swak-Job] easyJobConfig is required!");
         Assert.hasLength(easyJobConfig.getAppName(), "[Swak-Job] appName is required!");

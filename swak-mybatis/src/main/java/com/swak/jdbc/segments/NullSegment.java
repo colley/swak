@@ -26,8 +26,7 @@ public class NullSegment extends AbstractSqlSegment {
 
 	@Override
 	public String getSqlSegment(ParamNameValuePairs paramNameValuePairs) {
-		String fragment = getProperty() + " " +
+		return getProperty() + " " +
 				getSqlKeyword().getSqlSegment(paramNameValuePairs);
-		return fragment;
 	}
 }

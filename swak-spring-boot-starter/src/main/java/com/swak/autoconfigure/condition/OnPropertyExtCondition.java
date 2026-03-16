@@ -130,10 +130,10 @@ class OnPropertyExtCondition extends SpringBootCondition {
                     }
                 }
                 case IS_EMPTY: {
-                    return !StringUtils.hasLength(requiredValue);
+                    return !StringUtils.hasLength(value);
                 }
                 case IS_NOT_EMPTY: {
-                    return StringUtils.hasLength(requiredValue);
+                    return StringUtils.hasLength(value);
                 }
             }
             return !"false".equalsIgnoreCase(value);

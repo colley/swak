@@ -59,18 +59,20 @@ public class SwakAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(LocalDictionaryService.class)
-    public LocalDictionaryService LocalDictionaryService() {
+    public LocalDictionaryService localDictionaryService() {
         return new LocalDictionaryServiceImpl();
     }
 
 
     @Bean
     @ConditionalOnMissingBean(CommonsMultipartResolver.class)
-    public CommonsMultipartResolver multipartResolver() {
+    public CommonsMultipartResolver multipartResolver(@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
+        long maxUploadSize = 31 * 1024 * 1024;
+        int maxInMemorySize = 40960;
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setDefaultEncoding("UTF-8");
-        multipartResolver.setMaxUploadSize(31 * 1024 * 1024);
-        multipartResolver.setMaxInMemorySize(40960);
+        multipartResolver.setMaxUploadSize(Optional.ofNullable(systemConfigurable.getMaxUploadSize()).orElse(maxUploadSize));
+        multipartResolver.setMaxInMemorySize(Optional.ofNullable(systemConfigurable.getMaxInMemorySize()).orElse(maxInMemorySize));
         return multipartResolver;
     }
 
@@ -175,8 +177,8 @@ public class SwakAutoConfiguration {
     @Bean(name = "messageI18nSource")
     @ConditionalOnMissingBean(name = "messageI18nSource")
     public MessageI18nSource messageI18nSource(@Qualifier(value = "swakI18nMessageSource")
-                                                       MessageSource swakI18nMessageSource) {
-        MessageI18nSource messageI18nSource = new DefaultMessageI18nSource(swakI18nMessageSource);
+                                                       MessageSource swakI18nMessageSource,@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
+        MessageI18nSource messageI18nSource = new DefaultMessageI18nSource(swakI18nMessageSource,Optional.ofNullable(systemConfigurable).map(SystemEnvironmentConfigurable::getDefaultLocale).orElse(null));
         I18nMessageUtil.setMessageSource(messageI18nSource);
         return messageI18nSource;
     }
@@ -200,8 +202,8 @@ public class SwakAutoConfiguration {
     @Bean(name = "messageI18nDictSource")
     @ConditionalOnMissingBean(name = "messageI18nDictSource")
     public MessageI18nSource messageI18nDictSource(@Qualifier(value = "i18nDictMessageSource")
-                                                               MessageSource i18nDictMessageSource) {
-        MessageI18nSource messageI18nSource = new DefaultMessageI18nSource(i18nDictMessageSource);
+                                                           MessageSource i18nDictMessageSource,@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
+        MessageI18nSource messageI18nSource = new DefaultMessageI18nSource(i18nDictMessageSource,Optional.ofNullable(systemConfigurable).map(SystemEnvironmentConfigurable::getDefaultLocale).orElse(null));
         I18nDict.setMessageSource(messageI18nSource);
         return messageI18nSource;
     }

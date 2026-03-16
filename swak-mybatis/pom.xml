@@ -29,6 +29,12 @@
         </dependency>
 
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.gitee.mcolley</groupId>
             <artifactId>swak-core</artifactId>
             <version>${project.version}</version>

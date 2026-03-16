@@ -10,13 +10,19 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SqlJoinSegment.java
+ *
+ * @author colley.ma
+ * @since 2.3.3
+ **/
 public class SqlJoinSegment extends AbstractSqlSegment implements JoinSegment{
 
     private final String tableName;
 
-    private SelectSegment selectSegment;
+    private final SelectSegment selectSegment;
     private final SqlSegment onClause;
-    private List<SqlSegment> whereScope = new ArrayList<>();
+    private final List<SqlSegment> whereScope = new ArrayList<>();
 
     public SqlJoinSegment(SqlKeyword sqlKeyword, String aliasTableName, SelectSegment selectSegment, String[] onClauses) {
         super(sqlKeyword);

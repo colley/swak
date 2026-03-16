@@ -37,14 +37,17 @@ public class ArchiveClickhouseExecutor extends AbsArchiveExecutor {
             ArchiveConfig config = item.getConfig();
             /**
              * alter table 库.表名 drop partition 'partition';
+             * e.g alter table fdc_dev.trace_data_local on cluster fdc_cluster drop partition '20230220';
              */
             StringBuilder builderSql = new StringBuilder();
             builderSql.append("alter table ").append(config.getDatabaseName()).append(".")
-                    .append(config.getSrcTblName())
-                    .append(" drop partition '").append(partition).append("'");
-                if(StringUtils.isNotEmpty(config.getClusterName())) {
-                    builderSql.append(" on cluster ").append(config.getClusterName());
-                }
+                    .append(config.getSrcTblName());
+            if(StringUtils.isNotEmpty(config.getClusterName())) {
+                builderSql.append(" ON CLUSTER ").append(config.getClusterName());
+            }
+            builderSql.append(" drop partition '").append(partition).append("'");
+
+            log.info("执行删除分区sql:{}", builderSql);
             item.getExecutor().getJdbcTemplate().execute(builderSql.toString());
         } catch (Exception e) {
             int retries = item.getRetries().incrementAndGet();
@@ -63,25 +66,29 @@ public class ArchiveClickhouseExecutor extends AbsArchiveExecutor {
         }
     }
 
-        /**
-         * 归档数据
-         *
-         * @param item
-         * @param archiveData
-         */
-        @Override
-        public int archiveItem (ArchiveItem item, List<Map< String, Object >> archiveData){
-            return 0;
-        }
-
-        /**
-         * 归档成功后删除原始表数据
-         *
-         * @param item
-         * @param archiveData
-         */
-        @Override
-        public int deleteItem (ArchiveItem item, List<Map< String, Object >> archiveData){
-            return 0;
-        }
+    /**
+     * 归档数据
+     *
+     */
+    @Override
+    public int archiveItem (ArchiveItem item, List<Map< String, Object >> archiveData){
+        return 0;
     }
+
+    /**
+     * 归档成功后删除原始表数据
+     *
+     */
+    @Override
+    public int deleteItem (ArchiveItem item, List<Map< String, Object >> archiveData){
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        String builderSql = "alter table " + "fdc_dev" + "." +
+                "trace_data_local" +
+                " drop partition '" + "20230220" + "'" +
+                " on cluster " + "fdc_cluster";
+        System.out.println(builderSql);
+    }
+}

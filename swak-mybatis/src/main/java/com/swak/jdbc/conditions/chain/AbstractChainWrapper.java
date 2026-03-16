@@ -374,7 +374,7 @@ public abstract   class AbstractChainWrapper<T, R, Children extends AbstractChai
 
     @Override
     public Children first(boolean condition, String firstSql) {
-        getWrapper().comment(condition, firstSql);
+        getWrapper().first(condition, firstSql);
         return typedThis;
     }
 

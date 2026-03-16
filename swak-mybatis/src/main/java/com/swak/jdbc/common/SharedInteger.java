@@ -14,10 +14,12 @@ public class SharedInteger extends SharedValue<Integer> {
         value = value + 1;
     }
 
+    @Override
     public void toEmpty() {
         toNull();
     }
 
+    @Override
     public void toNull() {
         value = null;
     }

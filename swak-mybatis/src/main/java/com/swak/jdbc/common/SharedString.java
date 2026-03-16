@@ -21,6 +21,7 @@ public class SharedString extends SharedValue<String> {
         return new SharedString(StringPool.EMPTY);
     }
 
+    @Override
     public void toEmpty() {
         value = StringPool.EMPTY;
     }

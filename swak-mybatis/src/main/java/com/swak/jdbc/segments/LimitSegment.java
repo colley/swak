@@ -26,8 +26,7 @@ public class LimitSegment extends AbstractSqlSegment {
     @Override
     public String getSqlSegment(ParamNameValuePairs paramNameValuePairs) {
     	String parameterNamePos = paramNameValuePairs.addParameter("limit", limit);
-        String buffer = getSqlKeyword().getSqlSegment(paramNameValuePairs) +
+        return getSqlKeyword().getSqlSegment(paramNameValuePairs) +
                 IbsStringHelper.repeatParamFormat(parameterNamePos);
-        return buffer;
     }
 }

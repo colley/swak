@@ -2,6 +2,7 @@ package com.swak.jdbc.spi;
 
 import com.alibaba.fastjson2.JSON;
 import com.swak.common.dto.SwakPage;
+import com.swak.common.spi.AbstractSpiPriority;
 import com.swak.common.util.DateTimeUtils;
 import com.swak.jdbc.common.SwakColumnRowMapper;
 import com.swak.jdbc.conditions.SwakWrapper;
@@ -32,7 +33,7 @@ import java.util.Objects;
  * @since 2.4.0
  **/
 @Slf4j
-public class DefaultSwakJdbcTemplate implements SwakJdbcTemplate, InitializingBean {
+public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements SwakJdbcTemplate, InitializingBean {
 
     private Dialect dialect;
 
@@ -298,6 +299,5 @@ public class DefaultSwakJdbcTemplate implements SwakJdbcTemplate, InitializingBe
                 (params != null ? JSON.toJSONString(params) : "[]")};
         log.info(" \n Consume Time：{} ms at {} \n Execute SQL：{} \n Execute params :{}", args);
     }
-
 
 }

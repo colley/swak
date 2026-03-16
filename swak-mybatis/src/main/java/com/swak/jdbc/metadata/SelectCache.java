@@ -1,12 +1,16 @@
 package com.swak.jdbc.metadata;
 
+import com.swak.common.dto.base.DTO;
 import lombok.Getter;
 
 /**
- * 缓存
- */
+ * SelectCache.java
+ * 
+ * @author colley.ma
+ * @since 2.3.3
+ **/
 @Getter
-public class SelectCache {
+public class SelectCache implements DTO {
 
     /**
      * 实体类

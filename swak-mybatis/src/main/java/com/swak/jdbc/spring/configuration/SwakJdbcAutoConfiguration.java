@@ -13,9 +13,13 @@ import javax.sql.DataSource;
 @ConditionalOnBean(DataSource.class)
 public class SwakJdbcAutoConfiguration {
 
+    private static final String MYSQL_NAME = "mysql";
+
     @Bean
     @ConditionalOnMissingBean(SwakJdbcTemplate.class)
     public SwakJdbcTemplate swakJdbcTemplate(DataSource dataSource) {
-        return new DefaultSwakJdbcTemplate(dataSource);
+        DefaultSwakJdbcTemplate swakJdbcTemplate = new DefaultSwakJdbcTemplate(dataSource);
+        swakJdbcTemplate.setName(MYSQL_NAME);
+        return swakJdbcTemplate;
     }
 }

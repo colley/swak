@@ -24,18 +24,18 @@ import java.util.Set;
 public class LocalEnumTypeInitializedAware implements InitializedAware {
 
     @Autowired(required = false)
-    private  SystemEnvironmentConfigurable systemConfig;
+    private SystemEnvironmentConfigurable systemEnvironmentConfigurable;
 
     @Override
     public void afterInstantiated() {
-        if(Objects.isNull(systemConfig)) {
+        if(Objects.isNull(systemEnvironmentConfigurable)) {
             log.warn("SystemEnvironmentConfigurable is null please config and should  basePackage and initializeLocalType is not null");
             return;
         }
-        if(systemConfig.getInitializeLocalType() &&
-                ArrayUtils.isNotEmpty(systemConfig.getBasePackages())) {
+        if(systemEnvironmentConfigurable.getInitializeLocalType() &&
+                ArrayUtils.isNotEmpty(systemEnvironmentConfigurable.getBasePackages())) {
             Reflections reflections =
-                    new Reflections(new ConfigurationBuilder().forPackages(systemConfig.getBasePackages())
+                    new Reflections(new ConfigurationBuilder().forPackages(systemEnvironmentConfigurable.getBasePackages())
                             .addScanners(Scanners.SubTypes,Scanners.TypesAnnotated));
             Set<Class<?>> localTypes = reflections.get(Scanners.SubTypes.of(EnumType.class).asClass());
             if(CollectionUtils.isEmpty(localTypes)) {

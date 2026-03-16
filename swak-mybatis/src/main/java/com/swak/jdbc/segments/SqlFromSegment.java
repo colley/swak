@@ -5,9 +5,15 @@ import com.swak.jdbc.ParamNameValuePairs;
 import com.swak.jdbc.enums.SqlKeyword;
 
 
+/**
+ * SqlFromSegment.java
+ *
+ * @author colley.ma
+ * @since 2.3.3
+ **/
 public class SqlFromSegment extends AbstractSqlSegment implements FromSegment {
 
-    private  SelectSegment selectSegment;
+    private final SelectSegment selectSegment;
     private String aliasTableName;
 
     public SqlFromSegment(SelectSegment selectSegment, String aliasTableName) {

@@ -32,8 +32,9 @@ public class ListColumnSegment extends AbstractSqlSegment implements ColumnSegme
 
     public ColumnSegment addColumn(String... columns) {
         if (ArrayUtils.isNotEmpty(columns)) {
-            for (String column : columns)
+            for (String column : columns) {
                 columnsList.add(AliasColumnSegment.as(column));
+            }
         }
         return this;
     }
