@@ -10,9 +10,9 @@ import java.util.Properties;
 
 /**
  * 配置文件封装 ClassName: SwakPropertySourcesConfigurer.java
- * 
+ *
  * @author colley.ma
- * @date 2021年3月17日 下午3:41:48
+ * @since 2.4.0
  */
 @Slf4j
 public class SwakPropertySourcesConfigurer extends PropertySourcesPlaceholderConfigurer {

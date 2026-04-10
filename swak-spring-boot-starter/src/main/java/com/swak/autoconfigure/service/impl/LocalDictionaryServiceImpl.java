@@ -1,12 +1,13 @@
 package com.swak.autoconfigure.service.impl;
 
 import com.google.common.collect.Maps;
+import com.swak.autoconfigure.handle.DictionaryHandlerFactory;
 import com.swak.autoconfigure.service.LocalDictionaryService;
 import com.swak.common.dto.SelectDataVo;
 import com.swak.common.enums.LocalTypeRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,20 +17,24 @@ import java.util.stream.Collectors;
  */
 public class LocalDictionaryServiceImpl implements LocalDictionaryService {
 
+    @Resource
+    private DictionaryHandlerFactory dictionaryHandlerFactory;
+
     @Override
     public List<SelectDataVo> getLocalDictCode(String categoryType, String relCategory) {
         //过滤掉name是空的
-        return Optional.ofNullable(LocalTypeRepository.findLocalEnumTypeCode(categoryType, relCategory))
+        List<SelectDataVo> sources = Optional.ofNullable(LocalTypeRepository.findLocalEnumTypeCode(categoryType, relCategory))
                 .orElse(Collections.emptyList()).stream().filter(item -> StringUtils.isNotEmpty(item.getName()))
                 .collect(Collectors.toList());
+        return dictionaryHandlerFactory.commence(sources, categoryType);
     }
 
     @Override
     public Map<String, Collection<SelectDataVo>> getBathDictCode(Set<String> categoryTypes) {
         Map<String, Collection<SelectDataVo>> result = Maps.newHashMap();
-        categoryTypes.forEach(localCategory -> {
-            List<SelectDataVo> localCodeList = getLocalDictCode(localCategory, null);
-            result.put(localCategory, localCodeList);
+        categoryTypes.forEach(categoryType -> {
+            List<SelectDataVo> localCodeList = getLocalDictCode(categoryType, null);
+            result.put(categoryType, localCodeList);
         });
         return result;
     }

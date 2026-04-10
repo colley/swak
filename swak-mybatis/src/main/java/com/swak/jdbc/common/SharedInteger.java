@@ -1,10 +1,5 @@
 package com.swak.jdbc.common;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-@Data
-@Accessors(chain = true)
 public class SharedInteger extends SharedValue<Integer> {
 
     public SharedInteger() {
@@ -19,10 +14,12 @@ public class SharedInteger extends SharedValue<Integer> {
         value = value + 1;
     }
 
+    @Override
     public void toEmpty() {
         toNull();
     }
 
+    @Override
     public void toNull() {
         value = null;
     }

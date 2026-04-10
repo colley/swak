@@ -6,8 +6,9 @@ import java.util.Map;
 /**
  * ClassName: StringPool.java
  * 字符串常量池
+ *
  * @author colley.ma
- * @since  2021年3月12日
+ * @since 2021年3月12日
  */
 public interface StringPool {
     String EMPTY = "";
@@ -115,6 +116,11 @@ public interface StringPool {
     String HTML_LT = "&lt;";
     String HTML_GT = "&gt;";
 
+    String TEMPLATE_VAR_START = "##{";
+    String TEMPLATE_VAR_START_REP = "'+";
+    String TEMPLATE_VAR_END = "}##";
+    String TEMPLATE_VAR_END_REP = "+'";
+
     String KEY = "swakc1$7@";
 
     // ---------------------------------------------------------------- array
@@ -132,12 +138,12 @@ public interface StringPool {
     Long[] DEFAULT_LONG_VALUES = new Long[0];
     short DEFAULT_SHORT = 0;
     Short[] DEFAULT_SHORT_VALUES = new Short[0];
-    Map<String,Boolean> BOOLEANS = new HashMap<String,Boolean>(){{
+    Map<String, Boolean> BOOLEANS = new HashMap<String, Boolean>() {{
         for (String s : new String[]{"true", "t", "y", "on", "1", "Yes"}) {
-            put(s.toLowerCase(),Boolean.TRUE);
+            put(s.toLowerCase(), Boolean.TRUE);
         }
-        for (String s : new String[]{"false","off", "0","No"}) {
-            put(s.toLowerCase(),Boolean.FALSE);
+        for (String s : new String[]{"false", "off", "0", "No"}) {
+            put(s.toLowerCase(), Boolean.FALSE);
         }
     }};
 }

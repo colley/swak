@@ -92,7 +92,6 @@ public class AloneArchiveExecutor extends AbsArchiveExecutor {
 	/**
 	 * SELECT  `id`, `scene_id` FROM xxx FORCE INDEX(`PRIMARY`) WHERE id <=1227 order by id LIMIT 10;
 	 * @param item
-	 * @return
 	 */
 	protected List<Map<String, Object>> queryItems(ArchiveItem item){
 		StringBuilder builderSql = new StringBuilder();

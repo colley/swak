@@ -79,7 +79,7 @@ public class LocaleCompositeInterceptor implements AsyncHandlerInterceptor {
                 LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
                 if (localeResolver == null) {
                     throw new IllegalStateException(
-                            "No LocaleResolver found: not in a DispatcherServlet request?");
+                            "[Swak-I18n] No LocaleResolver found: not in a DispatcherServlet request?");
                 }
                 try {
                     localeResolver.setLocale(request, response, I18nLocaleContext.getLocale(newLocale));
@@ -87,7 +87,7 @@ public class LocaleCompositeInterceptor implements AsyncHandlerInterceptor {
                 catch (IllegalArgumentException ex) {
                     if (isIgnoreInvalidLocale()) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
+                            log.debug("[Swak-I18n] Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
                         }
                     } else {
                         throw ex;

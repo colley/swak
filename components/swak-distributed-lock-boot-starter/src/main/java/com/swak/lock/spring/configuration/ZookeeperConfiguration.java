@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 public class ZookeeperConfiguration {
 
     @Resource
-    private SystemEnvironmentConfigurable systemEnvironment;
+    private SystemEnvironmentConfigurable systemEnvironmentConfigurable;
 
     @Bean(initMethod = "start", destroyMethod = "close")
     public CuratorFramework curatorFramework(ZookeeperProperties zookeeperProperties) {
@@ -35,7 +35,7 @@ public class ZookeeperConfiguration {
                 .sessionTimeoutMs(zookeeperProperties.getSessionTimeout())
                 .connectionTimeoutMs(zookeeperProperties.getConnectionTimeout())
                 .retryPolicy(new ExponentialBackoffRetry(zookeeperProperties.getElapsedTime(), zookeeperProperties.getRetryCount()))
-                .namespace(zookeeperProperties.getNamespace() + "/" + systemEnvironment.getCurrentEnv())
+                .namespace(zookeeperProperties.getNamespace() + "/" + systemEnvironmentConfigurable.getCurrentEnv())
                 .build();
     }
 }

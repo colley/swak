@@ -28,7 +28,6 @@ public interface SwakTemplateExecutor {
       * 根据where条件查询总条数
       *
       * @param sql
-      * @return
       * @throws DataAccessException
       */
      Integer findTotalCount(String sql) throws DataAccessException;
@@ -37,7 +36,6 @@ public interface SwakTemplateExecutor {
       * 获取表的maxId
       *
       * @param toString
-      * @return
       * @throws DataAccessException
       */
      Long findMaxId(String toString) throws DataAccessException;
@@ -48,7 +46,6 @@ public interface SwakTemplateExecutor {
       * 批量删除
       *
       * @param sql
-      * @return
       * @throws DataAccessException
       */
      int batchUpdate(String sql) throws DataAccessException;

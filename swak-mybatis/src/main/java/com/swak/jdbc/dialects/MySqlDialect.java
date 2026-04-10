@@ -1,7 +1,7 @@
 package com.swak.jdbc.dialects;
 
 
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.swak.common.util.StringPool;
 
 import static com.swak.common.util.StringPool.QUESTION_MARK;
 

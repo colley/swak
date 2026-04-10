@@ -10,9 +10,9 @@ import com.swak.core.command.annotation.ExtAsyncResult;
 /**
  * 支持hystrix
  * 
- * @ClassName: AsyncClosureFactory.java
- * @author: colley.ma
- * @date: 2022/01/21
+ *  AsyncClosureFactory.java
+ * @author colley.ma
+ * @since 2.4.0
  */
 public class AsyncClosureFactory implements SwakClosureFactory {
 

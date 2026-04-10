@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.swak.cache.DefaultExtCacheRepository;
 import com.swak.cache.config.SwakCacheProperties;
 import com.swak.cache.manager.ExtCacheManager;
+import com.swak.core.SwakConstants;
 import com.swak.core.cache.DistributedCacheProxy;
 import com.swak.autoconfigure.condition.ClassBeanFiltering;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -36,6 +38,7 @@ import java.util.Optional;
 @Slf4j
 @EnableConfigurationProperties(SwakCacheProperties.class)
 @Import({RedissonAutoConfiguration.class,SwakRedisAutoConfiguration.class})
+@ConditionalOnProperty(prefix = SwakConstants.SWAK_CACHE, name = "enabled", havingValue = "true")
 public class SwakCacheAutoConfiguration extends CachingConfigurerSupport {
 
     @Autowired(required = false)

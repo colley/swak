@@ -7,9 +7,10 @@ import java.util.List;
 
 /**
  * RowErrResult.java
+ * 
  * @author colley.ma
- * @date 2022/9/20 11:59
- */
+ * @since 2.4.0
+ **/
 @Data
 public class RowErrResult implements java.io.Serializable {
 	private static final long serialVersionUID = -1541341814763537940L;

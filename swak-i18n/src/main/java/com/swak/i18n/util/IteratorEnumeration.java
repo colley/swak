@@ -18,7 +18,7 @@ public class IteratorEnumeration<T> implements Enumeration<T> {
      */
     public IteratorEnumeration(Iterator<T> source) {
         if (source == null) {
-            throw new IllegalArgumentException("Source must not be null");
+            throw new IllegalArgumentException("[Swak-I18n] Source must not be null");
         }
         this.source = source;
     }

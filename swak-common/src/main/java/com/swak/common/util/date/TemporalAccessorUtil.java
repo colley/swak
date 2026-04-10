@@ -75,8 +75,8 @@ public class TemporalAccessorUtil extends TemporalUtil {
         if (StringUtils.isEmpty(timeStr)) {
             return null;
         }
-        TemporalAccessor temporalAccessor = dateTimeFormatter.parse(timeStr);
-        return new Date(toEpochMilli(temporalAccessor));
+        LocalDateTime localDateTime = LocalDateTime.parse(timeStr, dateTimeFormatter);
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static long toEpochMilli(TemporalAccessor temporalAccessor) {

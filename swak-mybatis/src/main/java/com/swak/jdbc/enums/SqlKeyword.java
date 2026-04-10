@@ -34,6 +34,13 @@ public enum SqlKeyword implements SqlSegment {
     WHEN(" WHEN "),
     LIMIT(" LIMIT "),
     SELECT(" SELECT "),
+    UPDATE(" UPDATE "),
+
+    INSERT(" INSERT "),
+
+    DELETE(" DELETE "),
+
+    SET(" SET "),
     FROM(" FROM "),
     WHERE(" WHERE "),
     LEFT_JOIN(" LEFT JOIN "),

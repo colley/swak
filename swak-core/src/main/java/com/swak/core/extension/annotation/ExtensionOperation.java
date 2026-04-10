@@ -8,7 +8,7 @@ import com.swak.common.dto.base.BaseOperation;
  * The type Extension operation.
  *
  * @author colley.ma
- * @date 2022 /02/22
+ * @since 2.4.0
  */
 public class ExtensionOperation implements BaseOperation {
 	private static final long serialVersionUID = -4720640499045739269L;

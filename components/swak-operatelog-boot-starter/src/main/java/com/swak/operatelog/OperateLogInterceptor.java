@@ -198,7 +198,7 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
                     args, target, target.getClass());
             content = expressionEvaluator.key(content, method, evaluationContext).toString();
         } catch (Exception e) {
-            log.error("operate content error,message:" + e.getMessage(), e);
+            log.error("[Swak-OpLog] operate content error,message:" + e.getMessage(), e);
         }
         return content;
     }
@@ -249,7 +249,7 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
             operateLogProducer.sendLogMessage(operateDataLog);
         } catch (Throwable ex) {
             try {
-                log.error("[log][记录操作日志时，发生异常，其中参数是 operateLog({}) apiOperation({}) result({}) exception({}) ]",
+                log.error("[Swak-OpLog] [记录操作日志时，发生异常，其中参数是 operateLog({}) apiOperation({}) result({}) exception({}) ]",
                         JSON.toJSONString(operation), result, exception, ex);
             } catch (Exception e) {
                 //ignore

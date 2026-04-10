@@ -3,34 +3,56 @@ package com.swak.common.enums;
 import java.util.Objects;
 
 public enum Married {
-    YES(1),
-    NO(0);
+	YES(1),
+	NO(0);
 
-    private Integer value;
+	private Integer value;
 
-    private Married(Integer value) {
-        this.value = value;
-    }
+	private Married(Integer value) {
+		this.value = value;
+	}
 
-    public static boolean isTrue(Integer value) {
-        return Objects.equals(YES.value, value);
-    }
+	public Integer getValue() {
+		return value;
+	}
 
-    public static boolean isTrue(Boolean value) {
-        if (Objects.isNull(value)) {
-            return false;
-        }
-        return value.booleanValue();
-    }
+	public static boolean isTrue(Integer value) {
+		return isTrue(value,false);
+	}
 
-    public static Integer convert(Boolean value) {
-        if (value == null) {
-            return Married.NO.getValue();
-        }
-        return value ? Married.YES.getValue() : Married.NO.getValue();
-    }
+	public static boolean isTrue(Integer value,boolean defaultVal) {
+		if(Objects.isNull(value)){
+			return defaultVal;
+		}
+		return Objects.equals(YES.value, value);
+	}
 
-    public Integer getValue() {
-        return value;
-    }
+	public static boolean isFalse(Integer value,boolean defaultVal) {
+		if(Objects.isNull(value)){
+			return defaultVal;
+		}
+		return Objects.equals(NO.value, value);
+	}
+
+	public static boolean isFalse(Integer value) {
+		return isFalse(value,false);
+	}
+
+	public static boolean isTrue(Boolean value) {
+		if(Objects.isNull(value)) {
+			return false;
+		}
+		return value.booleanValue();
+	}
+
+	public static Integer convert(Boolean value) {
+		return convert( value, Married.NO.getValue());
+	}
+
+	public static Integer convert(Boolean value,Integer defaultVal) {
+		if (value == null) {
+			return defaultVal;
+		}
+		return value ? Married.YES.getValue() : Married.NO.getValue();
+	}
 }

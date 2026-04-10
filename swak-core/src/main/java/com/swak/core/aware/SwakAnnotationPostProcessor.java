@@ -20,11 +20,10 @@ import java.util.List;
 
 /**
  * the SwakAnnotationPostProcessor 处理所有swak自定的注解or
- *
- * @ClassName: SwakAnnotationPostProcessor.java
- * @author: colley.ma
- * @date: 2022/01/20
- */
+ * 
+ * @author colley.ma
+ * @since 2.4.0
+ **/
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class SwakAnnotationPostProcessor implements BeanPostProcessor {

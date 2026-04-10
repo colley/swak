@@ -86,7 +86,6 @@ public class RSAEncrypt {
      *
      * @param publicKey     公钥
      * @param plainTextData 明文数据
-     * @return
      */
     public static byte[] encrypt(RSAPublicKey publicKey, byte[] plainTextData) throws Exception {
         if (publicKey == null) {
@@ -100,7 +99,6 @@ public class RSAEncrypt {
      *
      * @param privateKey    私钥
      * @param plainTextData 明文数据
-     * @return
      */
     public static byte[] encrypt(RSAPrivateKey privateKey, byte[] plainTextData) throws Exception {
         if (privateKey == null) {

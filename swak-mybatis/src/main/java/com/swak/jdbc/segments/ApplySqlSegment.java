@@ -6,6 +6,7 @@ import com.swak.jdbc.enums.SqlKeyword;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -38,9 +39,7 @@ public class ApplySqlSegment extends ArrayList<SqlSegment> implements SqlSegment
 
     public ApplySqlSegment apply(SqlSegment... sqlSegments) {
         if (ArrayUtils.isNotEmpty(sqlSegments)) {
-            for (SqlSegment sqlSegment : sqlSegments) {
-                add(sqlSegment);
-            }
+            this.addAll(Arrays.asList(sqlSegments));
         }
         return this;
     }

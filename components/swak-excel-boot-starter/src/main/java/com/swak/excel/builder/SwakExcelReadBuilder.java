@@ -36,6 +36,7 @@ public class SwakExcelReadBuilder extends ExcelReaderBuilder {
 	public SwakExcelReadBuilder() {
 		super();
 		this.excelAnalysisDataHandler = new ExcelAnalysisDataHandler();
+		super.autoTrim(true);
 	}
 
 	private static ExcelTypeEnum getExcelType(String fileName) {
@@ -155,7 +156,6 @@ public class SwakExcelReadBuilder extends ExcelReaderBuilder {
 
 	/**
 	 * 查询所有的sheet数据
-	 * @return
 	 */
 	public ExcelSheetData doReadAllSheet(ReadExcelParams readExcelParams) {
 		ExcelReader excelReader = this.build();

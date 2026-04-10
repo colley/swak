@@ -12,9 +12,10 @@ import java.util.List;
 
 /**
  * WriteExcelParams.java
+ * 
  * @author colley.ma
- * @date 2022/9/20 12:01
- */
+ * @since 2.4.0
+ **/
 @Data
 @Accessors(chain = true)
 public class WriteExcelParams implements java.io.Serializable {

@@ -67,7 +67,7 @@ public class LikeSegment extends AbstractSqlSegment {
         if (SqlLikeMode.RIGHT.equals(matchMode)) {
             fragment.append("CONCAT(").append(IbsStringHelper.repeatParamFormat(parameterName)).append(",'%')");
         }
-        if (SqlLikeMode.ANYWHERE.name().equals(matchMode)) {
+        if (SqlLikeMode.ANYWHERE.equals(matchMode)) {
             fragment.append("CONCAT('%',").append(IbsStringHelper.repeatParamFormat(parameterName)).append(",'%')");
         }
         return fragment.toString();
@@ -83,7 +83,7 @@ public class LikeSegment extends AbstractSqlSegment {
             builder.append("CONCAT('%',").append(value.toString()).append(")");
         } else if (SqlLikeMode.RIGHT.equals(matchMode)) {
             builder.append("CONCAT(").append(value.toString()).append(",'%')");
-        } else if (SqlLikeMode.ANYWHERE.name().equals(matchMode)) {
+        } else if (SqlLikeMode.ANYWHERE.equals(matchMode)) {
             builder.append("CONCAT('%',").append(value.toString()).append(",'%')");
         }
         return builder.toString();

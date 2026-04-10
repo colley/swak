@@ -2,12 +2,11 @@ package com.swak.security.authentication;
 
 import com.swak.common.dto.Response;
 import com.swak.common.exception.SwakAssert;
-import com.swak.core.security.AuthenticationListener;
 import com.swak.core.security.SecurityUtils;
 import com.swak.core.security.SwakUserDetails;
 import com.swak.core.support.SpringBeanFactory;
-import com.swak.security.config.TokenResultCode;
 import com.swak.security.dto.JwtToken;
+import com.swak.security.enums.TokenResultCode;
 import com.swak.security.exception.UserAccountException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,52 +15,47 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 public class TokenLoginServiceImpl implements TokenLoginService {
 
     @Setter
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     private final UserTokenService userTokenService;
-
-    private final List<AuthenticationListener> authenticationListeners = new ArrayList<>();
 
     public TokenLoginServiceImpl(UserTokenService userTokenService) {
         this.userTokenService = userTokenService;
     }
 
-
     public AuthenticationManager getAuthenticationManager() {
-        if(Objects.isNull(authenticationManager)) {
+        if (Objects.isNull(authenticationManager)) {
             this.authenticationManager = SpringBeanFactory.getBean(AuthenticationManager.class);
         }
         return authenticationManager;
     }
 
-
-
     @Override
     public Response<JwtToken> login(Authentication authenticationToken) {
         try {
-            SwakAssert.notNull(authenticationToken, "authenticationToken cannot be null");
+            SwakAssert.notNull(authenticationToken, "[Swak-Security] authenticationToken cannot be null");
             SwakUserDetails userDetails;
             Authentication currentAuthentication = SecurityUtils.getAuthentication();
-            if(Objects.nonNull(currentAuthentication) && currentAuthentication instanceof
+            if (Objects.nonNull(currentAuthentication) && currentAuthentication instanceof
                     UsernamePasswordAuthenticationToken) {
                 userDetails = (SwakUserDetails) currentAuthentication.getPrincipal();
-            }else{
+            } else {
                 Authentication authentication = getAuthenticationManager().authenticate(authenticationToken);
                 userDetails = (SwakUserDetails) authentication.getPrincipal();
             }
             // 生成token
-            JwtToken jwtToken = userTokenService.createToken(userDetails);
+            JwtToken jwtToken = new JwtToken().setAccess_token(userDetails.getToken())
+                    .setLoginTime(userDetails.getLoginTime())
+                    .setExpires_in(userTokenService.getJwtTokenConfig().getToken().getExpireSeconds());
             return Response.success(jwtToken);
         } catch (Exception e) {
-            log.error("login exception principal:" + authenticationToken.getPrincipal(), e);
+            log.error("[Swak-Security] login exception principal:" + authenticationToken.getPrincipal(), e);
             if (e instanceof BadCredentialsException) {
                 return Response.fail(TokenResultCode.USER_PWD_INCORRECT);
             }

@@ -1,0 +1,25 @@
+package com.swak.jdbc.spring.configuration;
+
+import com.swak.jdbc.spi.DefaultSwakJdbcTemplate;
+import com.swak.jdbc.spi.SwakJdbcTemplate;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+
+@Configuration
+@ConditionalOnBean(DataSource.class)
+public class SwakJdbcAutoConfiguration {
+
+    private static final String MYSQL_NAME = "mysql";
+
+    @Bean
+    @ConditionalOnMissingBean(SwakJdbcTemplate.class)
+    public SwakJdbcTemplate swakJdbcTemplate(DataSource dataSource) {
+        DefaultSwakJdbcTemplate swakJdbcTemplate = new DefaultSwakJdbcTemplate(dataSource);
+        swakJdbcTemplate.setName(MYSQL_NAME);
+        return swakJdbcTemplate;
+    }
+}

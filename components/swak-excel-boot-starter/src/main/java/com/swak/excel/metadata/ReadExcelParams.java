@@ -3,10 +3,11 @@ package com.swak.excel.metadata;
 import lombok.Data;
 
 /**
- *
+ * ReadExcelParams.java
+ * 
  * @author colley.ma
- * @date 2022/9/20 12:01
- */
+ * @since 2.4.0
+ **/
 @Data
 public class ReadExcelParams implements java.io.Serializable {
 	private static final long serialVersionUID = 5939498044910752625L;

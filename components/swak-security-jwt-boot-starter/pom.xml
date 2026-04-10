@@ -16,13 +16,19 @@
     <name>${project.artifactId}</name>
     <description>swak component of spring security jwt boot starter</description>
     <properties>
-        <jwt.version>0.9.1</jwt.version>
         <bitwalker.version>1.21</bitwalker.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.gitee.mcolley</groupId>
             <artifactId>swak-spring-boot-starter</artifactId>
@@ -32,13 +38,6 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb-api.version}</version>
-        </dependency>
-
-        <!-- Token生成与解析-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>${jwt.version}</version>
         </dependency>
 
         <!-- 解析客户端操作系统、浏览器等 -->
@@ -52,17 +51,36 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

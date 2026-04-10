@@ -10,11 +10,11 @@ import java.io.StringWriter;
 
 
 /**
- * freemarker模板处理
+ * FreemarkerProcess.java
+ * 
  * @author colley.ma
- * @date 2022/07/13 16:23:50
- *
- */
+ * @since 2.4.0
+ **/
 @Slf4j
 public class FreemarkerProcess {
     private Configuration tempConfiguration;

@@ -5,14 +5,12 @@ package com.swak.common.chain;
  * 责任Filter
  * ClassName: Filter.java 
  * @author colley.ma
- * @date 2021年3月19日 下午6:03:53
+ * @since 2.4.0
  */
 public interface Filter<T> {
 
 	/**
-	 *  doFilter
-	 * @Param [context, nextFilter]
-	 * @return void
+	 * doFilter
 	 **/
 	void doFilter(T context, FilterInvoker<T> nextFilter);
 

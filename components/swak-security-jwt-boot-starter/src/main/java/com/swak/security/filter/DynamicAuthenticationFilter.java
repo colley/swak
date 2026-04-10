@@ -39,7 +39,7 @@ public class DynamicAuthenticationFilter extends AbstractAuthenticationProcessin
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         if (this.postOnly && !request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            throw new AuthenticationServiceException("[Swak-Security] Authentication method not supported: " + request.getMethod());
         }
         String contentType = request.getContentType();
         String mobile = null;
@@ -96,22 +96,22 @@ public class DynamicAuthenticationFilter extends AbstractAuthenticationProcessin
 
 
     public void setUsernameParameter(String usernameParameter) {
-        Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
+        Assert.hasText(usernameParameter, "[Swak-Security] Username parameter must not be empty or null");
         this.usernameParameter = usernameParameter;
     }
 
     public void setPasswordParameter(String passwordParameter) {
-        Assert.hasText(passwordParameter, "Password parameter must not be empty or null");
+        Assert.hasText(passwordParameter, "[Swak-Security] Password parameter must not be empty or null");
         this.passwordParameter = passwordParameter;
     }
 
     public void setMobileParameter(String mobileParameter) {
-        Assert.hasText(mobileParameter, "mobile parameter must not be empty or null");
+        Assert.hasText(mobileParameter, "[Swak-Security] mobile parameter must not be empty or null");
         this.mobileParameter = mobileParameter;
     }
 
     public void setSmsCodeParameter(String smsCodeParameter) {
-        Assert.hasText(smsCodeParameter, "smsCode parameter must not be empty or null");
+        Assert.hasText(smsCodeParameter, "[Swak-Security] smsCode parameter must not be empty or null");
         this.smsCodeParameter = smsCodeParameter;
     }
 

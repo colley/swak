@@ -25,7 +25,6 @@ import org.springframework.lang.Nullable;
 
 /**
  * AOP Alliance MethodInterceptor for declarative Lockable management using the common Lockable infrastructure
- * ({@link @Lockable}).
  *
  * @author colley.ma
  * @since 3.0.0

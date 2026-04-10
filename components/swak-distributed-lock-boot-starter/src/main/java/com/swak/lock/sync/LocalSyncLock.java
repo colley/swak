@@ -34,7 +34,7 @@ public class LocalSyncLock implements DistributedLock {
 
     @Override
     public boolean acquireLock(String lockId) {
-        log.trace("Locking {}", lockId);
+        log.trace("[Swak-Lock] Locking {}", lockId);
         Objects.requireNonNull(LOCKIDTOSEMAPHOREMAP.get(lockId)).lock();
         return true;
     }
@@ -42,7 +42,7 @@ public class LocalSyncLock implements DistributedLock {
     @Override
     public boolean acquireLock(String lockId, long timeToTry, TimeUnit unit) {
         try {
-            log.trace("Locking {} with timeout {} {}", lockId, timeToTry, unit);
+            log.trace("[Swak-Lock] Locking {} with timeout {} {}", lockId, timeToTry, unit);
             return Objects.requireNonNull(LOCKIDTOSEMAPHOREMAP.get(lockId)).tryLock(timeToTry, unit);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -53,14 +53,14 @@ public class LocalSyncLock implements DistributedLock {
     @Override
     public boolean acquireLock(String lockId, long timeToTry, long leaseTime, TimeUnit unit) {
         log.trace(
-                "Locking {} with timeout {} {} for {} {}",
+                "[Swak-Lock] Locking {} with timeout {} {} for {} {}",
                 lockId,
                 timeToTry,
                 unit,
                 leaseTime,
                 unit);
         if (acquireLock(lockId, timeToTry, unit)) {
-            log.trace("Releasing {} automatically after {} {}", lockId, leaseTime, unit);
+            log.trace("[Swak-Lock] Releasing {} automatically after {} {}", lockId, leaseTime, unit);
             SCHEDULED_FUTURES.put(
                     lockId, SCHEDULER.schedule(() -> deleteLock(lockId), leaseTime, unit));
             return true;
@@ -72,7 +72,7 @@ public class LocalSyncLock implements DistributedLock {
         ScheduledFuture<?> scheduledFuture = SCHEDULED_FUTURES.get(lockId);
         if (scheduledFuture != null && scheduledFuture.cancel(false)) {
             SCHEDULED_FUTURES.remove(lockId);
-            log.trace("lockId {} removed from lease expiration job", lockId);
+            log.trace("[Swak-Lock] lockId {} removed from lease expiration job", lockId);
         }
     }
 
@@ -83,7 +83,7 @@ public class LocalSyncLock implements DistributedLock {
             if (LOCKIDTOSEMAPHOREMAP.getIfPresent(lockId) == null) {
                 return;
             }
-            log.trace("Releasing {}", lockId);
+            log.trace("[Swak-Lock] Releasing {}", lockId);
             Objects.requireNonNull(LOCKIDTOSEMAPHOREMAP.get(lockId)).unlock();
             removeLeaseExpirationJob(lockId);
         }
@@ -91,7 +91,7 @@ public class LocalSyncLock implements DistributedLock {
 
     @Override
     public void deleteLock(String lockId) {
-        log.trace("Deleting {}", lockId);
+        log.trace("[Swak-Lock] Deleting {}", lockId);
         LOCKIDTOSEMAPHOREMAP.invalidate(lockId);
     }
 

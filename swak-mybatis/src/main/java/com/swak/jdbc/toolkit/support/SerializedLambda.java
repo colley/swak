@@ -12,7 +12,6 @@ import java.io.*;
  * @version v1.0
  * @since `2024/3/6` 15:27
  **/
-@SuppressWarnings("ALL")
 public class SerializedLambda implements Serializable {
     private static final long serialVersionUID = 8025925345765570181L;
 

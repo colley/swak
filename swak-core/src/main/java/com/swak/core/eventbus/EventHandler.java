@@ -3,11 +3,12 @@ package com.swak.core.eventbus;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-/** 
- * @className EventHandler.java
- * @author yuanchao.ma
- * @date 2022/06/07
- */
+/**
+ * EventHandler.java
+ * 
+ * @author colley.ma
+ * @since 2.4.0
+ **/
 public interface EventHandler extends InitializingBean,DisposableBean {
 
 	public void postEvent(Object event);

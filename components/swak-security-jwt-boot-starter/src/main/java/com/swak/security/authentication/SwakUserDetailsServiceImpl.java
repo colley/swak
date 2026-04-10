@@ -1,8 +1,9 @@
 package com.swak.security.authentication;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
+import com.swak.common.util.UUIDHexGenerator;
 import com.swak.core.security.SwakUserDetails;
+import com.swak.security.config.JwtConstants;
 import com.swak.security.dto.SwakUserDetailsImpl;
 import com.swak.security.dto.UserAuthInfo;
 import com.swak.security.exception.UserAccountException;
@@ -11,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Set;
 
-public class SwakUserDetailsServiceImpl implements SwakUserDetailsService{
+public class SwakUserDetailsServiceImpl implements SwakUserDetailsService {
 
     private final UserTokenService userTokenService;
 
@@ -27,9 +28,19 @@ public class SwakUserDetailsServiceImpl implements SwakUserDetailsService{
         }
         UserAuthInfo userAuthInfo = response.getData();
         SwakUserDetailsImpl swakUserDetails = new SwakUserDetailsImpl(userAuthInfo, getPermission(userAuthInfo.getUserId()));
-        swakUserDetails.setLoginTime(System.currentTimeMillis());
+        userDetailsDecorate(swakUserDetails);
         return swakUserDetails;
     }
+
+    private void userDetailsDecorate(SwakUserDetailsImpl swakUserDetails) {
+        String token = UUIDHexGenerator.generator();
+        Long expiresIn = userTokenService.getJwtTokenConfig().getToken().getExpireSeconds();
+        long expireMillis = expiresIn * JwtConstants.MILLIS_SECOND;
+        swakUserDetails.setExpireTime(System.currentTimeMillis() + expireMillis);
+        swakUserDetails.setLoginTime(System.currentTimeMillis());
+        swakUserDetails.setToken(token);
+    }
+
 
     @Override
     public Response<Void> verifySmsCode(String mobile, String smsCode) {
@@ -48,6 +59,8 @@ public class SwakUserDetailsServiceImpl implements SwakUserDetailsService{
             throw new UserAccountException(response.getCode(), response.getMsg());
         }
         UserAuthInfo userAuthInfo = response.getData();
-        return new SwakUserDetailsImpl(userAuthInfo, this.getPermission(userAuthInfo.getUserId()));
+        SwakUserDetailsImpl swakUserDetails = new SwakUserDetailsImpl(userAuthInfo, this.getPermission(userAuthInfo.getUserId()));
+        userDetailsDecorate(swakUserDetails);
+        return swakUserDetails;
     }
 }

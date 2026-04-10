@@ -1,7 +1,7 @@
 package com.swak.jdbc.conditions;
 
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.google.common.collect.Lists;
+import com.swak.jdbc.metadata.SFunction;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
 
 
 @SuppressWarnings({"unchecked", "unused"})
-public interface Func<Children> extends FuncStr<Children,String> {
+public interface Func<Children> extends FuncStr<Children> {
     /**
      * ignore
      */

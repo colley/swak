@@ -46,7 +46,7 @@ public class AggregateResourceBundleMessageSource extends AbstractResourceBasedM
     }
 
     public AggregateResourceBundleMessageSource(String[] bundleNames, boolean aggregate) {
-        SwakAssert.state(ArrayUtils.isNotEmpty(bundleNames), "bundleNames must not be empty");
+        SwakAssert.state(ArrayUtils.isNotEmpty(bundleNames), "[Swak-I18n] bundleNames must not be empty");
         super.addBasenames(bundleNames);
         this.aggregate = aggregate;
     }
@@ -58,9 +58,9 @@ public class AggregateResourceBundleMessageSource extends AbstractResourceBasedM
     public ResourceBundle doGetBundle(Locale locale) {
         ResourceBundle rb = resourceBundleLocator.getResourceBundle(locale);
         if (rb != null) {
-            log.debug("{} i18n resource found.", Joiner.on(",").join(getBasenameSet()));
+            log.debug("[Swak-I18n] {} i18n resource found.", Joiner.on(",").join(getBasenameSet()));
         } else {
-            log.warn("{} i18n resource not found.", Joiner.on(",").join(getBasenameSet()));
+            log.warn("[Swak-I18n] {} i18n resource not found.", Joiner.on(",").join(getBasenameSet()));
         }
         return rb;
     }
@@ -81,7 +81,7 @@ public class AggregateResourceBundleMessageSource extends AbstractResourceBasedM
                 return bundle;
             } catch (MissingResourceException ex) {
                 if (log.isWarnEnabled()) {
-                    log.warn("ResourceBundle [" + Joiner.on(",").join(getBasenameSet()) + "] " +
+                    log.warn("[Swak-I18n] ResourceBundle [" + Joiner.on(",").join(getBasenameSet()) + "] " +
                             "not found for MessageSource: " + ex.getMessage());
                 }
                 return null;

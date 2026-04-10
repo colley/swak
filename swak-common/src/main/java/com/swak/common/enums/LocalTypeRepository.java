@@ -10,8 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * @author colley
- */
+ * LocalTypeRepository.java
+ * 
+ * @author colley.ma
+ * @since 2.4.0
+ **/
 public class LocalTypeRepository {
     private static  Map<String, Class<? extends EnumType>> typeRepository = new ConcurrentHashMap<>();
     private  static Class<? extends  EnumType> getEnumTypeClass(String enumTypeName) {
@@ -31,6 +34,7 @@ public class LocalTypeRepository {
                 .filter(item->!item.isHidden())
                 .sorted(Comparator.comparing(EnumType::order)).map(enumType-> {
                     SelectDataVo selectDataVo = new SelectDataVo();
+                    selectDataVo.setSortOrder(enumType.order());
                     selectDataVo.setName(enumType.getI18nName());
                     selectDataVo.setLabel(selectDataVo.getName());
                     selectDataVo.setValue(enumType.getValue());

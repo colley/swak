@@ -7,9 +7,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ClassName: UUIDHexGenerator.java 
- * @Description: UUID生产策略 IP+JVM+TIME>>32+TIME+COUNT
+ *  UUID生产策略 IP+JVM+TIME>>32+TIME+COUNT
  * @author colley.ma
- * @date 2021年3月15日
+ * @since 2.4.0
  */
 public class UUIDHexGenerator extends AbstractUUIDGenerator {
 	public static final UUIDHexGenerator DEFAULT = new UUIDHexGenerator();

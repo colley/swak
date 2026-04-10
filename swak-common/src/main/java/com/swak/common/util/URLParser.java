@@ -12,9 +12,8 @@ import java.util.regex.Pattern;
 /**
  * 
  * ClassName: URLParser.java 
- * @Description: URL地址解析
  * @author colley.ma
- * @date 2021年3月15日
+ * @since 2.4.0
  */
 public class URLParser {
 	protected byte type;

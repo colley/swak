@@ -81,13 +81,13 @@ public class RedissonLock implements DistributedLock {
 
     private String parseLockId(String lockId) {
         if (StringUtils.isEmpty(lockId)) {
-            throw new IllegalArgumentException("lockId cannot be NULL or empty: lockId=" + lockId);
+            throw new IllegalArgumentException("[Swak-Lock] lockId cannot be NULL or empty: lockId=" + lockId);
         }
         return LOCK_NAMESPACE + "." + lockId;
     }
 
     private boolean handleAcquireLockFailure(String lockId, Exception e) {
-        log.error("Failed to acquireLock for lockId: {}", lockId, e);
+        log.error("[Swak-Lock] Failed to acquireLock for lockId: {}", lockId, e);
         Monitors.recordAcquireLockFailure(e.getClass().getName());
         // A Valid failure to acquire lock when another thread has acquired it returns false.
         // However, when an exception is thrown while acquiring lock, due to connection or others

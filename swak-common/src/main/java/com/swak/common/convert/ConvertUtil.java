@@ -1,7 +1,6 @@
 package com.swak.common.convert;
 
 
-import com.swak.common.convert.impl.DateConverter;
 import com.swak.common.util.DatePattern;
 
 import java.lang.reflect.Type;
@@ -154,11 +153,11 @@ public class ConvertUtil {
     }
 
     public static Date toDate(Object value, Date defaultValue) {
-        return convertQuietly(Date.class, value, defaultValue, null);
+        return convertQuietly(Date.class, value, defaultValue, (String) null);
     }
 
     public static Date toDate(Object value) {
-        return toDate(value, null, null);
+        return toDate(value, (Date) null, (String) null);
     }
 
     public static Date toDate(Object value, String... format) {
@@ -167,11 +166,11 @@ public class ConvertUtil {
 
 
     public static <T> T convert(Class<T> type, Object value) {
-        return convert((Type) type, value, null, null);
+        return convert((Type) type, value, null, (String) null);
     }
 
     public static <T> T convert(Type type, Object value) {
-        return convert(type, value, null, null);
+        return convert(type, value, null, (String) null);
     }
 
     public static <T> T convert(Class<T> type, Object value, T defaultValue, String... dateFormat) {

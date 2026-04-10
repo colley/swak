@@ -1,25 +1,17 @@
 package com.swak.lock.spring.configuration;
 
 import com.swak.core.SwakConstants;
-import com.swak.core.environment.SystemEnvironmentConfigurable;
 import com.swak.core.sync.DistributedLock;
 import com.swak.lock.config.LockProperties;
-import com.swak.lock.config.ZookeeperProperties;
 import com.swak.lock.sync.ZookeeperLock;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.redisson.Redisson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.Resource;
 
 /**
  * @author colley.ma
@@ -33,7 +25,7 @@ public class ZookeeperLockConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DistributedLock.class)
-    public DistributedLock distributedLock(CuratorFramework curatorFramework, LockProperties lockProperties) {
+    public DistributedLock distributedLock(CuratorFramework curatorFramework, @Autowired(required = false)LockProperties lockProperties) {
         return new ZookeeperLock(curatorFramework, lockProperties);
     }
 }

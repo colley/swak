@@ -24,20 +24,6 @@ public final class Tuple3<T1, T2, T3> extends Tuple {
         this(tuple.v1, tuple.v2, tuple.v3);
     }
 
-    @Deprecated
-    public T1 getFirst() {
-        return v1;
-    }
-
-    @Deprecated
-    public T2 getSecond() {
-        return v2;
-    }
-
-    @Deprecated
-    public T3 getThird() {
-        return v3;
-    }
 
     public T1 getV1() {
         return v1;

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * 线程监控
  *
  * @author colley.ma
- * @date 2022/07/13 17:27:22
+ * @since 2.4.0
  */
 @Slf4j
 public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonitorService {

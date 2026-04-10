@@ -1,13 +1,9 @@
 package com.swak.jdbc.common;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@Data
-@Accessors(chain = true)
 public class SharedValue<T> implements Serializable {
     /**
      * 共享
@@ -27,6 +23,14 @@ public class SharedValue<T> implements Serializable {
     @Override
     public String toString() {
         return Objects.nonNull(value)?value.toString():null;
+    }
+
+    public T getValue(){
+        return this.value;
+    }
+
+    public void setValue(T value){
+        this.value = value;
     }
 
     public void toNull() {

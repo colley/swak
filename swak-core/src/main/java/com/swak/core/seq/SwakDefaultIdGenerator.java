@@ -94,7 +94,6 @@ public class SwakDefaultIdGenerator implements IdGenerator {
     /**
      * generate new ID
      *
-     * @return
      */
     @Override
     public synchronized Long nextId() {

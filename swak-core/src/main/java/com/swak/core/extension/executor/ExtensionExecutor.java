@@ -40,11 +40,6 @@ public interface ExtensionExecutor {
 
 	/**
 	 * 	获取扩展实例
-	 * @param @param <C>
-	 * @param @param targetClz
-	 * @param @param context
-	 * @param @return   
-	 * @return C
 	 */
 	default public <C> C getExtensionPt(Class<C> targetClz, BizScenario context) {
 		return locateComponent(targetClz, context);

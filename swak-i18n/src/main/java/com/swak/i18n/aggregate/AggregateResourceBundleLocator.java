@@ -41,7 +41,7 @@ public class AggregateResourceBundleLocator extends DelegatingResourceBundleLoca
     public AggregateResourceBundleLocator(List<String> bundleNames, ResourceBundleLocator delegate,
                                           ClassLoader classLoader) {
         super(delegate);
-        SwakAssert.notEmpty( bundleNames,"bundleNames");
+        SwakAssert.notEmpty( bundleNames,"[Swak-I18n] bundleNames");
         this.bundleNames = Lists.newArrayList(bundleNames);
         this.classLoader = classLoader;
     }

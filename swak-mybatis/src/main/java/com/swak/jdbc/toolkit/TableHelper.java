@@ -1,10 +1,8 @@
 package com.swak.jdbc.toolkit;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
-import com.swak.core.support.SpringBeanFactory;
+import com.swak.common.util.ClassUtils;
+import com.swak.jdbc.metadata.TableInfo;
+import com.swak.jdbc.metadata.TableInfoHelper;
 
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +28,6 @@ public class TableHelper {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     public static TableInfo get(Class<?> clazz) {
         if (Objects.nonNull(clazz)) {
             TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
@@ -48,7 +45,6 @@ public class TableHelper {
                 TABLE_INFO_CACHE.put(currentClass, info);
             } else {
                 if (!load) {
-                    SpringBeanFactory.getBeansOfType(BaseMapper.class);
                     load = true;
                     return get(clazz);
                 }

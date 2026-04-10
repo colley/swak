@@ -22,9 +22,6 @@ public class GarbageMonitor {
 
     /**
      * 垃圾回收情况
-     * 
-     * @return
-     * @throws Exception
      */
     public static List<Garbage> garbages() throws Exception {
 

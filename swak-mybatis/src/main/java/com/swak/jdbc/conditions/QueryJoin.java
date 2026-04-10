@@ -1,8 +1,7 @@
 package com.swak.jdbc.conditions;
 
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.swak.jdbc.enums.SqlKeyword;
-import com.swak.jdbc.query.AbstractLambdaJoinWrapper;
+import com.swak.jdbc.metadata.SFunction;
 
 import java.util.function.BiConsumer;
 
@@ -40,7 +39,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
      * @param clazz    关联实体类
      * @param function 条件`
      */
-    default <T> Children leftJoin(Class<T> clazz, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children leftJoin(Class<T> clazz, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.LEFT_JOIN, clazz, function);
     }
 
@@ -63,7 +62,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
      * @param clazz    关联实体类
      * @param consumer 条件
      */
-    default <T> Children leftJoin(Class<T> clazz, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children leftJoin(Class<T> clazz, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.LEFT_JOIN, clazz, consumer);
     }
 
@@ -98,7 +97,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
      * @param clazz    关联实体类
      * @param function 条件
      */
-    default <T> Children leftJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children leftJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.LEFT_JOIN, clazz, alias, function);
     }
 
@@ -121,7 +120,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
      * @param clazz    关联实体类
      * @param consumer 条件
      */
-    default <T> Children leftJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children leftJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.LEFT_JOIN, clazz, alias, consumer);
     }
 
@@ -143,7 +142,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children rightJoin(Class<T> clazz, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children rightJoin(Class<T> clazz, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.RIGHT_JOIN, clazz, function);
     }
 
@@ -157,7 +156,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T, X> Children rightJoin(Class<T> clazz, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T, X> Children rightJoin(Class<T> clazz, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.RIGHT_JOIN, clazz, consumer);
     }
 
@@ -171,7 +170,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children rightJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children rightJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.RIGHT_JOIN, clazz, alias, function);
     }
 
@@ -185,7 +184,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T, X> Children rightJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T, X> Children rightJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.RIGHT_JOIN, clazz, alias, consumer);
     }
 
@@ -207,7 +206,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children innerJoin(Class<T> clazz, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children innerJoin(Class<T> clazz, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.INNER_JOIN, clazz, function);
     }
 
@@ -221,7 +220,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children innerJoin(Class<T> clazz, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children innerJoin(Class<T> clazz, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.INNER_JOIN, clazz, consumer);
     }
 
@@ -236,7 +235,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children innerJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children innerJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.INNER_JOIN, clazz, alias, function);
     }
 
@@ -250,7 +249,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children innerJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children innerJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.INNER_JOIN, clazz, alias, consumer);
     }
 
@@ -271,7 +270,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children fullJoin(Class<T> clazz, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children fullJoin(Class<T> clazz, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.FULL_JOIN, clazz, function);
     }
 
@@ -285,7 +284,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children fullJoin(Class<T> clazz, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children fullJoin(Class<T> clazz, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.FULL_JOIN, clazz, consumer);
     }
 
@@ -306,7 +305,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children fullJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children fullJoin(Class<T> clazz, String alias, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(SqlKeyword.FULL_JOIN, clazz, alias, function);
     }
 
@@ -320,7 +319,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * ignore 参考 left join
      */
-    default <T> Children fullJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children fullJoin(Class<T> clazz, String alias, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(SqlKeyword.FULL_JOIN, clazz, alias, consumer);
     }
 
@@ -361,7 +360,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
      * @param clazz    关联实体类
      * @param function 条件
      */
-    default <T> Children join(SqlKeyword keyWord, Class<T> clazz, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children join(SqlKeyword keyWord, Class<T> clazz, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(keyWord, clazz, (on, e) -> function.apply(on));
     }
 
@@ -417,7 +416,7 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
      * @param clazz    关联实体类
      * @param function 条件
      */
-    default <T> Children join(SqlKeyword keyWord, Class<T> clazz, String alias, WrapperFunction<AbstractLambdaJoinWrapper<Entity, ?>> function) {
+    default <T> Children join(SqlKeyword keyWord, Class<T> clazz, String alias, WrapperFunction<AbstractLambdaWrapper<Entity, ?>> function) {
         return join(keyWord, clazz, alias, (on, e) -> function.apply(on));
     }
 
@@ -438,12 +437,12 @@ public interface QueryJoin<Children, Entity> extends StringJoin<Children, Entity
     /**
      * 内部使用, 不建议直接调用
      */
-    default <T> Children join(SqlKeyword keyWord, Class<T> clazz, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer) {
+    default <T> Children join(SqlKeyword keyWord, Class<T> clazz, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer) {
         return join(keyWord, clazz, null, consumer);
     }
 
     /**
      * 内部使用, 不建议直接调用
      */
-    <T> Children join(SqlKeyword keyWord, Class<T> clazz, String alias, BiConsumer<AbstractLambdaJoinWrapper<Entity, ?>, Children> consumer);
+    <T> Children join(SqlKeyword keyWord, Class<T> clazz, String alias, BiConsumer<AbstractLambdaWrapper<Entity, ?>, Children> consumer);
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -22,8 +23,11 @@ import java.util.concurrent.TimeUnit;
  **/
 public class OperateLogEventHandler implements WorkHandler<CarrierValue<OperateDataLog>> {
     private static final int MAX_SIZE = 10;
+
+    private static final int BATCH_SIZE = 500;
+
     private OperateLogService operateLogService;
-    private ArrayBlockingQueue<OperateDataLog> queue = new ArrayBlockingQueue<>(MAX_SIZE);
+    private ArrayBlockingQueue<OperateDataLog> queue = new ArrayBlockingQueue<>(1024);
     private volatile LogRecordTask logRecordTask;
 
     public OperateLogEventHandler(OperateLogService operateLogService) {
@@ -47,9 +51,14 @@ public class OperateLogEventHandler implements WorkHandler<CarrierValue<OperateD
     }
 
     private List<OperateDataLog> pollMessage() {
+        AtomicInteger index = new AtomicInteger(0);
         List<OperateDataLog> result = Lists.newArrayList();
-        while (!queue.isEmpty()) {
-            result.add(queue.poll());
+        while (!queue.isEmpty() && index.incrementAndGet()<BATCH_SIZE) {
+            OperateDataLog dataLog = queue.poll();
+            if(Objects.isNull(dataLog)){
+                break;
+            }
+            result.add(dataLog);
         }
         return result;
     }

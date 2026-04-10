@@ -1,6 +1,7 @@
 package com.swak.security.config;
 
 
+import com.swak.common.util.StringPool;
 import com.swak.core.SwakConstants;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -32,15 +33,13 @@ public class JwtTokenConfig {
          * 令牌自定义标识
          */
        private String  header ="Authorization";
-
-        private String refreshToken = "refresh_token";
         /**
          * 令牌密钥
          */
-        private String secret = "SWAK@!#";
+        private String secret = StringPool.KEY;
         /**
          * 令牌有效期（默认120分钟） 单位(s)
          */
-        private  Long expireTime = 7200L;
+        private  Long expireSeconds = 7200L;
     }
 }

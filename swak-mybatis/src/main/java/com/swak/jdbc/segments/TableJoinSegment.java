@@ -2,10 +2,10 @@
 package com.swak.jdbc.segments;
 
 import com.google.common.collect.Lists;
-import com.swak.jdbc.toolkit.JdbcRestrictions;
+import com.swak.common.util.StringPool;
 import com.swak.jdbc.ParamNameValuePairs;
 import com.swak.jdbc.enums.SqlKeyword;
-import com.swak.common.util.StringPool;
+import com.swak.jdbc.toolkit.JdbcRestrictions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -13,11 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * @author colley.ma
+ * @since 2.3.3
+ **/
 public class TableJoinSegment extends AbstractSqlSegment implements JoinSegment {
     private final String tableName;
     private final String aliasTableName;
     private SqlSegment onClause;
-    private List<SqlSegment> whereScope = new ArrayList<>();
+    private final List<SqlSegment> whereScope = new ArrayList<>();
 
     public TableJoinSegment(SqlKeyword sqlKeyword, String tableName, String[] onClauses) {
         this(sqlKeyword, tableName, StringPool.EMPTY, onClauses);
@@ -25,10 +29,10 @@ public class TableJoinSegment extends AbstractSqlSegment implements JoinSegment 
 
     public TableJoinSegment(SqlKeyword sqlKeyword, String tableName, String aliasTableName, String[] onClauses) {
         super(sqlKeyword);
-        if(onClauses.length==1){
+        if (onClauses.length == 1) {
             this.onClause = StringSqlSegment.apply(onClauses[0]);
         }
-        if(onClauses.length >=2){
+        if (onClauses.length >= 2) {
             this.onClause = JdbcRestrictions.eqProperty(onClauses[0], onClauses[1]);
         }
         this.tableName = tableName;
@@ -37,7 +41,7 @@ public class TableJoinSegment extends AbstractSqlSegment implements JoinSegment 
 
 
     @Override
-	public String toString() {
+    public String toString() {
         return this.getSqlKeyword() + " " + tableName + " ON " + whereScope.iterator();
     }
 
@@ -96,7 +100,7 @@ public class TableJoinSegment extends AbstractSqlSegment implements JoinSegment 
         }
         return tableJoinSegment;
     }
-    
+
     public static TableJoinSegment join(String tableName, String aliasTableName, String[] onClauses, SqlSegment[] whereScope,
                                         SqlKeyword sqlKeyword) {
         TableJoinSegment tableJoinSegment = new TableJoinSegment(sqlKeyword, tableName, aliasTableName, onClauses);
@@ -131,7 +135,7 @@ public class TableJoinSegment extends AbstractSqlSegment implements JoinSegment 
 
     @Override
     public JoinSegment where(SqlSegment... sqlSegment) {
-        if(ArrayUtils.isNotEmpty(sqlSegment)){
+        if (ArrayUtils.isNotEmpty(sqlSegment)) {
             whereScope.addAll(Lists.newArrayList(sqlSegment));
         }
         return this;

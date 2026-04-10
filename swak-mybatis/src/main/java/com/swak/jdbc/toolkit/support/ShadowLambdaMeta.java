@@ -2,8 +2,8 @@
 package com.swak.jdbc.toolkit.support;
 
 
+import com.swak.common.util.ClassUtils;
 import com.swak.common.util.StringPool;
-import com.swak.jdbc.toolkit.ClassUtils;
 
 /**
  * 创建的元信息

@@ -1,31 +1,30 @@
 package com.swak.test;
 
-import com.swak.common.util.StringPool;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.test.context.junit4.SpringRunner;
+import com.swak.common.enums.IResultCode;
+import com.swak.core.support.ClassScanners;
 
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * @author colley.ma
  * @since 3.0.0
  */
-@RunWith(SpringRunner.class)
 public class MessageSourceTest {
 
-    @Test
-    public void testMessageResource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/DictMessages","i18n/ResultMessages");
-        messageSource.setDefaultLocale(Locale.SIMPLIFIED_CHINESE);
-        messageSource.setUseCodeAsDefaultMessage(false);
-        messageSource.setDefaultEncoding(StringPool.UTF8);
-        messageSource.setAlwaysUseMessageFormat(false);
-        System.out.println(messageSource.getMessage("com.swak.common.enums.BasicErrCode.SUCCESS",null,Locale.ENGLISH));
+
+    public static void main(String[] args) {
+        Set<Class<IResultCode>> scanners = ClassScanners.scanners(new String[]{"com.swak"}, IResultCode.class);
+        StringBuilder builder = new StringBuilder();
+        for (Class<IResultCode> scanner : scanners) {
+            IResultCode[] enumConstants = scanner.getEnumConstants();
+            Arrays.stream(enumConstants).forEach(enumConstant -> {
+                Enum _enumConstant = (Enum) enumConstant;
+                String className = enumConstant.getClass().getSimpleName();
+                builder.append(className).append(" | ").append(_enumConstant.name()).append(" | ").append(enumConstant.getCode())
+                                .append(" | ").append(enumConstant.getMsg()).append(" |").append("\n");
+            });
+        }
+        System.out.println(builder.toString());
     }
 }

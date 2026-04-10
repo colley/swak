@@ -1,0 +1,79 @@
+package com.swak.common.spi;
+
+import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+/**
+ * SpiServiceFactory.java
+ *
+ * @author colley.ma
+ * @since 3.0.0
+ */
+public class SpiServiceFactory<S extends SpiPriority> {
+    private static final Map<Class<?>, SpiServiceFactory> SPI_SERVICE_FACTORY = new ConcurrentHashMap<>();
+    private volatile List<SwakServiceLoader> swakServiceLoaders;
+    private final Map<String, List<S>> providers = new ConcurrentHashMap<>();
+
+    public static <S extends SpiPriority> List<S> load(Class<S> service) {
+        SpiServiceFactory spiServiceFactory = SPI_SERVICE_FACTORY.
+                computeIfAbsent(service, v -> new SpiServiceFactory<>());
+        return spiServiceFactory.loadProviders(service);
+    }
+
+    public static <S extends SpiPriority> S loadFirst(Class<S> service) {
+        List<S> providersList = load(service);
+        if (CollectionUtils.isNotEmpty(providersList)) {
+            return providersList.get(0);
+        }
+        return null;
+    }
+
+    public static <S extends SpiPriority> S loadFirstByName(Class<S> service, String name) {
+        List<S> providersList = load(service);
+        if (CollectionUtils.isNotEmpty(providersList)) {
+            for (S provider : providersList) {
+                if (Objects.equals(provider.getName(), name)) {
+                    return provider;
+                }
+            }
+            return providersList.get(0);
+        }
+        return null;
+    }
+
+    public List<S> loadProviders(Class<S> service) {
+        List<S> providersList = providers.get(service.getName());
+        if (Objects.nonNull(providersList)) {
+            return providersList;
+        }
+        //去重 beanName + priority
+        Map<String, S> ultimateMap = Maps.newHashMap();
+        List<SwakServiceLoader> swakServiceLoaders = loadServiceLoader();
+        if (CollectionUtils.isNotEmpty(swakServiceLoaders)) {
+            for (SwakServiceLoader swakServiceLoader : swakServiceLoaders) {
+                swakServiceLoader.load(service).forEach(bean -> ultimateMap.put(bean.getClass().getName() + bean.priority(), bean));
+            }
+        }
+        providersList = ultimateMap.values().stream()
+                .sorted(Comparator.comparingInt(SpiPriority::priority)).collect(Collectors.toList());
+        providers.put(service.getName(), providersList);
+        return providersList;
+    }
+
+    private List<SwakServiceLoader> loadServiceLoader() {
+        if (CollectionUtils.isNotEmpty(swakServiceLoaders)) {
+            return swakServiceLoaders;
+        }
+        Map<String, SwakServiceLoader> ultimateMap = new ConcurrentHashMap<>();
+        ServiceLoader.load(SwakServiceLoader.class).forEach(bean -> ultimateMap.put(bean.getClass().getName(), bean));
+        this.swakServiceLoaders = ultimateMap.values().stream()
+                .sorted(Comparator.comparingInt(SwakServiceLoader::priority)).collect(Collectors.toList());
+        return this.swakServiceLoaders;
+    }
+
+
+}

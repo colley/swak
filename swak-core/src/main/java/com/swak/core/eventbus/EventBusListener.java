@@ -1,9 +1,12 @@
 package com.swak.core.eventbus;
 
+import com.swak.common.listener.SwakEventListener;
+
 /**
- * @className EventBusListener.java
- * @author yuanchao.ma
- * @date 2022/06/07
- */
-public interface EventBusListener {
+ * EventBusListener.java
+ *
+ * @author colley.ma
+ * @since 2.4.0
+ **/
+public interface EventBusListener extends SwakEventListener {
 }

@@ -4,8 +4,10 @@ package com.swak.common.util;
 import com.swak.common.util.date.TemporalAccessorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,7 +29,7 @@ public final class DateTimeUtils {
             return null;
         }
         try {
-           return TemporalAccessorUtil.parse(dateTimeStr,datePattern);
+            return DateUtils.parseDate(dateTimeStr, datePattern);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -37,7 +39,7 @@ public final class DateTimeUtils {
 
     public static Date string2Date(String strTime) {
         int index = strTime.indexOf(":");
-        String pattern =DatePattern.NORM_DATE_PATTERN;
+        String pattern = DatePattern.NORM_DATE_PATTERN;
         if (index != -1) {
             pattern = DatePattern.NORM_DATETIME_PATTERN;
         }
@@ -45,8 +47,8 @@ public final class DateTimeUtils {
     }
 
 
-    public static Calendar string2Calendar(String strtime) {
-        Date d = string2Date(strtime);
+    public static Calendar string2Calendar(String strTime) {
+        Date d = string2Date(strTime);
         if (d != null) {
             Calendar c = Calendar.getInstance();
             c.setTime(d);
@@ -55,8 +57,8 @@ public final class DateTimeUtils {
         return null;
     }
 
-    public static Calendar string2Calendar(String strtime,String datePattern) {
-        Date d = string2Date(strtime,datePattern);
+    public static Calendar string2Calendar(String strTime, String datePattern) {
+        Date d = string2Date(strTime, datePattern);
         if (d != null) {
             Calendar c = Calendar.getInstance();
             c.setTime(d);
@@ -65,7 +67,7 @@ public final class DateTimeUtils {
         return null;
     }
 
-  
+
     public static Timestamp string2Timestamp(String strTime, String pattern) {
         Date date = string2Date(strTime, pattern);
         if (date != null) {
@@ -78,40 +80,40 @@ public final class DateTimeUtils {
         return date2String(time.getTime());
     }
 
-    public static String calendar2String(Calendar time,String format) {
-        return date2String(time.getTime(),format);
+    public static String calendar2String(Calendar time, String format) {
+        return date2String(time.getTime(), format);
     }
 
 
     public static String date2String(Date time, String format) {
-        if(Objects.isNull(time)){
+        if (Objects.isNull(time)) {
             return null;
         }
         if (StringUtils.isEmpty(format)) {
             format = DatePattern.NORM_DATETIME_PATTERN;
         }
-        return TemporalAccessorUtil.format(time.toInstant().atZone(ZoneId.systemDefault()),format);
+        return TemporalAccessorUtil.format(time.toInstant().atZone(ZoneId.systemDefault()), format);
     }
 
- 
+
     public static String date2String(Timestamp time, String format) {
         if (StringUtils.isEmpty(format)) {
             format = DatePattern.NORM_DATETIME_PATTERN;
         }
-        return TemporalAccessorUtil.format(time.toInstant().atZone(ZoneId.systemDefault()),format);
+        return TemporalAccessorUtil.format(time.toInstant().atZone(ZoneId.systemDefault()), format);
     }
 
-  
+
     public static String date2String(Date time) {
         return date2String(time, null);
     }
 
-   
+
     public static String date2String(Timestamp time) {
         return date2String(time, null);
     }
 
-  
+
     public static String sysTimeStr(String format) {
         return date2String(new Date(), format);
     }
@@ -120,12 +122,12 @@ public final class DateTimeUtils {
         return sysTimeStr(null);
     }
 
-  
+
     public static String YYYYMMDD2String() {
         return YYYYMMDD2String(new Date());
     }
 
- 
+
     public static String YYYYMMDD2String(Date date) {
         return date2String(date, DatePattern.YYYYMMDD_PATTERN);
     }
@@ -134,17 +136,17 @@ public final class DateTimeUtils {
         return date2String(date, DatePattern.NORM_DATETIME_PATTERN);
     }
 
-   
-    public static String formateShortDate(Date date) {
+
+    public static String formatShortDate(Date date) {
         return date2String(date, DatePattern.NORM_DATE_PATTERN);
     }
 
-  
+
     public static String getShortDateStr() {
         return date2String(new Date(), DatePattern.NORM_DATE_PATTERN);
     }
 
- 
+
     public static Date getLastTimeDay(Date date) {
         String dateTemp = date2String(date, DatePattern.NORM_DATE_PATTERN);
         return string2Date(dateTemp + " 23:59:59");
@@ -175,5 +177,13 @@ public final class DateTimeUtils {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
+    }
+
+    public static void main(String[] args){
+        String string = DateTimeUtils.date2String(new Date(), DatePattern.PURE_DATETIME_MS_PATTERN);
+        System.out.println(string);
+
+        Date date = DateTimeUtils.string2Date(string, DatePattern.PURE_DATETIME_MS_PATTERN);
+        System.out.println(date);
     }
 }

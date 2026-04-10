@@ -1,7 +1,6 @@
 package com.swak.security.authentication;
 
 import com.swak.common.dto.Response;
-import com.swak.common.dto.ResponseResult;
 import com.swak.core.security.SwakUserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,9 +11,7 @@ public interface SwakUserDetailsService extends UserDetailsService {
 
     /**
      * 通过手机号查询用户信息
-     * @param mobile
      * @return SwakUserDetails
-     * @throws UsernameNotFoundException
      */
     SwakUserDetails loadUserByMobile(String mobile) throws UsernameNotFoundException;
 
@@ -27,7 +24,6 @@ public interface SwakUserDetailsService extends UserDetailsService {
 
     /**
      * 权限获取
-     * @param userId
      * @return Set<String>
      */
     Set<String> getPermission(Long userId);

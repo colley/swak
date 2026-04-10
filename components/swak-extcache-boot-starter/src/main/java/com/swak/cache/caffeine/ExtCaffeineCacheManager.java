@@ -89,7 +89,7 @@ public class ExtCaffeineCacheManager extends AbstractCacheManager {
 			instance.expireAfterAccess(duration);
 		} else {
 			throw new IllegalArgumentException(
-					"cannot discern CaffeineExpireStrategyEnum enum-item [" + expireStrategy + "]");
+					"[Swak-Cache] cannot discern CaffeineExpireStrategyEnum enum-item [" + expireStrategy + "]");
 		}
 		// key是否采用虚引用
 		if (caffeineOop.getKeyQuoteType() == CaffeineKeyQuoteType.WEAK) {
@@ -103,7 +103,7 @@ public class ExtCaffeineCacheManager extends AbstractCacheManager {
 			instance.softValues();
 		} else {
 			// default
-			log.debug("CaffeineValueQuoteType used -> {}", valueQuoteType);
+			log.debug("[Swak-Cache] CaffeineValueQuoteType used -> {}", valueQuoteType);
 		}
 		return instance.build();
 	}

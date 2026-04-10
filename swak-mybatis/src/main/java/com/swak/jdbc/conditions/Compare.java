@@ -1,7 +1,8 @@
 
 package  com.swak.jdbc.conditions;
 
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+
+import com.swak.jdbc.metadata.SFunction;
 
 import java.util.Map;
 import java.util.function.BiPredicate;

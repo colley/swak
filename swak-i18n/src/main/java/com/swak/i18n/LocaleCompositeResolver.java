@@ -89,7 +89,7 @@ public class LocaleCompositeResolver implements LocaleContextResolver {
 
     @Override
     public void setLocaleContext(HttpServletRequest request, HttpServletResponse response, LocaleContext localeContext) {
-        Assert.notNull(response, "HttpServletResponse is required for LocaleCompositeResolver");
+        Assert.notNull(response, "[Swak-I18n] HttpServletResponse is required for LocaleCompositeResolver");
         if (localeContext != null) {
             request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, localeContext.getLocale());
             request.setAttribute(LANG_REQUEST_ATTRIBUTE_NAME, Optional.ofNullable(localeContext.getLocale()).map(Locale::toLanguageTag).orElse(null));

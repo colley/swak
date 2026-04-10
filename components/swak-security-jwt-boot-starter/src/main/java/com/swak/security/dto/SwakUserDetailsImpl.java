@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 public  class SwakUserDetailsImpl implements SwakUserDetails {
+
     /**
      * 扩展字段：用户ID
      */
@@ -40,6 +41,8 @@ public  class SwakUserDetailsImpl implements SwakUserDetails {
      * 默认字段
      */
     private String username;
+
+    private String email;
 
     private String password;
 

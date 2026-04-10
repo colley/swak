@@ -11,11 +11,11 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
- * @FileName IbsStringHelper.java
- * @Date 16-5-25 下午2:09
- * @author Colley
- * @version 1.0
- */
+ * IbsStringHelper.java
+ * 
+ * @author colley.ma
+ * @since 2.4.0
+ **/
 public class IbsStringHelper {
 	private static final int ALIAS_TRUNCATE_LENGTH = 10;
 	public static final String WHITESPACE = " \n\r\f\t";

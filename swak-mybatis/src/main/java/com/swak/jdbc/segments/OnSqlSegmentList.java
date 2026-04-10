@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OnSqlSegmentList extends ArrayList<SqlSegment> implements SqlSegment {
-    private List<OnSqlSegment> onSqlSegmentList = new ArrayList<>();
+    private final List<OnSqlSegment> onSqlSegmentList = new ArrayList<>();
 
     @Override
     public String getSqlSegment(ParamNameValuePairs valuePairs) {

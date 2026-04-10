@@ -22,9 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 
  * ClassName: NamedThreadFactory.java 
- * @Description: IntNamedThreadFactory
  * @author colley.ma
- * @date 2021年3月15日
+ * @since 2.4.0
  */
 public class NamedThreadFactory implements ThreadFactory {
 

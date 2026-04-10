@@ -2,26 +2,26 @@ package com.swak.cache.spring.configuration;
 
 import com.swak.cache.config.RedissonProperties;
 import com.swak.cache.redis.SimpleRedisCacheProxy;
+import com.swak.core.SwakConstants;
 import com.swak.core.cache.DistributedCacheProxy;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -33,30 +33,28 @@ import java.util.List;
  * @author colley.ma
  * @since 3.0.0
  */
-@Configuration(
-        proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({Redisson.class})
+@ConditionalOnProperty(prefix = "spring.redis.redisson", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties({RedissonProperties.class, RedisProperties.class})
-@AutoConfigureBefore(RedisAutoConfiguration.class)
 public class RedissonAutoConfiguration {
 
     private static final String REDIS_PROTOCOL_PREFIX = "redis://";
     private static final String REDISS_PROTOCOL_PREFIX = "rediss://";
 
-    @Autowired
+    @Resource
     private RedissonProperties redissonProperties;
 
-    @Autowired
+    @Resource
     private RedisProperties redisProperties;
 
-    @Autowired
+    @Resource
     private ApplicationContext ctx;
 
     @Bean
     @ConditionalOnMissingBean(name = "swakRedisTemplate")
-    public RedisTemplate<String, Object> swakRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+    public RedisTemplate<String, Object> swakRedisTemplate(@Autowired(required = false) RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setKeySerializer(RedisSerializer.string());
         template.setConnectionFactory(redisConnectionFactory);
         return template;
@@ -64,7 +62,7 @@ public class RedissonAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DistributedCacheProxy.class)
-    public DistributedCacheProxy redisCacheProxy(RedisTemplate<String, Object> swakRedisTemplate) {
+    public DistributedCacheProxy redisCacheProxy(@Autowired(required = false) RedisTemplate<String, Object> swakRedisTemplate) {
         return new SimpleRedisCacheProxy(swakRedisTemplate);
     }
 
@@ -180,7 +178,7 @@ public class RedissonAutoConfiguration {
     }
 
     private InputStream getConfigStream() throws IOException {
-        Resource resource = ctx.getResource(redissonProperties.getFile());
+        org.springframework.core.io.Resource resource = ctx.getResource(redissonProperties.getFile());
         InputStream is = resource.getInputStream();
         return is;
     }

@@ -14,9 +14,8 @@ import java.nio.charset.Charset;
 /**
  * 
  * ClassName: URLCoder.java 
- * @Description: URL地址转码和解码
  * @author colley.ma
- * @date 2021年3月15日
+ * @since 2.4.0
  */
 public class URLCoder {
     public static String decode(final String str) {

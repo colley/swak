@@ -2,8 +2,6 @@
 package com.swak.jdbc.toolkit;
 
 import com.swak.common.dto.PageInfo;
-import com.swak.jdbc.common.ConfigProperties;
-import com.swak.jdbc.segments.SqlSegment;
 import com.swak.jdbc.enums.SqlKeyword;
 import com.swak.jdbc.enums.SqlLikeMode;
 import com.swak.jdbc.segments.*;
@@ -90,7 +88,7 @@ public final class JdbcRestrictions {
         return likeValue(propertyName,SqlKeyword.LIKE,value,matchMode);
     }
     
-    public static SqlSegment notLike(String propertyName, String value, SqlLikeMode matchMode) {
+    public static SqlSegment notLike(String propertyName, Object value, SqlLikeMode matchMode) {
         return likeValue(propertyName,SqlKeyword.NOT_LIKE,value,matchMode);
     }
 
@@ -98,7 +96,7 @@ public final class JdbcRestrictions {
       * A case-insensitive "like", similar to Postgres <tt>likeIgnoreCase</tt>
       * operator
       */
-    public static SqlSegment likeIgnoreCase(String propertyName, String value, SqlLikeMode matchMode) {
+    public static SqlSegment likeIgnoreCase(String propertyName, Object value, SqlLikeMode matchMode) {
         return new LikeSegment(propertyName, value, true, matchMode);
     }
 

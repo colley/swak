@@ -11,8 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 线程连接池优雅关机
  * @author colley.ma
- * @date 2022/07/13 18:18:45
- *
+ * @since 2.4.0
  */
 @Slf4j
 public class ContextClosedThreadPoolHandler implements ApplicationListener<ContextClosedEvent>{
