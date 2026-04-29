@@ -9,6 +9,7 @@ import com.swak.license.api.i18n.Message;
 
 /**
  * A formattable object.
+ * @author colley
  */
 public interface Formattable {
 

@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2005 - 2019 Schlichtherle IT Services.
- * All rights reserved. Use is subject to license terms.
- */
+
 package com.swak.license.core.spi;
 
 
@@ -16,6 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Provides common {@link Codec} functions.
+ * @author colley
  */
 public class Codecs {
 

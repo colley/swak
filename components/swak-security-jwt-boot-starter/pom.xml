@@ -18,7 +18,7 @@
     <properties>
         <bitwalker.version>1.21</bitwalker.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
-        <skip_maven_deploy>false</skip_maven_deploy>
+        <skip_maven_deploy>true</skip_maven_deploy>
     </properties>
 
     <dependencies>

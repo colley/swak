@@ -80,6 +80,7 @@ public class LicenseManager implements ConsumerLicenseManager {
     @Override
     public void uninstall() throws LicenseManagementException {
         manager().uninstall();
+        LicenseVerifyContext.clear();
     }
 
     public LicenseConfig getLicenseConfig() {

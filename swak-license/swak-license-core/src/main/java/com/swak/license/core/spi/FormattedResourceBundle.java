@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
  * Wraps a {@link ResourceBundle} in order to format strings with
  * {@link MessageFormat#format(String, Object[])}.
  * This class is immutable.
+ * @author colley
  */
 public final class FormattedResourceBundle {
 

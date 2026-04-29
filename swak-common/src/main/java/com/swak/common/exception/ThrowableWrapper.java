@@ -1,6 +1,5 @@
 package com.swak.common.exception;
 
-@SuppressWarnings("serial")
 public class ThrowableWrapper extends RuntimeException {
 
 	private final Throwable original;
