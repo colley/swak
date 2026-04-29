@@ -13,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -37,22 +38,27 @@ public class AsyncThreadPoolMonitor implements MonitorAware {
         return this.monitoringPeriod;
     }
 
+
     @Override
     public void startup() {
-        StringBuilder builder = new StringBuilder("[swak-AsyncThreadPool] - AsyncThreadPool监控系统启动  ......");
+        StringBuilder builder = new StringBuilder("[Swak-AsyncThreadPool] -[MonitorPeriod:"+getMonitorPeriod()+"s]- AsyncThreadPool监控系统启动  ......");
         builder.append(SwakConstants.LINE_SEPARATOR);
         taskExecutors.forEach((k, executor) -> {
-            builder.append("线程池名称 : ").append(executor.getThreadNamePrefix());
+            ThreadPoolExecutor tp = executor.getThreadPoolExecutor();
+            String rejectedHandler = tp.getRejectedExecutionHandler().getClass().getSimpleName();
+            builder.append("线程池名称 : ").append("[").append(executor.getThreadNamePrefix()).append("]");
             builder.append(" - 核心线程池大小 : ").append(executor.getCorePoolSize());
             builder.append(" - 最大线程池大小 : ").append(executor.getMaxPoolSize());
             builder.append(" - 队列容量 : ").append(executor.getQueueCapacity());
+            builder.append(" - KeepAlive : ").append(String.format("%ds", tp.getKeepAliveTime(TimeUnit.SECONDS)));
+            builder.append(" - RejectedHandler : ").append(rejectedHandler);
             builder.append(SwakConstants.LINE_SEPARATOR);
         });
+        // 打印英文日志，确保在任何环境下都不会乱码
         log.warn(builder.toString());
         ThreadPoolMonitorTask task = new ThreadPoolMonitorTask(this, getMonitorPeriod());
         WheelTimerHolder.monitorWheel().newTimeout(task, monitoringPeriod, TimeUnit.SECONDS);
     }
-
 
     public void addTaskExecutor(ThreadPoolTaskExecutor taskExecutor) {
         ObjectKey key = ObjectKey.asKey(taskExecutor.getThreadNamePrefix(),

@@ -4,3 +4,5 @@
 /.project
 /bin/
 .flattened-pom.xml
+components/*/target/
+components/target/

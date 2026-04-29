@@ -2,6 +2,7 @@
 package com.swak.license.core;
 
 
+import com.swak.common.util.DateTimeUtils;
 import com.swak.license.Messages;
 import com.swak.license.api.*;
 import com.swak.license.api.Codec;
@@ -890,31 +891,31 @@ final class TrueLicenseManagementContext implements LicenseManagementContext, Au
         @Override
         public void validate(final License bean) throws LicenseValidationException {
             if (0 >= bean.getConsumerAmount()) {
-                throw new LicenseValidationException(message(Messages.CONSUMER_AMOUNT_IS_NOT_POSITIVE, bean.getConsumerAmount()));
+                throw new LicenseValidationException(message(Messages.CONSUMER_AMOUNT_IS_NOT_POSITIVE, bean.getConsumerAmount()),bean);
             }
             if (null == bean.getConsumerType()) {
-                throw new LicenseValidationException(message(Messages.CONSUMER_TYPE_IS_NULL));
+                throw new LicenseValidationException(message(Messages.CONSUMER_TYPE_IS_NULL),bean);
             }
             if (null == bean.getHolder()) {
-                throw new LicenseValidationException(message(Messages.HOLDER_IS_NULL));
+                throw new LicenseValidationException(message(Messages.HOLDER_IS_NULL),bean);
             }
             if (null == bean.getIssued()) {
-                throw new LicenseValidationException(message(Messages.ISSUED_IS_NULL));
+                throw new LicenseValidationException(message(Messages.ISSUED_IS_NULL),bean);
             }
             if (null == bean.getIssuer()) {
-                throw new LicenseValidationException(message(Messages.ISSUER_IS_NULL));
+                throw new LicenseValidationException(message(Messages.ISSUER_IS_NULL),bean);
             }
             final Date now = now(); // don't trust the system clock!
             final Date notAfter = bean.getNotAfter();
             if (null != notAfter && now.after(notAfter)) {
-                throw new LicenseValidationException(message(Messages.LICENSE_HAS_EXPIRED, notAfter));
+                throw new LicenseValidationException(message(Messages.LICENSE_HAS_EXPIRED, DateTimeUtils.date2String(notAfter)),bean);
             }
             final Date notBefore = bean.getNotBefore();
             if (null != notBefore && now.before(notBefore)) {
-                throw new LicenseValidationException(message(Messages.LICENSE_IS_NOT_YET_VALID, notBefore));
+                throw new LicenseValidationException(message(Messages.LICENSE_IS_NOT_YET_VALID, DateTimeUtils.date2String(notBefore)),bean);
             }
             if (!subject().equals(bean.getSubject())) {
-                throw new LicenseValidationException(message(Messages.INVALID_SUBJECT, bean.getSubject(), subject()));
+                throw new LicenseValidationException(message(Messages.INVALID_SUBJECT, bean.getSubject(), subject()),bean);
             }
         }
     }

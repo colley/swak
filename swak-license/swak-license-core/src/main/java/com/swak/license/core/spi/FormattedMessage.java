@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2005 - 2019 Schlichtherle IT Services.
- * All rights reserved. Use is subject to license terms.
- */
+
 package com.swak.license.core.spi;
 
 import java.util.Locale;
@@ -12,6 +9,7 @@ import static java.util.Objects.requireNonNull;
  * A formatted internationalized message based on
  * {@link FormattedResourceBundle}.
  * This class is immutable.
+ * @author colley
  */
 public class FormattedMessage extends BasicMessage {
 

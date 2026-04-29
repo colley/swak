@@ -78,7 +78,7 @@ public class OperateLogEventHandler implements WorkHandler<CarrierValue<OperateD
 
     private class LogRecordTask extends CycleTask {
         @Override
-        protected void invoke() throws ThrowableWrapper {
+        protected void invoke() throws Exception {
             List<OperateDataLog> result = pollMessage();
             if (CollectionUtils.isNotEmpty(result)) {
                 operateLogService.addOperationLogs(result); //主要批量更新，减少数据库操作

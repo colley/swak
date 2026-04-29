@@ -9,13 +9,13 @@ public class LicenseVerifyServiceImpl implements LicenseVerifyService {
 
     private LicenseManager licenseManager;
 
-    public LicenseVerifyServiceImpl(LicenseManager licenseManager){
+    public LicenseVerifyServiceImpl(LicenseManager licenseManager) {
         this.licenseManager = licenseManager;
     }
 
     @Override
     public License install(Source source) throws LicenseManagementException {
-       return licenseManager.install(source);
+        return licenseManager.install(source);
     }
 
     @Override
@@ -31,5 +31,11 @@ public class LicenseVerifyServiceImpl implements LicenseVerifyService {
     @Override
     public void uninstall() throws LicenseManagementException {
         licenseManager.uninstall();
+    }
+
+    @Override
+    public License reinstall(Source source) throws LicenseManagementException {
+        uninstall();
+        return install(source);
     }
 }

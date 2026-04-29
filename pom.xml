@@ -26,7 +26,7 @@
     </modules>
 
     <properties>
-        <revision>2.3.3</revision>
+        <revision>2.3.4-SNAPSHOT</revision>
         <swak.version>${revision}</swak.version>
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
@@ -284,6 +284,27 @@
                 </plugins>
             </build>
         </profile>
+
+
+        <profile>
+            <id>alphaxtec-release</id>
+            <distributionManagement>
+                <repository>
+                    <id>nexus-releases</id>
+                    <name>Nexus Releases Repository</name>
+                    <url>http://18.139.186.201:8081/repository/alphaxtec-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>nexus-snapshots</id>
+                    <name>Nexus Snapshots Repository</name>
+                    <url>http://18.139.186.201:8081/repository/alphaxtec-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
     </profiles>
 
     <build>

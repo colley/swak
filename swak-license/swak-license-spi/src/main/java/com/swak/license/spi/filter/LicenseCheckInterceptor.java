@@ -7,6 +7,7 @@ import com.swak.common.util.GetterUtil;
 import com.swak.core.web.SwakMvcPatterns;
 import com.swak.license.api.License;
 import com.swak.license.api.LicenseValidationException;
+import com.swak.license.spi.config.LicenseVerifyContext;
 import com.swak.license.spi.config.LicenseManager;
 import com.swak.license.spi.config.LicenseVerifyCallback;
 import lombok.Getter;
@@ -20,6 +21,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
+/**
+ * @author colley
+ */
 @Slf4j
 public class LicenseCheckInterceptor implements HandlerInterceptor {
     private LicenseManager licenseManager;
@@ -35,6 +39,7 @@ public class LicenseCheckInterceptor implements HandlerInterceptor {
         try {
             License license = licenseManager.verify();
             Optional.ofNullable(licenseVerifyCallback).ifPresent(call -> call.call(license));
+            LicenseVerifyContext.install(license);
             return true;
         } catch (LicenseValidationException e) {
             printJson(response, e.getMessage());
@@ -65,5 +70,6 @@ public class LicenseCheckInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         Optional.ofNullable(licenseVerifyCallback).ifPresent(call -> call.clear());
+        LicenseVerifyContext.clear();
     }
 }
