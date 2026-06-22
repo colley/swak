@@ -17,12 +17,10 @@ public class LicenseVerifyServiceImpl implements LicenseVerifyService {
     public License install(Source source) throws LicenseManagementException {
         return licenseManager.install(source);
     }
-
     @Override
     public License load() throws LicenseManagementException {
         return licenseManager.load();
     }
-
     @Override
     public License verify() throws LicenseManagementException {
         return licenseManager.verify();

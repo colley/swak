@@ -70,6 +70,6 @@ public class LicenseCheckInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         Optional.ofNullable(licenseVerifyCallback).ifPresent(call -> call.clear());
-        LicenseVerifyContext.clear();
+        LicenseVerifyContext.remove();
     }
 }

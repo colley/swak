@@ -37,7 +37,6 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
     private final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
 
-
     public ThreadPoolMonitorTask(AsyncThreadPoolMonitor threadPoolMonitor, long monitoringPeriod) {
         super.config(monitoringPeriod, TimeUnit.SECONDS, true);
         this.threadPoolMonitor = threadPoolMonitor;
@@ -114,7 +113,7 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
         // Calculate usage rates
         double activeRate = poolSize == 0 ? 0 : (activeCount * 1.0 / poolSize);
         double queueUsage = queueCapacity == 0 ? 0 : (queueSize * 1.0 / queueCapacity);
-        StringBuilder  builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append(SwakConstants.LINE_SEPARATOR);
         builder.append("线程池名称 : ").append("[").append(poolName).append("]");
         builder.append(" - 核心线程池大小: ").append(corePoolSize);
@@ -126,7 +125,7 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
         builder.append(" 当前线程数 : ").append(poolSize);
         builder.append(" - 活动线程数量 : ").append(activeCount);
         builder.append(" - Load : ").append(String.format("%.1f", activeRate * 100)).append("%");
-        builder.append(" - Queue : ").append(I18nMessageFormat.format("{}/{} (Usage: {}%)",queueSize, queueCapacity, String.format("%.1f", queueUsage * 100)));
+        builder.append(" - Queue : ").append(I18nMessageFormat.format("{}/{} (Usage: {}%)", queueSize, queueCapacity, String.format("%.1f", queueUsage * 100)));
         builder.append(SwakConstants.LINE_SEPARATOR);
         builder.append(" 任务总数 : ").append(taskCount);
         builder.append(" - 完成的线程数量 : ").append(tp.getCompletedTaskCount());
@@ -137,7 +136,7 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
                 String threadName = info.getThreadName();
                 // Match thread name prefix
                 if (threadName.startsWith(poolName)) {
-                    topStackMonitor(poolName, info,builder);
+                    topStackMonitor(poolName, info, builder);
                 }
             }
         }
@@ -149,20 +148,18 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
         log.warn(builder.toString());
     }
 
-    public void topStackMonitor(String poolName, ThreadInfo info,StringBuilder  builder) {
-        String threadName = info.getThreadName();
-        builder.append(LINE_SEPARATOR).append(" >>> ActiveThreadDetails:      ").append(LINE_SEPARATOR);
+    public void topStackMonitor(String poolName, ThreadInfo info, StringBuilder builder) {
         StackTraceElement[] stackTrace = info.getStackTrace();
-        if (stackTrace.length > 0) {
+        if (stackTrace != null && stackTrace.length > 0) {
+            String threadName = info.getThreadName();
+            builder.append(LINE_SEPARATOR).append(" >>> ActiveThreadDetails:      ").append(LINE_SEPARATOR);
             StackTraceElement topStack = stackTrace[0];
-            builder.append(" - 线程池和线程名称 : ").append(String.format("[%s] - [%s]",poolName, threadName));
+            builder.append(" - 线程池和线程名称 : ").append(String.format("[%s] - [%s]", poolName, threadName));
             builder.append(" - 线程状态 : ").append(info.getThreadState());
             builder.append(" - Executing : ").append(LINE_SEPARATOR)
-                    .append(String.format("%s.%s(%s:%s)", topStack.getClassName(),
-                    topStack.getMethodName(),
-                    topStack.getFileName(),
-                    topStack.getLineNumber()));
+                    .append(String.format("%s.%s(%s:%s)", topStack.getClassName(), topStack.getMethodName(), topStack.getFileName(), topStack.getLineNumber()));
         }
+
     }
 
     @Override

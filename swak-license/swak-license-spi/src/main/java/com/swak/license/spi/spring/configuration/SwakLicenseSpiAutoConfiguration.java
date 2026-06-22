@@ -17,14 +17,13 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnBean(LicenseConfig.class)
-public class SwakLicenseAutoConfiguration {
+public class SwakLicenseSpiAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(LicenseManager.class)
     public LicenseManager licenseManager(LicenseConfig licenseConfig) {
         return new LicenseManager(licenseConfig);
     }
-
 
 
     @Bean

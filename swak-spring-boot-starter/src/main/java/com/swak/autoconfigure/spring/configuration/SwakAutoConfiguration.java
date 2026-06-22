@@ -33,7 +33,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -61,19 +60,6 @@ public class SwakAutoConfiguration {
     @ConditionalOnMissingBean(LocalDictionaryService.class)
     public LocalDictionaryService localDictionaryService() {
         return new LocalDictionaryServiceImpl();
-    }
-
-
-    @Bean
-    @ConditionalOnMissingBean(CommonsMultipartResolver.class)
-    public CommonsMultipartResolver multipartResolver(@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
-        long maxUploadSize = 31 * 1024 * 1024;
-        int maxInMemorySize = 40960;
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setDefaultEncoding("UTF-8");
-        multipartResolver.setMaxUploadSize(Optional.ofNullable(systemConfigurable.getMaxUploadSize()).orElse(maxUploadSize));
-        multipartResolver.setMaxInMemorySize(Optional.ofNullable(systemConfigurable.getMaxInMemorySize()).orElse(maxInMemorySize));
-        return multipartResolver;
     }
 
     @Bean("asyncThreadPoolMonitor")
