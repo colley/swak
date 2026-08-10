@@ -114,7 +114,7 @@ public class LockableInterceptor extends SwakAdviceSupport {
     }
 
     private DistributedLockException throwLockException(LockOperation lockOperation) {
-        return new DistributedLockException(BasicErrCode.SWAK_OPERA_REPEAT);
+        return new DistributedLockException(BasicErrCode.RATE_LIMITED);
     }
 
 

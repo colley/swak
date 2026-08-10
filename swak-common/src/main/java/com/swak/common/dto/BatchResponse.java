@@ -16,20 +16,19 @@ public interface BatchResponse<T> {
     }
 
     default boolean anySuccess() {
-        return getResponses().stream().map(item -> item.isSuccess()).findAny().orElse(false);
+        return getResponses().stream().map(Response::isSuccess).findAny().orElse(false);
     }
 
     default boolean allSuccess() {
-        List<Boolean> booleanList = getResponses().stream().map(item ->
-                item.isSuccess()).collect(Collectors.toList());
+        List<Boolean> booleanList = getResponses().stream().map(Response::isSuccess).collect(Collectors.toList());
         return booleanList.size() == getResponses().size();
     }
 
     static <T> BatchResponse<T> build() {
-        return new _BatchResponse();
+        return new BatchResponseImpl();
     }
 
     static <T> BatchResponse<T> empty() {
-        return new _BatchResponse();
+        return new BatchResponseImpl();
     }
 }

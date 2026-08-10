@@ -13,6 +13,7 @@ import com.swak.license.spi.config.LicenseVerifyCallback;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,18 +25,17 @@ import java.util.Optional;
 /**
  * @author colley
  */
-@Slf4j
+@Setter
 public class LicenseCheckInterceptor implements HandlerInterceptor {
     private LicenseManager licenseManager;
 
     private LicenseVerifyCallback licenseVerifyCallback;
 
-    @Setter
     @Getter
     private SwakMvcPatterns swakMvcPatterns;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
         try {
             License license = licenseManager.verify();
             Optional.ofNullable(licenseVerifyCallback).ifPresent(call -> call.call(license));
@@ -49,27 +49,19 @@ public class LicenseCheckInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public void setLicenseManager(LicenseManager licenseManager) {
-        this.licenseManager = licenseManager;
-    }
-
-    public void setLicenseVerifyCallback(LicenseVerifyCallback licenseVerifyCallback) {
-        this.licenseVerifyCallback = licenseVerifyCallback;
-    }
-
-    private void printJson(HttpServletResponse response, String message) throws IOException {
+	private void printJson(HttpServletResponse response, String message) throws IOException {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/json;charset=UTF-8");
-        Response<Void> resultImpl = Response.fail(BasicErrCode.SWAK_LICENSE.getCode(),
-                GetterUtil.getString(message, BasicErrCode.SWAK_LICENSE.getI18nMsg()));
+        Response<Void> resultImpl = Response.fail(BasicErrCode.LICENSE_EXPIRED.getCode(),
+                GetterUtil.getString(message, BasicErrCode.LICENSE_EXPIRED.getI18nMsg()));
         try (PrintWriter writer = response.getWriter()) {
             writer.print(JSON.toJSONString(resultImpl));
         }
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        Optional.ofNullable(licenseVerifyCallback).ifPresent(call -> call.clear());
+    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) throws Exception {
+        Optional.ofNullable(licenseVerifyCallback).ifPresent(LicenseVerifyCallback::clear);
         LicenseVerifyContext.remove();
     }
 }

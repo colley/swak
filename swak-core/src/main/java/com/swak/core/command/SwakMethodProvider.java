@@ -16,7 +16,6 @@
 package com.swak.core.command;
 
 import com.google.common.base.Optional;
-import com.netflix.hystrix.contrib.javanica.utils.FallbackMethod;
 import com.swak.core.command.annotation.SwakFallback;
 import com.swak.core.command.exception.SwakFallBackException;
 import com.swak.core.command.fallback.SwakFallbackMethod;
@@ -80,8 +79,6 @@ public final class SwakMethodProvider {
      *                      a fallback as well.
      * @param extended      true if the given commandMethod was derived using
      *                      additional parameter, otherwise - false
-     * @return new instance of {@link FallbackMethod} or
-     * {@link FallbackMethod#ABSENT} if there is no suitable fallback method
      * for the given command
      */
     public SwakFallbackMethod getFallbackMethod(Class<?> type, Method commandMethod,

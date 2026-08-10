@@ -36,7 +36,7 @@ public abstract class SwakAssert {
 
     public static void state(boolean expression, Supplier<String> message) {
         if (!expression) {
-            throw new ArgumentException(BasicErrCode.INVALID_PARAMETER, message.get(),null);
+            throw new ArgumentException(BasicErrCode.BAD_REQUEST, message.get(),null);
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class SwakAssert {
 
     public static void notNull(Object object, String message) {
         if (object == null) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_NULL, message,null);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS, message,null);
         }
     }
 
@@ -78,30 +78,30 @@ public abstract class SwakAssert {
 
     public static void notNull(Object object, Supplier<String> msgSupplier) {
         if (object == null) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_NULL,msgSupplier.get(),null);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS,msgSupplier.get(),null);
         }
     }
 
     public static void notNull(Object object) {
         if (object == null) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_NULL);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS);
         }
     }
 
     public static void notHasNull(String message, Object... objects) {
         boolean hasNull = Stream.of(objects).anyMatch(Objects::isNull);
         if (hasNull) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_NULL,message,null);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS,message,null);
         }
     }
 
     public static void notEmpty(Collection<?> collection) {
-        notEmpty(collection, BasicErrCode.PARAMETER_NOT_EMPTY);
+        notEmpty(collection, BasicErrCode.PARAM_MISS);
     }
 
     public static void notEmpty(Collection<?> collection, String message) {
         if (CollectionUtils.isEmpty(collection)) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_EMPTY,message,null);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS,message,null);
         }
     }
 
@@ -119,7 +119,7 @@ public abstract class SwakAssert {
 
     public static void notEmpty(Map<?, ?> map, String message) {
         if (MapUtils.isEmpty(map)) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_EMPTY,message,null);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS,message,null);
         }
     }
 
@@ -141,7 +141,7 @@ public abstract class SwakAssert {
 
     public static void notBlank(CharSequence css, String message) {
         if (StringUtils.isBlank(css)) {
-            throw new ArgumentException(BasicErrCode.PARAMETER_NOT_BLANK,message,null);
+            throw new ArgumentException(BasicErrCode.PARAM_MISS,message,null);
         }
     }
 

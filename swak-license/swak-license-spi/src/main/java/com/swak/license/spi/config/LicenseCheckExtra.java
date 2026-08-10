@@ -2,6 +2,7 @@ package com.swak.license.spi.config;
 
 import com.alibaba.fastjson2.JSONObject;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
@@ -12,6 +13,7 @@ import java.util.*;
  * @author colley.ma
  * @since 2.3.3
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class LicenseCheckExtra extends LinkedHashMap<String, Object> {
 

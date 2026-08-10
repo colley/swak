@@ -8,19 +8,17 @@ import java.util.Objects;
 /**
  * @author colley
  */
-public enum ConditionalSymbol implements EnumType {
-    EQ("=", "="),
-    NE("≠", "≠"),
-    IS_EMPTY("IS_EMPTY", "为空"),
-    IS_NOT_EMPTY("NOT_EMPTY", "不为空"),
+public enum ConditionalSymbol {
+    EQ("="),
+    NE("≠"),
+    IS_EMPTY("IS_EMPTY"),
+    IS_NOT_EMPTY("NOT_EMPTY"),
     ;
 
     private final String type;
-    private final  String name;
 
-    ConditionalSymbol(String type, String name) {
+    ConditionalSymbol(String type) {
         this.type = type;
-        this.name = name;
     }
 
     public static ConditionalSymbol of(String symbol) {
@@ -46,13 +44,8 @@ public enum ConditionalSymbol implements EnumType {
         return null;
     }
 
-    @Override
     public String getValue() {
         return this.type;
     }
 
-    @Override
-    public String getName() {
-        return this.name;
-    }
 }

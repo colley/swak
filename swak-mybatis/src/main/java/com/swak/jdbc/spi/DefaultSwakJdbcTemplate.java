@@ -2,7 +2,6 @@ package com.swak.jdbc.spi;
 
 import com.alibaba.fastjson2.JSON;
 import com.swak.common.dto.SwakPage;
-import com.swak.common.spi.AbstractSpiPriority;
 import com.swak.common.util.DateTimeUtils;
 import com.swak.jdbc.common.SwakColumnRowMapper;
 import com.swak.jdbc.conditions.SwakWrapper;
@@ -33,27 +32,25 @@ import java.util.Objects;
  * @since 2.4.0
  **/
 @Slf4j
-public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements SwakJdbcTemplate, InitializingBean {
-
+public class DefaultSwakJdbcTemplate extends AbstractSwakJdbcTemplate implements SwakJdbcTemplate, InitializingBean {
     private Dialect dialect;
-
-    private JdbcTemplate jdbcTemplate;
 
     public DefaultSwakJdbcTemplate() {
         super();
     }
 
     public DefaultSwakJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.afterPropertiesSet();
+		this(jdbcTemplate.getDataSource());
     }
 
     public DefaultSwakJdbcTemplate(DataSource dataSource) {
-        this(new JdbcTemplate(dataSource));
+        super(dataSource);
+		this.afterPropertiesSet();
     }
 
     public DefaultSwakJdbcTemplate(DataSource dataSource, boolean lazyInit) {
-        this(new JdbcTemplate(dataSource,lazyInit));
+		super(dataSource,lazyInit);
+		this.afterPropertiesSet();
     }
 
     @Override
@@ -65,9 +62,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         List<T> result;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                result = jdbcTemplate.query(newSql, new SwakColumnRowMapper<>(queryWrapper.getEntityClass()));
+                result = super.query(newSql, new SwakColumnRowMapper<>(queryWrapper.getEntityClass()));
             } else {
-                result = jdbcTemplate.query(newSql, new SwakColumnRowMapper<>(queryWrapper.getEntityClass()), parameterObjectValues);
+                result =  super.query(newSql, new SwakColumnRowMapper<>(queryWrapper.getEntityClass()), parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -84,9 +81,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         List<Map<String, Object>> result;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                result = jdbcTemplate.queryForList(newSql);
+                result =  super.queryForList(newSql);
             } else {
-                result = jdbcTemplate.queryForList(newSql, parameterObjectValues);
+                result = super.queryForList(newSql, parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -103,9 +100,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         List<T> result;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                result = jdbcTemplate.query(newSql, new SwakColumnRowMapper<>(elementType));
+                result = super.query(newSql, new SwakColumnRowMapper<>(elementType));
             } else {
-                result = jdbcTemplate.query(newSql, new SwakColumnRowMapper<>(elementType), parameterObjectValues);
+                result = super.query(newSql, new SwakColumnRowMapper<>(elementType), parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -122,9 +119,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         T result;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                result = jdbcTemplate.queryForObject(newSql, new SwakColumnRowMapper<>(elementType));
+                result = super.queryForObject(newSql, new SwakColumnRowMapper<>(elementType));
             } else {
-                result = jdbcTemplate.queryForObject(newSql, new SwakColumnRowMapper<>(elementType), parameterObjectValues);
+                result = super.queryForObject(newSql, new SwakColumnRowMapper<>(elementType), parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -141,9 +138,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         T result;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                result = jdbcTemplate.queryForObject(newSql, rowMapper);
+                result = super.queryForObject(newSql, rowMapper);
             } else {
-                result = jdbcTemplate.queryForObject(newSql, rowMapper, parameterObjectValues);
+                result = super.queryForObject(newSql, rowMapper, parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -160,9 +157,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         List<T> result;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                result = jdbcTemplate.query(newSql, resultSetExtractor);
+                result = super.query(newSql, resultSetExtractor);
             } else {
-                result = jdbcTemplate.query(newSql, resultSetExtractor, parameterObjectValues);
+                result = super.query(newSql, resultSetExtractor, parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -174,7 +171,7 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
     @Override
     public void afterPropertiesSet() throws IllegalArgumentException {
         if (Objects.isNull(this.dialect)) {
-            this.dialect = DialectRegistry.getDialect(jdbcTemplate.getDataSource());
+            this.dialect = DialectRegistry.getDialect(super.getDataSource());
         }
     }
 
@@ -191,7 +188,7 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         CountBoundSql countBoundSql = new CountBoundSql(page, selBoundSql);
         Object[] parameterObjectValues = selBoundSql.getParamObjectValues();
         String countSql = countBoundSql.getSql();
-        Long total = jdbcTemplate.queryForObject(countSql, Long.class, parameterObjectValues);
+        Long total = super.queryForObject(countSql, Long.class, parameterObjectValues);
         logRunTime(countBoundSql.getSql(), startTime, parameterObjectValues);
         page.setTotal(total == null ? 0L : total);
         if (page.getTotal() <= 0) {
@@ -205,9 +202,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         try {
             parameterObjectValues = queryBoundSql.getParamObjectValues();
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                records = jdbcTemplate.query(querySql, new SwakColumnRowMapper<>(elementType));
+                records = super.query(querySql, new SwakColumnRowMapper<>(elementType));
             } else {
-                records = jdbcTemplate.query(querySql, new SwakColumnRowMapper<>(elementType), parameterObjectValues);
+                records = super.query(querySql, new SwakColumnRowMapper<>(elementType), parameterObjectValues);
             }
             page.setRecords(records);
         } finally {
@@ -229,7 +226,7 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         CountBoundSql countBoundSql = new CountBoundSql(page, selBoundSql);
         Object[] parameterObjectValues = selBoundSql.getParamObjectValues();
         String countSql = countBoundSql.getSql();
-        Long total = jdbcTemplate.queryForObject(countSql, Long.class, parameterObjectValues);
+        Long total = super.queryForObject(countSql, Long.class, parameterObjectValues);
         logRunTime(countBoundSql.getSql(), startTime, parameterObjectValues);
         page.setTotal(total == null ? 0L : total);
         if (page.getTotal() <= 0) {
@@ -243,9 +240,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         try {
             parameterObjectValues = queryBoundSql.getParamObjectValues();
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                records = jdbcTemplate.queryForList(querySql);
+                records = super.queryForList(querySql);
             } else {
-                records = jdbcTemplate.queryForList(querySql, parameterObjectValues);
+                records = super.queryForList(querySql, parameterObjectValues);
             }
             page.setRecords(records);
         } finally {
@@ -262,9 +259,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         int rows = 0;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                rows = jdbcTemplate.update(newSql);
+                rows = super.update(newSql);
             } else {
-                rows = jdbcTemplate.update(newSql, parameterObjectValues);
+                rows = super.update(newSql, parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);
@@ -283,9 +280,9 @@ public class DefaultSwakJdbcTemplate extends AbstractSpiPriority implements Swak
         int rows = 0;
         try {
             if (ArrayUtils.isEmpty(parameterObjectValues)) {
-                rows = jdbcTemplate.update(newSql);
+                rows = super.update(newSql);
             } else {
-                rows = jdbcTemplate.update(newSql, parameterObjectValues);
+                rows = super.update(newSql, parameterObjectValues);
             }
         } finally {
             logRunTime(newSql, startTime, parameterObjectValues);

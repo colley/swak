@@ -1,19 +1,11 @@
 package com.swak.core.http;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
 public class RestTemplateBuilder {
 

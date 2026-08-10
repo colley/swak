@@ -41,40 +41,8 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
         super.config(monitoringPeriod, TimeUnit.SECONDS, true);
         this.threadPoolMonitor = threadPoolMonitor;
     }
-
-    @Override
+	@Override
     public void monitor() {
-        monitorV2();
-    }
-
-    public void monitorV1() {
-        Map<ObjectKey, ThreadPoolTaskExecutor> taskExecutors = threadPoolMonitor.getTaskExecutors();
-        if (MapUtils.isEmpty(taskExecutors)) {
-            return;
-        }
-        for (ThreadPoolTaskExecutor taskExecutor : taskExecutors.values()) {
-            monitorV1(taskExecutor);
-        }
-    }
-
-    public void monitorV1(ThreadPoolTaskExecutor executor) {
-        StringBuilder strBuff = new StringBuilder();
-        ThreadPoolExecutor tp = executor.getThreadPoolExecutor();
-        strBuff.append("线程池名称 : ").append(executor.getThreadNamePrefix());
-        strBuff.append(" 当前线程数 : ").append(tp.getPoolSize());
-        strBuff.append(" - 核心线程池大小 : ").append(tp.getCorePoolSize());
-        strBuff.append(" - 最大线程池大小 : ").append(tp.getMaximumPoolSize());
-        strBuff.append(" - 队列容量 : ").append(executor.getQueueCapacity());
-        strBuff.append(" - 活动线程数量 : ").append(tp.getActiveCount());
-        strBuff.append(" - 完成的线程数量 : ").append(tp.getCompletedTaskCount());
-        strBuff.append(" - 任务总数 : ").append(tp.getTaskCount());
-        strBuff.append(" - 队列任务大小 : ").append(tp.getQueue().size());
-        strBuff.append(" - 是否所有任务都已完成 : ").append(tp.isTerminated());
-        log.warn(strBuff.toString());
-    }
-
-
-    public void monitorV2() {
         Map<ObjectKey, ThreadPoolTaskExecutor> taskExecutors = threadPoolMonitor.getTaskExecutors();
         if (MapUtils.isEmpty(taskExecutors)) {
             return;

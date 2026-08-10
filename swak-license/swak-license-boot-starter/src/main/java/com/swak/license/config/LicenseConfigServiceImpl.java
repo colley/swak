@@ -10,7 +10,7 @@ public class LicenseConfigServiceImpl implements LicenseConfigService {
 
     private final String DEFAULT_GROUP = "DEFAULT_GROUP";
 
-    @Value(value = "${swak.license.source}")
+    @Value(value = "${swak.license.source:}")
     private String defaultLicenseSource;
 
     // 【核心】使用 required=false，如果没有 Nacos，这里就是 null，不会报错

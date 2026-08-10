@@ -36,6 +36,13 @@ public interface Response<T> extends java.io.Serializable {
 
     void setData(T data);
 
+	long getTimestamp();
+
+	void setTimestamp(long timestamp);
+	String getTraceId();
+
+	void setTraceId(String traceId);
+
     /**
      *  0=成功。900=框架异常 901=系统异常 902=
      */
