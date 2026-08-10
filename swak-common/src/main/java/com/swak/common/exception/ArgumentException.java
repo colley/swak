@@ -14,21 +14,21 @@ public class ArgumentException extends BaseException {
 
     public ArgumentException() {
         super();
-        this.setErrCode(BasicErrCode.INVALID_PARAMETER);
+        this.setErrCode(BasicErrCode.PARAM_INVALID);
     }
 
     public ArgumentException(Throwable cause) {
         super(cause);
-        this.setErrCode(BasicErrCode.INVALID_PARAMETER);
+        this.setErrCode(BasicErrCode.PARAM_INVALID);
     }
 
     public ArgumentException(String errMessage) {
         super(errMessage);
-        this.setErrCode(BasicErrCode.INVALID_PARAMETER);
+        this.setErrCode(BasicErrCode.PARAM_INVALID);
     }
 
     public ArgumentException(String errMessage, Throwable e) {
-        super(BasicErrCode.INVALID_PARAMETER,errMessage, e);
+        super(BasicErrCode.PARAM_INVALID,errMessage, e);
     }
 
 

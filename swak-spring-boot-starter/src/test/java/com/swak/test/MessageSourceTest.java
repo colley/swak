@@ -1,6 +1,7 @@
 package com.swak.test;
 
 import com.swak.common.enums.IResultCode;
+import com.swak.common.util.NetUtils;
 import com.swak.core.support.ClassScanners;
 
 import java.util.Arrays;

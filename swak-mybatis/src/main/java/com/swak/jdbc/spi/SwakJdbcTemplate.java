@@ -4,6 +4,7 @@ import com.swak.common.dto.SwakPage;
 import com.swak.common.spi.SpiPriority;
 import com.swak.common.spi.SpiServiceFactory;
 import com.swak.jdbc.conditions.SwakWrapper;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -16,7 +17,7 @@ import java.util.Map;
  * @author colley.ma
  * @since 2.4.0
  */
-public interface SwakJdbcTemplate extends SpiPriority {
+public interface SwakJdbcTemplate extends JdbcOperations,SpiPriority {
 
     <T> List<T> selectList(SwakWrapper<T> queryWrapper);
 

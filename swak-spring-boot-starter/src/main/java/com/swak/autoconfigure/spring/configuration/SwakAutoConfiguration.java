@@ -1,6 +1,8 @@
 package com.swak.autoconfigure.spring.configuration;
 
 import com.google.common.collect.Lists;
+import com.swak.autoconfigure.interceptor.SwakCompositeInterceptor;
+import com.swak.autoconfigure.interceptor.SwakHttpInterceptor;
 import com.swak.autoconfigure.service.LocalDictionaryService;
 import com.swak.autoconfigure.service.impl.LocalDictionaryServiceImpl;
 import com.swak.common.i18n.I18nDict;
@@ -14,8 +16,8 @@ import com.swak.core.monitor.async.AsyncThreadPoolMonitor;
 import com.swak.core.support.SpringBeanFactory;
 import com.swak.i18n.DefaultMessageI18nSource;
 import com.swak.i18n.I18nSourceProperties;
-import com.swak.i18n.LocaleCompositeInterceptor;
 import com.swak.i18n.LocaleCompositeResolver;
+import com.swak.i18n.LocaleI18nInterceptor;
 import com.swak.i18n.aggregate.AggregateResourceBundleMessageSource;
 import com.swak.i18n.constants.I18nConstants;
 import org.apache.commons.lang3.ArrayUtils;
@@ -33,7 +35,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -63,25 +64,18 @@ public class SwakAutoConfiguration {
         return new LocalDictionaryServiceImpl();
     }
 
-
-    @Bean
-    @ConditionalOnMissingBean(CommonsMultipartResolver.class)
-    public CommonsMultipartResolver multipartResolver(@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
-        long maxUploadSize = 31 * 1024 * 1024;
-        int maxInMemorySize = 40960;
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setDefaultEncoding("UTF-8");
-        multipartResolver.setMaxUploadSize(Optional.ofNullable(systemConfigurable.getMaxUploadSize()).orElse(maxUploadSize));
-        multipartResolver.setMaxInMemorySize(Optional.ofNullable(systemConfigurable.getMaxInMemorySize()).orElse(maxInMemorySize));
-        return multipartResolver;
-    }
-
     @Bean("asyncThreadPoolMonitor")
     public AsyncThreadPoolMonitor asyncThreadPoolMonitor() {
         AsyncThreadPoolMonitor starter = new AsyncThreadPoolMonitor();
         starter.setMonitoringPeriod(180); //180s
         return starter;
     }
+
+	@Bean
+	@ConditionalOnMissingBean(SwakCompositeInterceptor.class)
+	public SwakCompositeInterceptor swakCompositeInterceptor() {
+		return new SwakCompositeInterceptor();
+	}
 
     /**
      * 单独的线程池 1,10,100000，超过丢弃
@@ -118,16 +112,26 @@ public class SwakAutoConfiguration {
         return localeCompositeResolver;
     }
 
-    @Bean
-    @ConditionalOnMissingBean(name = "localeCompositeInterceptor")
-    public LocaleCompositeInterceptor localeCompositeInterceptor(@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable,
-                                                                 @Qualifier(value = "swakLocaleResolver") LocaleResolver swakLocaleResolver) {
-        LocaleCompositeInterceptor localeCompositeInterceptor = new LocaleCompositeInterceptor(swakLocaleResolver);
-        if (Objects.nonNull(systemConfigurable)) {
-            localeCompositeInterceptor.setParamName(systemConfigurable.getLocaleParamName());
-        }
-        return localeCompositeInterceptor;
-    }
+	@Bean(name = "localeI18nInterceptor")
+	@ConditionalOnMissingBean(LocaleI18nInterceptor.class)
+	public LocaleI18nInterceptor localeI18nInterceptor(@Qualifier(value = "swakLocaleResolver") LocaleResolver swakLocaleResolver,
+													   @Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
+		LocaleI18nInterceptor localeI18nInterceptor = new LocaleI18nInterceptor(swakLocaleResolver);
+		if (Objects.nonNull(systemConfigurable)) {
+			localeI18nInterceptor.setParamName(systemConfigurable.getLocaleParamName());
+		}
+		return localeI18nInterceptor;
+	}
+
+
+	@Bean
+	@ConditionalOnMissingBean(SwakHttpInterceptor.class)
+	public SwakHttpInterceptor swakHttpInterceptor(@Autowired(required = false) SystemEnvironmentConfigurable systemConfigurable) {
+		if (Objects.nonNull(systemConfigurable)) {
+			return new SwakHttpInterceptor(systemConfigurable.getSystemAppCode(),systemConfigurable.getHeaderUserKey(),systemConfigurable.getTraceIdPre());
+		}
+		return new SwakHttpInterceptor();
+	}
 
     @Bean
     @ConditionalOnMissingBean(name = "swakI18nMessageSource")

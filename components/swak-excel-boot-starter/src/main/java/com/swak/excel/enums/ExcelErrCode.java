@@ -3,7 +3,7 @@ package com.swak.excel.enums;
 import com.swak.common.enums.IResultCode;
 
 /**
- *
+ * 1100~11xx- Excel的业务错误码
  * @author colley.ma
  * @since 3.0.0
  **/
@@ -23,8 +23,8 @@ public enum ExcelErrCode implements IResultCode {
 
     ;
 
-    private Integer code;
-    private String msg;
+    private final Integer code;
+    private final String msg;
 
     ExcelErrCode(Integer code, String msg) {
         this.code = code;

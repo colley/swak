@@ -2,12 +2,14 @@ package com.swak.excel.metadata;
 
 import com.google.common.collect.Lists;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ExcelWriteDynamicData extends ExcelWriteData<List<Object>> {
     /**

@@ -1,5 +1,7 @@
 package com.swak.core.web;
 
+import org.springframework.lang.Nullable;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,9 +12,19 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface SwakInterceptor {
 
-    default void preHandle(HttpServletRequest request, HttpServletResponse response,Object result) throws ServletException {
-    }
+	int PRIORITY = 100;
 
-    default void postHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-    }
+	default boolean preHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		return true;
+	}
+
+	default void postHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	}
+
+	default void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+	}
+
+	default int priority() {
+		return PRIORITY;
+	}
 }

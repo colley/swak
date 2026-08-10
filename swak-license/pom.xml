@@ -24,6 +24,7 @@
     <modules>
         <module>swak-license-core</module>
         <module>swak-license-spi</module>
+        <module>swak-license-boot-starter</module>
     </modules>
 
     <dependencyManagement>

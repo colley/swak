@@ -159,52 +159,52 @@ public abstract class WhereWrapper<Children extends WhereWrapper<Children>> exte
 
     @Override
     public <R> Children between(boolean condition, String alias, SFunction<R, ?> column, Object val1, Object val2) {
-        return doIt(condition, JdbcRestrictions.between(columnToString(index.getValue(), alias, column),val1, val2));
+        return addCondition(condition,()->JdbcRestrictions.between(columnToString(index.getValue(), alias, column),val1, val2));
     }
 
     @Override
     public <R> Children notBetween(boolean condition, String alias, SFunction<R, ?> column, Object val1, Object val2) {
-        return doIt(condition, JdbcRestrictions.notBetween(columnToString(index.getValue(), alias, column),val1, val2));
+        return addCondition(condition, ()->JdbcRestrictions.notBetween(columnToString(index.getValue(), alias, column),val1, val2));
     }
 
     @Override
     public <R> Children isNull(boolean condition, SFunction<R, ?> column) {
-        return doIt(condition, JdbcRestrictions.isNull(columnToString(column)));
+        return addCondition(condition,()->JdbcRestrictions.isNull(columnToString(column)));
     }
 
     @Override
     public <R> Children isNotNull(boolean condition, SFunction<R, ?> column) {
-        return doIt(condition, JdbcRestrictions.isNotNull(columnToString(column)));
+        return addCondition(condition,()->JdbcRestrictions.isNotNull(columnToString(column)));
     }
 
     @Override
     public <R> Children in(boolean condition, SFunction<R, ?> column, Collection<?> coll) {
-        return doIt(condition, JdbcRestrictions.in(columnToString(column), coll));
+        return addCondition(condition,()->JdbcRestrictions.in(columnToString(column), coll));
     }
 
     @Override
     public <R> Children in(boolean condition, SFunction<R, ?> column, Object... values) {
-        return doIt(condition, JdbcRestrictions.in(columnToString(column), values));
+        return addCondition(condition, ()->JdbcRestrictions.in(columnToString(column), values));
     }
 
     @Override
     public <R> Children notIn(boolean condition, SFunction<R, ?> column, Collection<?> coll) {
-        return doIt(condition, JdbcRestrictions.notIn(columnToString(column), coll));
+        return addCondition(condition, ()->JdbcRestrictions.notIn(columnToString(column), coll));
     }
 
     @Override
     public <R> Children notIn(boolean condition, SFunction<R, ?> column, Object... values) {
-        return doIt(condition, JdbcRestrictions.notIn(columnToString(column), values));
+        return addCondition(condition, ()->JdbcRestrictions.notIn(columnToString(column), values));
     }
 
     @Override
     public <R> Children inSql(boolean condition, SFunction<R, ?> column, String inValue) {
-        return doIt(condition, JdbcRestrictions.addCondition(columnToString(column), IN, String.format("(%s)", inValue)));
+        return addCondition(condition, ()->JdbcRestrictions.addCondition(columnToString(column), IN, String.format("(%s)", inValue)));
     }
 
     @Override
     public <R> Children notInSql(boolean condition, SFunction<R, ?> column, String inValue) {
-        return doIt(condition, JdbcRestrictions.addCondition(columnToString(column), NOT_IN, String.format("(%s)", inValue)));
+        return addCondition(condition, ()->JdbcRestrictions.addCondition(columnToString(column), NOT_IN, String.format("(%s)", inValue)));
     }
 
 
@@ -234,7 +234,7 @@ public abstract class WhereWrapper<Children extends WhereWrapper<Children>> exte
      * <p>拼接 LIKE 以及 值</p>
      */
     protected <R> Children likeValue(boolean condition, SqlKeyword keyword, SFunction<R, ?> column, Object val, SqlLikeMode sqlLike) {
-        return doIt(condition, JdbcRestrictions.likeValue(columnToString(column), keyword, val, sqlLike));
+        return addCondition(condition, ()->JdbcRestrictions.likeValue(columnToString(column), keyword, val, sqlLike));
     }
 
     /**
@@ -242,11 +242,11 @@ public abstract class WhereWrapper<Children extends WhereWrapper<Children>> exte
      * <p>拼接 LIKE 以及 值</p>
      */
     protected <X> Children likeValue(boolean condition, SqlKeyword keyword, String alias, SFunction<X, ?> column, Object val, SqlLikeMode sqlLike) {
-        return doIt(condition, JdbcRestrictions.likeValue(columnToString(index.getValue(), alias, column), keyword,val, sqlLike));
+        return addCondition(condition, ()->JdbcRestrictions.likeValue(columnToString(index.getValue(), alias, column), keyword,val, sqlLike));
     }
 
     protected Children likeValue(boolean condition, SqlKeyword keyword, String column, Object val, SqlLikeMode sqlLike) {
-        return doIt(condition,JdbcRestrictions.likeValue(column, keyword,val, sqlLike));
+        return addCondition(condition,()->JdbcRestrictions.likeValue(column, keyword,val, sqlLike));
     }
 
     /**
@@ -258,19 +258,19 @@ public abstract class WhereWrapper<Children extends WhereWrapper<Children>> exte
      * @param val        条件值
      */
     protected <R> Children addCondition(boolean condition, SFunction<R, ?> column, SqlKeyword sqlKeyword, Object val) {
-        return doIt(condition, APPLY, JdbcRestrictions.addCondition(columnToString(column), sqlKeyword, val));
+        return doIt(condition, ()->APPLY, ()->JdbcRestrictions.addCondition(columnToString(column), sqlKeyword, val));
     }
 
     protected <X> Children addCondition(boolean condition, String alias, SFunction<X, ?> column, SqlKeyword sqlKeyword, Object val) {
-        return doIt(condition, APPLY, JdbcRestrictions.addCondition(columnToString(index.getValue(), alias, column), sqlKeyword, val));
+        return doIt(condition, ()->APPLY, ()->JdbcRestrictions.addCondition(columnToString(index.getValue(), alias, column), sqlKeyword, val));
     }
 
     protected <X, S> Children addCondition(boolean condition, String alias, SFunction<X, ?> column,
                                            SqlKeyword sqlKeyword, String rightAlias, SFunction<S, ?> val) {
         Class<X> c = LambdaUtils.getEntityClass(column);
         Class<S> v = LambdaUtils.getEntityClass(val);
-        return doIt(condition, columnToSqlSegment(index.getValue(), alias, column), sqlKeyword,
-                isOn.isTrue() ? columnToSqlSegmentS(index.getValue(), rightAlias, val, v == c && v == joinClass) :
+        return doIt(condition, ()->columnToSqlSegment(index.getValue(), alias, column), ()->sqlKeyword,
+				()->isOn.isTrue() ? columnToSqlSegmentS(index.getValue(), rightAlias, val, v == c && v == joinClass) :
                         columnToSqlSegmentS(index.getValue(), rightAlias, val, v == c));
     }
 

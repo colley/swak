@@ -27,21 +27,25 @@ public  class MergeSegments implements SqlSegment{
     protected GroupBySegment groupBy = new GroupBySegment();
 
     public void add(SqlSegment... sqlSegments) {
-        List<SqlSegment> list = Lists.newArrayList(sqlSegments);
-        SqlSegment firstSqlSegment = list.get(0);
-        if (MatchSegment.ORDER_BY.match(firstSqlSegment)) {
-            list.remove(0);
-            this.orderBys.addAll(list);
-        } else if (MatchSegment.GROUP_BY.match(firstSqlSegment)) {
-            list.remove(0);
-            this.groupBy.groupBy(list);
-        } else if (MatchSegment.HAVING.match(firstSqlSegment)) {
-            list.remove(0);
-            groupBy.having(list);
-        } else {
-            this.normal.addAll(list);
-        }
+        add(Lists.newArrayList(sqlSegments));
     }
+
+	public void add(List<SqlSegment> sqlSegments) {
+		List<SqlSegment> list = Lists.newArrayList(sqlSegments);
+		SqlSegment firstSqlSegment = list.get(0);
+		if (MatchSegment.ORDER_BY.match(firstSqlSegment)) {
+			list.remove(0);
+			this.orderBys.addAll(list);
+		} else if (MatchSegment.GROUP_BY.match(firstSqlSegment)) {
+			list.remove(0);
+			this.groupBy.groupBy(list);
+		} else if (MatchSegment.HAVING.match(firstSqlSegment)) {
+			list.remove(0);
+			groupBy.having(list);
+		} else {
+			this.normal.addAll(list);
+		}
+	}
 
     @Override
     public SqlKeyword getSqlKeyword() {

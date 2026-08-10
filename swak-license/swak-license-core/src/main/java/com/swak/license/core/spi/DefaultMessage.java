@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2005 - 2019 Schlichtherle IT Services.
- * All rights reserved. Use is subject to license terms.
- */
+
 package com.swak.license.core.spi;
 
 
@@ -9,6 +6,7 @@ import java.util.Locale;
 
 /**
  * A basic message implementation.
+ * @author colley
  */
 public  class DefaultMessage extends BasicMessage {
     private final String message;

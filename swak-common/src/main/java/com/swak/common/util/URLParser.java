@@ -27,7 +27,6 @@ public class URLParser {
  
 	protected boolean compiled = false;
 	public Map<String, String> parsedParams;
-	protected URLDecoder urld = new URLDecoder();
  
 	public static URLParser fromURL(String url) {
 		URLParser parser = new URLParser();

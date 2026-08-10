@@ -84,6 +84,18 @@
                 <version>${project.version}</version>
             </dependency>
 
+			<dependency>
+				<groupId>io.gitee.mcolley</groupId>
+				<artifactId>swak-license-boot-starter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.gitee.mcolley</groupId>
+				<artifactId>swak-dubbo</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 <!--            <dependency>-->
 <!--                <groupId>io.gitee.mcolley</groupId>-->
 <!--                <artifactId>swak-formula</artifactId>-->
@@ -113,6 +125,7 @@
                 <artifactId>swak-distributed-lock-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <!-- swak-component end -->
         </dependencies>
     </dependencyManagement>

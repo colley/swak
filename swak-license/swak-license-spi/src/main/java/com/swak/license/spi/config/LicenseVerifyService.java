@@ -11,8 +11,9 @@ public interface LicenseVerifyService {
 
     License load() throws LicenseManagementException;
 
-
     License verify() throws LicenseManagementException;
 
     void uninstall() throws LicenseManagementException;
+
+    License reinstall(Source source) throws LicenseManagementException;
 }

@@ -1,0 +1,1 @@
+dubboRequestFilter=com.swak.dubbo.filter.DubboRequestFilter

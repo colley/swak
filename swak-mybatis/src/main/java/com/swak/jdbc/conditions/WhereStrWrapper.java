@@ -1,5 +1,6 @@
 package com.swak.jdbc.conditions;
 
+import com.google.common.collect.Lists;
 import com.swak.common.util.StringEscape;
 import com.swak.common.util.StringPool;
 import com.swak.jdbc.toolkit.JdbcRestrictions;
@@ -19,9 +20,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.swak.jdbc.enums.SqlKeyword.*;
 import static java.util.stream.Collectors.joining;
@@ -205,52 +209,52 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
 
     @Override
     public Children between(boolean condition, String column, Object val1, Object val2) {
-        return doIt(condition, JdbcRestrictions.between(columnToString(column), val1, val2));
+        return doIt(condition,()-> JdbcRestrictions.between(columnToString(column), val1, val2));
     }
 
     @Override
     public Children notBetween(boolean condition, String column, Object val1, Object val2) {
-        return doIt(condition, JdbcRestrictions.notBetween(columnToString(column), val1, val2));
+        return doIt(condition, ()->JdbcRestrictions.notBetween(columnToString(column), val1, val2));
     }
 
     @Override
     public Children isNull(boolean condition, String column) {
-        return doIt(condition, JdbcRestrictions.isNull(columnToString(column)));
+        return doIt(condition, ()->JdbcRestrictions.isNull(columnToString(column)));
     }
 
     @Override
     public Children isNotNull(boolean condition, String column) {
-        return doIt(condition, JdbcRestrictions.isNotNull(columnToString(column)));
+        return doIt(condition, ()->JdbcRestrictions.isNotNull(columnToString(column)));
     }
 
     @Override
     public Children in(boolean condition, String column, Collection<?> coll) {
-        return doIt(condition, JdbcRestrictions.in(columnToString(column), coll));
+        return doIt(condition, ()->JdbcRestrictions.in(columnToString(column), coll));
     }
 
     @Override
     public Children in(boolean condition, String column, Object... values) {
-        return doIt(condition, JdbcRestrictions.in(columnToString(column), values));
+        return doIt(condition, ()->JdbcRestrictions.in(columnToString(column), values));
     }
 
     @Override
     public Children notIn(boolean condition, String column, Collection<?> coll) {
-        return doIt(condition, JdbcRestrictions.notIn(columnToString(column), coll));
+        return doIt(condition, ()->JdbcRestrictions.notIn(columnToString(column), coll));
     }
 
     @Override
     public Children notIn(boolean condition, String column, Object... values) {
-        return doIt(condition, JdbcRestrictions.notIn(columnToString(column), values));
+        return doIt(condition, ()->JdbcRestrictions.notIn(columnToString(column), values));
     }
 
     @Override
     public Children inSql(boolean condition, String column, String inValue) {
-        return doIt(condition, JdbcRestrictions.addCondition(columnToString(column), IN, String.format("(%s)", inValue)));
+        return doIt(condition, ()->JdbcRestrictions.addCondition(columnToString(column), IN, String.format("(%s)", inValue)));
     }
 
     @Override
     public Children notInSql(boolean condition, String column, String inValue) {
-        return doIt(condition, JdbcRestrictions.addCondition(columnToString(column), NOT_IN, String.format("(%s)", inValue)));
+        return doIt(condition, ()->JdbcRestrictions.addCondition(columnToString(column), NOT_IN, String.format("(%s)", inValue)));
     }
 
 
@@ -302,7 +306,7 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
      * <p>拼接 LIKE 以及 值</p>
      */
     protected Children likeValue(boolean condition, SqlKeyword keyword, String column, Object val, SqlLikeMode sqlLike) {
-        return doIt(condition, JdbcRestrictions.likeValue(columnToString(column), keyword, val, sqlLike));
+        return doIt(condition, ()->JdbcRestrictions.likeValue(columnToString(column), keyword, val, sqlLike));
     }
 
     /**
@@ -314,8 +318,20 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
      * @param val        条件值
      */
     protected Children addCondition(boolean condition, String column, SqlKeyword sqlKeyword, Object val) {
-        return doIt(condition, APPLY, JdbcRestrictions.addCondition(columnToString(column), sqlKeyword, val));
+        return doIt(condition, ()->APPLY, ()->JdbcRestrictions.addCondition(columnToString(column), sqlKeyword, val));
     }
+
+	@SafeVarargs
+	protected final Children addCondition(boolean condition, Supplier<SqlSegment>... sqlSegments) {
+		if (condition) {
+			if(ArrayUtils.isNotEmpty(sqlSegments)){
+				List<SqlSegment> lastSegments = Lists.newArrayList(APPLY);
+				lastSegments.addAll(Arrays.stream(sqlSegments).map(Supplier::get).collect(Collectors.toList()));
+				expression.add(lastSegments);
+			}
+		}
+		return getChildren();
+	}
 
 
     /**
@@ -325,9 +341,13 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
      * @param sqlSegments sql片段数组
      * @return Children
      */
-    protected Children doIt(boolean condition, SqlSegment... sqlSegments) {
+    @SafeVarargs
+	protected final Children doIt(boolean condition, Supplier<SqlSegment>... sqlSegments) {
         if (condition) {
-            expression.add(sqlSegments);
+			if(ArrayUtils.isNotEmpty(sqlSegments)){
+				List<SqlSegment> segmentList = Arrays.stream(sqlSegments).map(Supplier::get).collect(Collectors.toList());
+				expression.add(segmentList);
+			}
         }
         return getChildren();
     }
@@ -368,7 +388,7 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
      * <p>NOT 关键词</p>
      */
     protected Children not(boolean condition) {
-        return doIt(condition, NOT);
+        return doIt(condition, ()->NOT);
     }
 
     /**
@@ -376,7 +396,7 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
      * <p>拼接 AND</p>
      */
     protected Children and(boolean condition) {
-        return doIt(condition, AND);
+        return doIt(condition, ()->AND);
     }
 
     protected abstract Children instance();
@@ -390,7 +410,7 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
         if (condition) {
             final Children instance = instance();
             consumer.accept(instance);
-            return doIt(true, APPLY, instance);
+            return doIt(true, ()->APPLY, ()->instance);
         }
         return getChildren();
     }
@@ -422,12 +442,12 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
 
     @Override
     public Children or(boolean condition) {
-        return doIt(condition, OR);
+        return doIt(condition, ()->OR);
     }
 
     @Override
     public Children apply(boolean condition, String applySql, Object... value) {
-        return doIt(condition, JdbcRestrictions.apply(formatSql(applySql, value)));
+        return doIt(condition, ()->JdbcRestrictions.apply(formatSql(applySql, value)));
     }
 
     @Override
@@ -456,7 +476,7 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
 
     @Override
     public Children exists(boolean condition, String existsSql) {
-        return doIt(condition, JdbcRestrictions.apply(EXISTS,StringSqlSegment.apply(String.format("(%s)", existsSql))));
+        return doIt(condition, ()->JdbcRestrictions.apply(EXISTS,StringSqlSegment.apply(String.format("(%s)", existsSql))));
     }
 
     @Override

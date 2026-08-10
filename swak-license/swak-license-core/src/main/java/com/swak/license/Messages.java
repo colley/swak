@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2005 - 2019 Schlichtherle IT Services.
- * All rights reserved. Use is subject to license terms.
- */
+
 package com.swak.license;
 
 import com.swak.license.api.i18n.Message;
@@ -32,6 +29,12 @@ public final class Messages {
 
 
     public static final String LICENSE_IS_NOT_YET_VALID = "licenseIsNotYetValid";
+
+    public static final String LICENSE_IP_ADDRESS = "licenseIpAddress";
+
+    public static final String LICENSE_MAC_ADDRESS = "licenseMacAddress";
+
+    public static final String LICENSE_EXPIRED = "licenseExpired";
 
     /** The message key for the canonical name of an unknown user. */
     public static final String UNKNOWN = "unknown";

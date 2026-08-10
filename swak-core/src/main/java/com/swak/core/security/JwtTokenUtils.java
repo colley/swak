@@ -9,11 +9,12 @@ import com.swak.common.util.UUIDHexGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.TextCodec;
+import io.jsonwebtoken.security.Keys;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,10 +26,14 @@ import java.util.Objects;
  */
 public class JwtTokenUtils {
 
+    private static SecretKey getSigningKey(String jwtSecret) {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
     public static String encode(TokenJwtDetails jwtDetails, String jwtSecret) {
         if (Objects.nonNull(jwtDetails)) {
             Map<String, Object> claims = JacksonUtils.convertValue(jwtDetails);
-            JwtBuilder jwtBuilder = Jwts.builder().signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(jwtSecret))
+            JwtBuilder jwtBuilder = Jwts.builder().signWith(getSigningKey(jwtSecret))
                     .setClaims(claims);
             return jwtBuilder.compact();
         }
@@ -47,7 +52,7 @@ public class JwtTokenUtils {
 
     public static String encode(Map<String, Object> claims, String jwtSecret) {
         if (MapUtils.isNotEmpty(claims)) {
-            JwtBuilder jwtBuilder = Jwts.builder().signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode(jwtSecret))
+            JwtBuilder jwtBuilder = Jwts.builder().signWith(getSigningKey(jwtSecret))
                     .setClaims(claims);
             return jwtBuilder.compact();
         }
@@ -58,7 +63,8 @@ public class JwtTokenUtils {
         if (StringUtils.isEmpty(jwt)) {
             return null;
         }
-        return Jwts.parser().setSigningKey(TextCodec.BASE64.encode(jwtSecret)).parseClaimsJws(jwt).getBody();
+        return Jwts.parser().verifyWith(getSigningKey(jwtSecret)).build()
+                .parseSignedClaims(jwt).getPayload();
     }
 
     public static void main(String[] args) {

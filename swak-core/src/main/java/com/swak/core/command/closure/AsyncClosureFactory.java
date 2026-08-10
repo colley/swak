@@ -46,7 +46,6 @@ public class AsyncClosureFactory implements SwakClosureFactory {
      * @param rootMethodName the name of external method within which closure is
      *        created.
      * @param closureObj the instance of specific anonymous class
-     * @return new {@link Closure} instance
      * @throws Exception
      */
     SwakClosure createClosure(String rootMethodName, final Object closureObj) throws Exception {

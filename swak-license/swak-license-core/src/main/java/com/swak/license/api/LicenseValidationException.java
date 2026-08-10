@@ -6,8 +6,11 @@ package com.swak.license.api;
 
 
 import com.swak.license.api.i18n.Message;
+import lombok.Getter;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,6 +24,9 @@ public class LicenseValidationException extends LicenseManagementException {
 
     private final Message msg;
 
+    @Getter
+    private License license;
+
 
     /**
      * Constructs a license validation exception with the given
@@ -31,13 +37,21 @@ public class LicenseValidationException extends LicenseManagementException {
     public LicenseValidationException(final Message msg) {
         this.msg = requireNonNull(msg);
     }
+    public LicenseValidationException(final Message msg,License license) {
+        this.msg = requireNonNull(msg);
+        this.license = license;
+    }
 
     @Override
-    public String getMessage() { return msg.toString(Locale.ROOT); }
+    public String getMessage() {
+         Locale locale = Optional.ofNullable(LocaleContextHolder.getLocale()).orElse(Locale.ROOT);
+        return msg.toString(locale);
+    }
 
     @Override
     public String getLocalizedMessage() {
-        return msg.toString(Locale.getDefault());
+        Locale locale = Optional.ofNullable(LocaleContextHolder.getLocale()).orElse(Locale.getDefault());
+        return msg.toString(locale);
     }
 
     /**

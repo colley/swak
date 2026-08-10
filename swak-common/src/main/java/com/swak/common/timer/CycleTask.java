@@ -49,7 +49,7 @@ public abstract class CycleTask implements TimerTask {
 		return this;
 	}
 	
-	protected abstract void  invoke() throws ThrowableWrapper; 
+	protected abstract void  invoke() throws Exception;
 
 	static Long now() {
 		return System.currentTimeMillis();
@@ -73,12 +73,23 @@ public abstract class CycleTask implements TimerTask {
 			log.warn("[swak-timer] - CycleTask job is canceled");
 			return;
 		}
+		boolean shouldRepute = true; // 标记是否应该重投任务
 		try {
 			invoke();
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			log.error("[swak-timer] - CycleTask error", e);
+			shouldRepute = onError(e);
 		}
-		reput(timeout, tick);
+		if (shouldRepute) {
+			reput(timeout, tick);
+		} else {
+			log.info("[swak-timer] - CycleTask stopped by onError handler");
+		}
+	}
+
+	protected boolean onError(Exception e) {
+		log.info("[swak-timer] -invoke error",e);
+		return true;
 	}
 
 	private void reput(Timeout timeout, Long tick) {

@@ -14,7 +14,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>swak component of trueLicense spring boot starter</description>
+    <description>swak component of license api</description>
 
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>

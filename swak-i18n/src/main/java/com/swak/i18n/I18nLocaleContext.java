@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -91,6 +90,9 @@ public class I18nLocaleContext {
 
 
     public static String getLocale(String paramName, Function<String, String> function) {
+		if(StringUtils.isEmpty(paramName)){
+			return null;
+		}
         String newLocale = function.apply(paramName);
         if(Objects.nonNull(newLocale)){
             return newLocale;

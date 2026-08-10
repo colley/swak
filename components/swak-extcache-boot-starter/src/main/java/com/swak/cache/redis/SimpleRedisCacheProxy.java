@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 
 public class SimpleRedisCacheProxy implements DistributedCacheProxy, InitializingBean {
 
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    private Cache<String,RedisScript> SCRIPT_CACHE = Caffeine.newBuilder()
+    private final Cache<String,RedisScript> SCRIPT_CACHE = Caffeine.newBuilder()
             .maximumSize(1000).build();
 
     public SimpleRedisCacheProxy(RedisTemplate<String, Object> redisTemplate) {
@@ -206,7 +206,8 @@ public class SimpleRedisCacheProxy implements DistributedCacheProxy, Initializin
 
     @Override
     public Long hDel(String key, Set<String> fields) {
-        return redisTemplate.opsForHash().delete(key, fields.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
+		Object[] array = fields.toArray(new String[0]);
+		return redisTemplate.opsForHash().delete(key, array);
     }
 
     @Override

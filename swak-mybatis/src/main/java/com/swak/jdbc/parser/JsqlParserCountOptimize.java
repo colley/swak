@@ -28,9 +28,7 @@ public class JsqlParserCountOptimize implements ISqlParser {
     private static final List<SelectItem> COUNT_SELECT_ITEM = Collections.singletonList(defaultCountSelectItem());
     private final Log logger = LogFactory.getLog(JsqlParserCountOptimize.class);
 
-    private boolean optimizeJoin = false;
-
-    /**
+	/**
      * 获取jsqlparser中count的SelectItem
      */
     private static SelectItem defaultCountSelectItem() {
@@ -71,7 +69,8 @@ public class JsqlParserCountOptimize implements ISqlParser {
             }
             // 包含 join 连表,进行判断是否移除 join 连表
             List<Join> joins = plainSelect.getJoins();
-            if (optimizeJoin && CollectionUtils.isNotEmpty(joins)) {
+			boolean optimizeJoin = false;
+			if (optimizeJoin && CollectionUtils.isNotEmpty(joins)) {
                 boolean canRemoveJoin = true;
                 String whereS = Optional.ofNullable(plainSelect.getWhere()).map(Expression::toString).orElse(StringPool.EMPTY);
                 // 不区分大小写
@@ -85,7 +84,7 @@ public class JsqlParserCountOptimize implements ISqlParser {
                     String str = Optional.ofNullable(table.getAlias()).map(Alias::getName).orElse(table.getName()) + StringPool.DOT;
                     // 不区分大小写
                     str = str.toLowerCase();
-                    String onExpressionS = join.getOnExpression().toString();
+                    String onExpressionS = join.getOnExpressions().iterator().next().toString();
                     /* 如果 join 里包含 ?(代表有入参) 或者 where 条件里包含使用 join 的表的字段作条件,就不移除 join */
                     if (onExpressionS.contains(StringPool.QUESTION_MARK) || whereS.contains(str)) {
                         canRemoveJoin = false;

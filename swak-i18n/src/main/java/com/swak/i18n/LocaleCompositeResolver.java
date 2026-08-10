@@ -34,7 +34,7 @@ public class LocaleCompositeResolver implements LocaleContextResolver {
 
     @Setter
     @Getter
-    private String paramName ="lang";
+    private String paramName ="Lang";
 
     private Locale defaultLocale;
 

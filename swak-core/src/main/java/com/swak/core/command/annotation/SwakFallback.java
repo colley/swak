@@ -25,8 +25,8 @@ import java.lang.annotation.Target;
 public @interface SwakFallback {
 
     /** 兜底方法 **/
-    abstract String fallbackMethod() default "";
+	String fallbackMethod() default "";
 
     /** 兜底类型 {@link SwakExecutionType} **/
-    abstract SwakExecutionType async() default SwakExecutionType.SYNCHRONOUS;
+	SwakExecutionType async() default SwakExecutionType.SYNCHRONOUS;
 }
