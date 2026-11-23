@@ -1,9 +1,11 @@
 /target/
+**/target/
 /.settings/
 /.classpath
 /.project
 /bin/
 .flattened-pom.xml
+.mvn/wrapper/maven-wrapper.jar
 .github/
 .workbuddy/
 docs/
