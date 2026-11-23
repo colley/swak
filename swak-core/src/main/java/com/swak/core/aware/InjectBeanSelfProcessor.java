@@ -1,9 +1,12 @@
 package com.swak.core.aware;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Component;
 
 @Component
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @Slf4j
 public class InjectBeanSelfProcessor implements SwakPostProcessor {
 
