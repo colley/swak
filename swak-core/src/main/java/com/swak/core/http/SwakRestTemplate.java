@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RequestCallback;
@@ -25,8 +24,15 @@ public class SwakRestTemplate implements SwakRestOperations {
 
     private RestTemplate restTemplate;
 
+    /**
+     * 默认构造：与 {@link RestTemplateBuilder} 一致，底层使用 JDK {@link java.net.http.HttpClient}。
+     * <p>
+     * 历史上这里用的是 {@code HttpComponentsClientHttpRequestFactory}，但全仓没有任何模块声明
+     * httpclient5 依赖（它只随 nacos-client 以 provided 出现），实际运行时会
+     * {@code NoClassDefFoundError}，因此统一到 JDK 实现。
+     */
     public SwakRestTemplate() {
-        this.restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+        this(RestTemplateBuilder.newBuilder().build().restTemplate);
     }
 
     public SwakRestTemplate(RestTemplate restTemplate) {
@@ -97,7 +103,7 @@ public class SwakRestTemplate implements SwakRestOperations {
     @Override
     public <T> T getForObject(String url, Class<T> responseType, Map<String, ?> uriVariables)
             throws RestClientException {
-        return null;
+        return restTemplate.getForObject(url, responseType, uriVariables);
     }
 
     @Override
@@ -173,7 +179,7 @@ public class SwakRestTemplate implements SwakRestOperations {
     @Override
     public <T> ResponseEntity<T> postForEntity(String url, Object request, Class<T> responseType,
                                                Object... uriVariables) throws RestClientException {
-        return restTemplate.postForEntity(url, request, responseType);
+        return restTemplate.postForEntity(url, request, responseType, uriVariables);
     }
 
     @Override
