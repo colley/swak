@@ -23,6 +23,7 @@
 		<module>components</module>
 		<module>swak-license</module>
 		<module>swak-bom</module>
+		<module>swak-test-runner</module>
 	</modules>
 
 	<properties>
