@@ -4,7 +4,12 @@
 /.project
 /bin/
 .flattened-pom.xml
-
+.github/
+.workbuddy/
+docs/
+### macOS ###
+.DS_Store
+**/.DS_Store
 ### IntelliJ IDEA ###
 .idea
 *.iws
