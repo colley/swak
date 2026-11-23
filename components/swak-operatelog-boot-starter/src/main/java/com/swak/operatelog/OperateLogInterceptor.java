@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.MDC;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -64,6 +65,10 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
 
     public OperateLogInterceptor(OperateLogService operateLogService) {
         this();
+        setOperateLogService(operateLogService);
+    }
+
+    public void setOperateLogService(OperateLogService operateLogService) {
         this.operateLogService = operateLogService;
         this.operateLogProducer = new OperateLogProducer(operateLogService);
         this.operateLogProducer.startWork();
@@ -186,6 +191,13 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
     @Override
     public void afterSingletonsInstantiated() {
         super.afterSingletonsInstantiated();
+        if (Objects.isNull(this.operateLogService) && Objects.nonNull(this.beanFactory)) {
+            try {
+                setOperateLogService(this.beanFactory.getBean(OperateLogService.class));
+            } catch (NoSuchBeanDefinitionException ex) {
+                log.warn("[swak-operatelog] - no OperateLogService bean found, operate log will be skipped");
+            }
+        }
         this.initialized = true;
     }
 
