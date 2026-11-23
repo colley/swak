@@ -5,10 +5,8 @@ import com.swak.core.interceptor.SwakAnnotationUtils;
 import com.swak.lock.annotation.LockAnnotationParser;
 import com.swak.lock.annotation.LockOperation;
 import com.swak.lock.annotation.Lockable;
-import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -40,23 +38,16 @@ public class SwakLockAnnotationParser implements LockAnnotationParser {
         }
         final Collection<LockOperation> ops = new ArrayList<>(1);
         ans.stream().filter(ann -> ann instanceof Lockable)
-            .forEach(ann -> ops.add(parseLockAnnotation(method, (Lockable) ann)));
+            .forEach(ann -> ops.add(parseLockAnnotation((Lockable) ann)));
         return ops;
     }
 
-    private LockOperation parseLockAnnotation(AnnotatedElement ae, Lockable lockable) {
-        LockOperation lockOperation = new LockOperation()
-                .setKey(lockable.key()).setLeaseTime(lockable.leaseTime())
-                        .setTimeToTry(lockable.timeToTry()).setTimeUnit(lockable.timeUnit());
-        validateLockOperation(ae, lockOperation);
-        return lockOperation;
-    }
-
-    private void validateLockOperation(AnnotatedElement ae, LockOperation operation) {
-        if (StringUtils.hasText(operation.getKey())) {
-            throw new IllegalStateException("[Swak-Lock] Invalid Lockable annotation configuration on '" + ae.toString()
-                + "'.'key' attributes have been set. These attributes are mutually exclusive: either set the SpEL expression used to"
-                + "compute the key at runtime to use.");
-        }
+    private LockOperation parseLockAnnotation(Lockable lockable) {
+        return new LockOperation()
+                .setKey(lockable.key())
+                .setLeaseTime(lockable.leaseTime())
+                .setTimeToTry(lockable.timeToTry())
+                .setTimeUnit(lockable.timeUnit())
+                .setFallbackMethod(lockable.fallbackMethod());
     }
 }

@@ -74,21 +74,33 @@ public class LockableInterceptor extends SwakAdviceSupport {
                 Collection<LockOperation> operations = lockOperationSource.getBasicOperations(method, targetClass);
                 if (!CollectionUtils.isEmpty(operations)) {
                     LockOperation lockOperation = operations.iterator().next();
-                    EvaluationContext evaluationContext = expressionEvaluator.createEvaluationContext(method,
-                            args, target, target.getClass());
-                    String key = expressionEvaluator.key(lockOperation.getKey(), method, evaluationContext).toString();
-                    try {
-                        if (acquireLock(key, lockOperation)) {
+                    String key = resolveKey(lockOperation, method, target, targetClass, args);
+                    if (acquireLock(key, lockOperation)) {
+                        try {
                             return invoker.invoke();
+                        } finally {
+                            distributedLock.releaseLock(key);
                         }
-                        return getFallback(target, method, args, lockOperation);
-                    } finally {
-                        distributedLock.releaseLock(key);
                     }
+                    // 未抢到锁时不能释放，交由 fallback 处理
+                    return getFallback(target, method, args, lockOperation);
                 }
             }
         }
         return super.invokeOperation(invoker);
+    }
+
+    /**
+     * 解析锁 key：{@code @Lockable#key()} 为空时退化为「类名.方法名」，而不是把空串交给 SpEL。
+     */
+    protected String resolveKey(LockOperation lockOperation, Method method, Object target, Class<?> targetClass,
+                                Object[] args) {
+        if (StringUtils.isBlank(lockOperation.getKey())) {
+            return methodIdentification(method, targetClass);
+        }
+        EvaluationContext evaluationContext = expressionEvaluator.createEvaluationContext(method, args, target,
+                target.getClass());
+        return expressionEvaluator.key(lockOperation.getKey(), method, evaluationContext).toString();
     }
 
     protected Object getFallback(Object target, Method method, Object[] args, LockOperation lockOperation) {
