@@ -30,7 +30,7 @@ public class SwakLockAutoConfiguration {
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnBean(DistributedLock.class)
     @ConditionalOnMissingBean(LockAnnotationParser.class)
-    public LockAnnotationParser lockAnnotationParser() {
+    public static LockAnnotationParser lockAnnotationParser() {
         return new SwakLockAnnotationParser();
     }
 
@@ -38,26 +38,37 @@ public class SwakLockAutoConfiguration {
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnBean(DistributedLock.class)
     @ConditionalOnMissingBean(LockOperationSource.class)
-    public LockOperationSource lockOperationSource(LockAnnotationParser lockAnnotationParser) {
+    public static LockOperationSource lockOperationSource(LockAnnotationParser lockAnnotationParser) {
         return new DefaultLockOperationSource(lockAnnotationParser);
     }
 
+    /**
+     * 注意：这里刻意不注入 {@link DistributedLock}。本 Bean 会被
+     * {@link LockableAnnotationBeanPostProcessor}（BeanPostProcessor）提前触发实例化，
+     * 若在此注入锁实现，会连带把 {@code DistributedLock} 提前实例化，导致它无法被所有
+     * BeanPostProcessor 加工并打出 BeanPostProcessorChecker 警告。
+     * {@link LockableInterceptor#afterSingletonsInstantiated()} 会在单例全部就绪后从
+     * BeanFactory 中惰性获取锁实现。
+     */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnBean(DistributedLock.class)
     @ConditionalOnMissingBean(LockableInterceptor.class)
-    public LockableInterceptor lockableInterceptor(DistributedLock distributedLock, LockOperationSource lockOperationSource) {
+    public static LockableInterceptor lockableInterceptor(LockOperationSource lockOperationSource) {
         LockableInterceptor interceptor = new LockableInterceptor();
         interceptor.setOperationSource(lockOperationSource);
-        interceptor.setDistributedLock(distributedLock);
         return interceptor;
     }
 
+    /**
+     * 声明为 {@code static}：BeanPostProcessor 在容器启动极早期创建，非 static 工厂方法会强制提前
+     * 实例化本配置类，从而错过部分 BeanPostProcessor 的处理（BeanPostProcessorChecker 会告警）。
+     */
     @Bean("internalLockableAdvisor")
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnBean(LockableInterceptor.class)
     @ConditionalOnMissingBean(LockableAnnotationBeanPostProcessor.class)
-    public LockableAnnotationBeanPostProcessor internalLockableAdvisor(LockableInterceptor lockableInterceptor) {
+    public static LockableAnnotationBeanPostProcessor internalLockableAdvisor(LockableInterceptor lockableInterceptor) {
         LockableAnnotationBeanPostProcessor dynamicAdvisor = new LockableAnnotationBeanPostProcessor(lockableInterceptor);
         dynamicAdvisor.setOrder(SwakConstants.ORDER_PRECEDENCE + 1001);
         return dynamicAdvisor;
