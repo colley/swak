@@ -1,5 +1,5 @@
 
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Swak v2.3.3</h1>
+<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Swak v3.0.0</h1>
 <h4 align="center">基于SpringBoot多组件集成的Java快速开发框架</h4>
 <p align="center">
 	<a href="https://search.maven.org/search?q=g:io.gitee.mcolley%20a:swak*"><img src="https://img.shields.io/maven-central/v/io.gitee.mcolley/swak-core.svg"></a>
@@ -35,9 +35,9 @@ SWAK分为三个部分，SWAK架构、SWAK组件以及SWAK脚手架。
 
 ### 依赖中间件版本
 
-中间件名称 | 版本              |备注
------- |-----------------| ----
-`spring boot`  | 2.7.18	 | spring boot
+中间件名称 | 版本     |备注
+------ |--------| ----
+`spring boot`  | 4.1.1	 | spring boot
 
 
 ### SWAK脚手架
