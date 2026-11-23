@@ -108,11 +108,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>io.gitee.mcolley</groupId>-->
-<!--                <artifactId>swak-security-jwt-boot-starter</artifactId>-->
-<!--                <version>${project.version}</version>-->
-<!--            </dependency>-->
 
             <dependency>
                 <groupId>io.gitee.mcolley</groupId>

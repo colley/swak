@@ -3,14 +3,13 @@ package com.swak.cache.spring.configuration;
 import com.swak.autoconfigure.condition.ConditionalExtOnProperty;
 import com.swak.autoconfigure.condition.ConditionalSymbol;
 import com.swak.cache.redis.SimpleRedisCacheProxy;
-import com.swak.core.SwakConstants;
 import com.swak.core.cache.DistributedCacheProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -24,9 +23,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({RedisOperations.class})
-@EnableConfigurationProperties(RedisProperties.class)
+@EnableConfigurationProperties(DataRedisProperties.class)
 @ConditionalOnMissingClass("org.redisson.Redisson")
-@AutoConfigureBefore(RedisAutoConfiguration.class)
+@AutoConfigureBefore(DataRedisAutoConfiguration.class)
 @ConditionalExtOnProperty(prefix = "spring.redis", name = "host",symbol = ConditionalSymbol.IS_NOT_EMPTY)
 public class SwakRedisAutoConfiguration {
 

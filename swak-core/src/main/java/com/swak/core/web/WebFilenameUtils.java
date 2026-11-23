@@ -3,7 +3,7 @@ package com.swak.core.web;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 /**

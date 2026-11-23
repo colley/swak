@@ -16,11 +16,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
 import org.springframework.context.ApplicationContext;
@@ -29,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +37,7 @@ import java.util.Optional;
 @EnableConfigurationProperties(SwakCacheProperties.class)
 @Import({RedissonAutoConfiguration.class,SwakRedisAutoConfiguration.class})
 @ConditionalOnProperty(prefix = SwakConstants.SWAK_CACHE, name = "enabled", havingValue = "true")
-public class SwakCacheAutoConfiguration extends CachingConfigurerSupport {
+public class SwakCacheAutoConfiguration implements CachingConfigurer {
 
     @Autowired(required = false)
     private DistributedCacheProxy redisCacheProxy;
@@ -95,33 +93,12 @@ public class SwakCacheAutoConfiguration extends CachingConfigurerSupport {
     }
 
     /**
-     * <bean id="ehcache" class=
-     * "org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-     * <property name="configLocation" value="classpath:ehcache.xml"></property>
-     * </bean>
-     * <p>
-     * <bean id="cacheManager" class=
-     * "org.springframework.cache.ehcache.EhCacheCacheManager">
-     * <property name="cacheManager" ref="ehcache"></property> </bean>
-     *
-     * @return
+     * EhCache 2.x integration was removed in Spring Framework 6.x.
+     * Returns null to fall back to Caffeine cache manager.
+     * If EhCache is needed, migrate to EhCache 3.x with JCache (JSR-107) support.
      */
     private CacheManager getEhcacheManager() {
-        if (StringUtils.isNotEmpty(swakCacheProperties.getEhcachePath())) {
-            return null;
-        }
-        List<String> onMissingClasses = ClassBeanFiltering.filter(applicationContext,
-                Lists.newArrayList("net.sf.ehcache.CacheManager"),
-                ClassBeanFiltering.ClassNameFilter.MISSING);
-        if (CollectionUtils.isNotEmpty(onMissingClasses)) {
-            return null;
-        }
-        EhCacheManagerFactoryBean ehcache = new EhCacheManagerFactoryBean();
-        PathMatchingResourcePatternResolver pathMatchResolver = new PathMatchingResourcePatternResolver();
-        ehcache.setConfigLocation(pathMatchResolver.getResource(swakCacheProperties.getEhcachePath()));
-        EhCacheCacheManager cacheManager = new EhCacheCacheManager(ehcache.getObject());
-        cacheManager.afterPropertiesSet();
-        return cacheManager;
+        return null;
     }
 
     private CacheManager getCaffeineCacheManager() {

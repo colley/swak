@@ -5,8 +5,8 @@ import com.swak.core.aware.InitializedAware;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.validation.Validator;
+import jakarta.annotation.Resource;
+import jakarta.validation.Validator;
 import java.util.Objects;
 
 /**

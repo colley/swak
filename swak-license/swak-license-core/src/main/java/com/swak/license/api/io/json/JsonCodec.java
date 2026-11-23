@@ -1,7 +1,7 @@
 
 package com.swak.license.api.io.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.swak.license.api.io.Codec;
 import com.swak.license.api.io.Decoder;
 import com.swak.license.api.io.Encoder;

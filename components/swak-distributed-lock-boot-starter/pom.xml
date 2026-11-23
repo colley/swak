@@ -17,7 +17,7 @@
     <description>swak component of lock boot starter</description>
 
     <properties>
-        <curator.version>4.3.0</curator.version>
+        <curator.version>5.7.1</curator.version>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
 

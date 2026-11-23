@@ -2,7 +2,6 @@ package com.swak.cache.spring.configuration;
 
 import com.swak.cache.config.RedissonProperties;
 import com.swak.cache.redis.SimpleRedisCacheProxy;
-import com.swak.core.SwakConstants;
 import com.swak.core.cache.DistributedCacheProxy;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -11,42 +10,52 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.util.ReflectionUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Redisson 自动配置。
+ * <p>
+ * 适配点（Spring Boot 4 + Redisson 4）：
+ * <ul>
+ *     <li>{@code RedisProperties} 已更名为 {@code DataRedisProperties}，且 SSL 由 {@code isSsl()} 改为
+ *     {@code getSsl().isEnabled()}，不再需要反射；</li>
+ *     <li>Redisson 4.x 移除了 {@code Config.fromJSON}，只支持 YAML；</li>
+ *     <li>Redisson 4.x 的账号密码从各 ServerConfig 迁移到 {@link Config} 级别。</li>
+ * </ul>
+ *
  * @author colley.ma
  * @since 3.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({Redisson.class})
 @ConditionalOnProperty(prefix = "spring.redis.redisson", name = "enabled", havingValue = "true")
-@EnableConfigurationProperties({RedissonProperties.class, RedisProperties.class})
+@EnableConfigurationProperties({RedissonProperties.class, DataRedisProperties.class})
 public class RedissonAutoConfiguration {
 
     private static final String REDIS_PROTOCOL_PREFIX = "redis://";
     private static final String REDISS_PROTOCOL_PREFIX = "rediss://";
 
+    private static final int DEFAULT_TIMEOUT_MILLIS = 10000;
+
     @Resource
     private RedissonProperties redissonProperties;
 
     @Resource
-    private RedisProperties redisProperties;
+    private DataRedisProperties redisProperties;
 
     @Resource
     private ApplicationContext ctx;
@@ -66,103 +75,79 @@ public class RedissonAutoConfiguration {
         return new SimpleRedisCacheProxy(swakRedisTemplate);
     }
 
-
     @Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingBean(RedissonClient.class)
     public RedissonClient redissonClient() throws IOException {
         Config config;
-        Method clusterMethod = ReflectionUtils.findMethod(RedisProperties.class, "getCluster");
-        Method usernameMethod = ReflectionUtils.findMethod(RedisProperties.class, "getUsername");
-        Method timeoutMethod = ReflectionUtils.findMethod(RedisProperties.class, "getTimeout");
-        Object timeoutValue = ReflectionUtils.invokeMethod(timeoutMethod, redisProperties);
-        int timeout;
-        if (null == timeoutValue) {
-            timeout = 10000;
-        } else if (!(timeoutValue instanceof Integer)) {
-            Method millisMethod = ReflectionUtils.findMethod(timeoutValue.getClass(), "toMillis");
-            timeout = ((Long) ReflectionUtils.invokeMethod(millisMethod, timeoutValue)).intValue();
-        } else {
-            timeout = (Integer) timeoutValue;
-        }
-
-        String username = null;
-        if (usernameMethod != null) {
-            username = (String) ReflectionUtils.invokeMethod(usernameMethod, redisProperties);
-        }
-
         if (redissonProperties.getConfig() != null) {
-            try {
-                config = Config.fromYAML(redissonProperties.getConfig());
-            } catch (IOException e) {
-                try {
-                    config = Config.fromJSON(redissonProperties.getConfig());
-                } catch (IOException e1) {
-                    e1.addSuppressed(e);
-                    throw new IllegalArgumentException("Can't parse config", e1);
-                }
-            }
+            config = parseYaml(redissonProperties.getConfig());
         } else if (redissonProperties.getFile() != null) {
-            try {
-                InputStream is = getConfigStream();
-                config = Config.fromYAML(is);
-            } catch (IOException e) {
-                // trying next format
-                try {
-                    InputStream is = getConfigStream();
-                    config = Config.fromJSON(is);
-                } catch (IOException e1) {
-                    e1.addSuppressed(e);
-                    throw new IllegalArgumentException("Can't parse config", e1);
-                }
+            try (InputStream is = getConfigStream()) {
+                config = parseYaml(is);
             }
-        } else if (redisProperties.getSentinel() != null) {
-            Method nodesMethod = ReflectionUtils.findMethod(RedisProperties.Sentinel.class, "getNodes");
-            Object nodesValue = ReflectionUtils.invokeMethod(nodesMethod, redisProperties.getSentinel());
-
-            String[] nodes;
-            if (nodesValue instanceof String) {
-                nodes = convert(Arrays.asList(((String) nodesValue).split(",")));
-            } else {
-                nodes = convert((List<String>) nodesValue);
-            }
-
-            config = new Config();
-            config.useSentinelServers()
-                    .setMasterName(redisProperties.getSentinel().getMaster())
-                    .addSentinelAddress(nodes)
-                    .setDatabase(redisProperties.getDatabase())
-                    .setConnectTimeout(timeout)
-                    .setUsername(username)
-                    .setPassword(redisProperties.getPassword());
-        } else if (clusterMethod != null && ReflectionUtils.invokeMethod(clusterMethod, redisProperties) != null) {
-            Object clusterObject = ReflectionUtils.invokeMethod(clusterMethod, redisProperties);
-            Method nodesMethod = ReflectionUtils.findMethod(clusterObject.getClass(), "getNodes");
-            List<String> nodesObject = (List) ReflectionUtils.invokeMethod(nodesMethod, clusterObject);
-
-            String[] nodes = convert(nodesObject);
-
-            config = new Config();
-            config.useClusterServers()
-                    .addNodeAddress(nodes)
-                    .setConnectTimeout(timeout)
-                    .setUsername(username)
-                    .setPassword(redisProperties.getPassword());
         } else {
-            config = new Config();
-            String prefix = REDIS_PROTOCOL_PREFIX;
-            Method method = ReflectionUtils.findMethod(RedisProperties.class, "isSsl");
-            if (method != null && (Boolean) ReflectionUtils.invokeMethod(method, redisProperties)) {
-                prefix = REDISS_PROTOCOL_PREFIX;
-            }
-
-            config.useSingleServer()
-                    .setAddress(prefix + redisProperties.getHost() + ":" + redisProperties.getPort())
-                    .setConnectTimeout(timeout)
-                    .setDatabase(redisProperties.getDatabase())
-                    .setUsername(username)
-                    .setPassword(redisProperties.getPassword());
+            config = buildConfigFromRedisProperties();
+            // Redisson 4.x 起账号密码统一下沉到 Config
+            config.setUsername(redisProperties.getUsername());
+            config.setPassword(redisProperties.getPassword());
         }
         return Redisson.create(config);
+    }
+
+    private Config buildConfigFromRedisProperties() {
+        Duration timeoutValue = redisProperties.getTimeout();
+        int timeout = timeoutValue == null ? DEFAULT_TIMEOUT_MILLIS : (int) timeoutValue.toMillis();
+
+        if (redisProperties.getSentinel() != null) {
+            DataRedisProperties.Sentinel sentinel = redisProperties.getSentinel();
+            Config config = new Config();
+            config.useSentinelServers()
+                    .setMasterName(sentinel.getMaster())
+                    .addSentinelAddress(convert(sentinel.getNodes()))
+                    .setDatabase(redisProperties.getDatabase())
+                    .setConnectTimeout(timeout);
+            return config;
+        }
+
+        if (redisProperties.getCluster() != null) {
+            Config config = new Config();
+            config.useClusterServers()
+                    .addNodeAddress(convert(redisProperties.getCluster().getNodes()))
+                    .setConnectTimeout(timeout);
+            return config;
+        }
+
+        String prefix = redisProperties.getSsl().isEnabled() ? REDISS_PROTOCOL_PREFIX : REDIS_PROTOCOL_PREFIX;
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress(prefix + redisProperties.getHost() + ":" + redisProperties.getPort())
+                .setConnectTimeout(timeout)
+                .setDatabase(redisProperties.getDatabase());
+        return config;
+    }
+
+    /**
+     * Redisson 4.x 已移除 {@code Config.fromJSON}，仅支持 YAML。
+     */
+    private Config parseYaml(String configText) {
+        try {
+            return Config.fromYAML(configText);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(
+                    "Can't parse redisson config, only YAML format is supported since Redisson 4.x", e);
+        }
+    }
+
+    /**
+     * Redisson 4.x 已移除 {@code Config.fromJSON}，仅支持 YAML。
+     */
+    private Config parseYaml(InputStream inputStream) {
+        try {
+            return Config.fromYAML(inputStream);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(
+                    "Can't parse redisson config, only YAML format is supported since Redisson 4.x", e);
+        }
     }
 
     private String[] convert(List<String> nodesObject) {
@@ -179,7 +164,6 @@ public class RedissonAutoConfiguration {
 
     private InputStream getConfigStream() throws IOException {
         org.springframework.core.io.Resource resource = ctx.getResource(redissonProperties.getFile());
-        InputStream is = resource.getInputStream();
-        return is;
+        return resource.getInputStream();
     }
 }

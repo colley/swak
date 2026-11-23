@@ -3,8 +3,8 @@ package com.swak.core.web;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.Objects;
 
 /**

@@ -39,9 +39,12 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 @Configuration
 @ComponentScan(basePackages = SwakConstants.BASE_PACKAGE)
@@ -148,8 +151,11 @@ public class SwakAutoConfiguration {
             }
         }
         if (properties != null) {
-            i18nSourceProperties.getBaseNames().addAll(Lists.newArrayList(StringUtils
-                    .commaDelimitedListToStringArray(StringUtils.trimAllWhitespace(properties.getBasename()))));
+            List<String> baseNames = properties.getBasename().stream()
+                    .map(StringUtils::trimAllWhitespace)
+                    .flatMap(s -> Arrays.stream(StringUtils.commaDelimitedListToStringArray(s)))
+                    .collect(Collectors.toList());
+            i18nSourceProperties.getBaseNames().addAll(baseNames);
             i18nSourceProperties.setEncoding(properties.getEncoding());
             i18nSourceProperties.setCacheDuration(properties.getCacheDuration());
             i18nSourceProperties.setAlwaysUseMessageFormat(properties.isAlwaysUseMessageFormat());

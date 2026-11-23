@@ -53,7 +53,11 @@ public class ExtAsyncResult<V> extends AsyncResult<V> implements SwakCommand<V> 
         return super.get();
     }
 
-    @Override
+    /**
+     * 转换为 {@link CompletableFuture}。
+     * <p>
+     * Spring Framework 7 移除了 {@code AsyncResult#completable()}，这里自行实现同等语义。
+     */
     public CompletableFuture<V> completable() {
         if (supplier != null) {
             // 如果 supplier 不为空走supplyAsync
@@ -62,7 +66,13 @@ public class ExtAsyncResult<V> extends AsyncResult<V> implements SwakCommand<V> 
         /**
          * 其它情况，如spring的see org.springframework.scheduling.annotation.Async @Async
          */
-        return super.completable();
+        try {
+            return CompletableFuture.completedFuture(get());
+        } catch (ExecutionException e) {
+            CompletableFuture<V> future = new CompletableFuture<>();
+            future.completeExceptionally(e.getCause() != null ? e.getCause() : e);
+            return future;
+        }
     }
 
     @Override

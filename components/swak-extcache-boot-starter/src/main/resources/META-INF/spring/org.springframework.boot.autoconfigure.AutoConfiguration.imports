@@ -1,0 +1,2 @@
+com.swak.cache.spring.configuration.SwakCacheAutoConfiguration
+com.swak.cache.spring.configuration.DelayedQueueAutoConfiguration

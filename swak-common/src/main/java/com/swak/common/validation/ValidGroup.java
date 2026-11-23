@@ -1,6 +1,6 @@
 package com.swak.common.validation;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 public interface ValidGroup extends Default {
     interface Insert extends ValidGroup {

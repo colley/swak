@@ -18,14 +18,17 @@
 
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
-		<dubbo.version>2.7.21</dubbo.version>
-		<spring.cloud.alibaba.version>2021.0.5.0</spring.cloud.alibaba.version>
+		<dubbo.version>3.3.7</dubbo.version>
 	</properties>
 
     <dependencies>
+		<!--
+		  Apache Dubbo 尚未提供 Spring Boot 4 的 starter（dubbo-spring-boot-starter 仅到 3.3.x，面向 Boot 3）；
+		  本模块只用到 dubbo rpc/filter 的 SPI，因此直接依赖 dubbo 核心包，Boot 集成交给宿主应用。
+		-->
 		<dependency>
 			<groupId>org.apache.dubbo</groupId>
-			<artifactId>dubbo-spring-boot-starter</artifactId>
+			<artifactId>dubbo</artifactId>
 			<version>${dubbo.version}</version>
 			<scope>provided</scope>
 		</dependency>

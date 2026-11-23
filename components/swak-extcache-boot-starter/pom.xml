@@ -17,7 +17,6 @@
     <description>swak component of ext spring cache boot starter</description>
 
     <properties>
-        <ehcache.version>2.6.11</ehcache.version>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
 
@@ -47,11 +46,10 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ehcache -->
+        <!-- Boot 4 起 Redis 自动配置独立成模块，DataRedisProperties 在这里 -->
         <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>${ehcache.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-data-redis</artifactId>
             <scope>provided</scope>
         </dependency>
 

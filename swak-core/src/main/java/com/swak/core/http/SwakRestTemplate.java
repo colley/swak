@@ -58,7 +58,7 @@ public class SwakRestTemplate implements SwakRestOperations {
     @Override
     public <T> T getRequest(String url, Map<String, Object> params, Class<T> responseType, Charset charset) {
         log.info("request url:{},params:{}", url, JSON.toJSONString(params));
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParams(multiValueParam(params));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParams(multiValueParam(params));
         return getForObject(builder.build().encode(charset).toUri(), responseType);
 
     }
@@ -71,7 +71,7 @@ public class SwakRestTemplate implements SwakRestOperations {
      */
     @Override
     public <T> T postRequest(String url, Map<String, Object> params, Class<T> responseType, Charset charset) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParams(multiValueParam(params));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParams(multiValueParam(params));
 
         return postForObject(builder.build().encode(charset).toUri(), null, responseType);
     }

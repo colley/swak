@@ -1,22 +1,34 @@
 package com.swak.core.web;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.SerializationConfig;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.ValueSerializerModifier;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.swak.core.web.JacksonSerializerFeatureCompatible.SerializerFeature.*;
 
+/**
+ * Jackson 3 版本的「null 值序列化特性」兼容实现。
+ * <p>
+ * Jackson 3 中 {@code BeanSerializerModifier} 已更名为 {@link ValueSerializerModifier}，
+ * {@code JsonSerializer} 更名为 {@link ValueSerializer}，{@code SerializerProvider} 更名为
+ * {@link SerializationContext}。
+ *
+ * @author colley.ma
+ * @since 3.0.0
+ */
+public class JacksonSerializerFeatureCompatible extends ValueSerializerModifier {
 
-public class JacksonSerializerFeatureCompatible extends BeanSerializerModifier {
-
-    private final JsonSerializer<Object> nullBooleanJsonSerializer;
-    final private JsonSerializer<Object> nullNumberJsonSerializer;
-    final private JsonSerializer<Object> nullListJsonSerializer;
-    final private JsonSerializer<Object> nullStringJsonSerializer;
+    private final ValueSerializer<Object> nullBooleanJsonSerializer;
+    final private ValueSerializer<Object> nullNumberJsonSerializer;
+    final private ValueSerializer<Object> nullListJsonSerializer;
+    final private ValueSerializer<Object> nullStringJsonSerializer;
 
     public JacksonSerializerFeatureCompatible(SerializerFeature... features) {
         int config = 0;
@@ -28,8 +40,10 @@ public class JacksonSerializerFeatureCompatible extends BeanSerializerModifier {
         nullListJsonSerializer = (config & WriteNullListAsEmpty.mask) != 0 ? new NullListJsonSerializer() : null;
         nullStringJsonSerializer = (config & WriteNullStringAsEmpty.mask) != 0 ? new NullStringSerializer() : null;
     }
+
     @Override
-    public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties) {
+    public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription.Supplier beanDesc,
+                                                     List<BeanPropertyWriter> beanProperties) {
         for (BeanPropertyWriter writer : beanProperties) {
             final JavaType javaType = writer.getType();
             final Class<?> rawClass = javaType.getRawClass();
@@ -46,36 +60,36 @@ public class JacksonSerializerFeatureCompatible extends BeanSerializerModifier {
         return beanProperties;
     }
 
-    private static class NullListJsonSerializer extends JsonSerializer<Object> {
+    private static class NullListJsonSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        public void serialize(Object value, JsonGenerator jgen, SerializationContext provider) {
             jgen.writeStartArray();
             jgen.writeEndArray();
         }
     }
 
-    private static class NullNumberSerializer extends JsonSerializer<Object> {
+    private static class NullNumberSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        public void serialize(Object value, JsonGenerator jgen, SerializationContext provider) {
             jgen.writeNumber(0);
         }
     }
 
-    private static class NullBooleanSerializer extends JsonSerializer<Object> {
+    private static class NullBooleanSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        public void serialize(Object value, JsonGenerator jgen, SerializationContext provider) {
             jgen.writeBoolean(false);
         }
     }
 
-    private static class NullStringSerializer extends JsonSerializer<Object> {
+    private static class NullStringSerializer extends ValueSerializer<Object> {
         @Override
-        public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        public void serialize(Object value, JsonGenerator jgen, SerializationContext provider) {
             jgen.writeString("");
         }
     }
 
-   public static enum SerializerFeature {
+    public static enum SerializerFeature {
         WriteNullListAsEmpty,
         WriteNullStringAsEmpty,
         WriteNullNumberAsZero,

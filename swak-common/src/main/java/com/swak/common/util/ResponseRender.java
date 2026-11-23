@@ -3,12 +3,12 @@ package com.swak.common.util;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swak.common.dto.Response;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -16,11 +16,10 @@ import java.io.PrintWriter;
 @Slf4j
 public class ResponseRender {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    static {
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    }
+    private static final ObjectMapper objectMapper = JsonMapper.builder()
+            .changeDefaultPropertyInclusion(
+                    inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .build();
 
     /**
      * 发送文本。使用UTF-8编码。

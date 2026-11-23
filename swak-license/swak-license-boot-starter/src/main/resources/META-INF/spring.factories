@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration =\
-com.swak.license.spring.configuration.SwakLicenseAutoConfiguration

@@ -15,7 +15,7 @@ import java.util.*;
 public class DynamicCustomerHandler implements CellWriteHandler {
 
     public static String placeholderPrefix = "${";
-    PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper(placeholderPrefix, "}", ":", true);
+    PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper(placeholderPrefix, "}", ":", null, true);
     private Map<String, String> dynamicHeader;
 
     private WriteExcelParams writeExcelParams;
@@ -73,7 +73,7 @@ public class DynamicCustomerHandler implements CellWriteHandler {
         } else {
             System.out.println(key);
         }
-        PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper(placeholderPrefix, "}", ":", true);
+        PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper(placeholderPrefix, "}", ":", null, true);
         System.out.println(placeholderHelper.replacePlaceholders("${name:11}", properties));
     }
 }

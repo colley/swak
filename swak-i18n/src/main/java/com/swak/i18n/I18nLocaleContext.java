@@ -8,8 +8,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;

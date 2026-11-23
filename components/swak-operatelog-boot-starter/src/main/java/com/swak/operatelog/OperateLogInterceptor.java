@@ -28,7 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.MDC;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.lang.Nullable;
@@ -37,8 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -50,7 +51,7 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
 
     private static final String[] EXCLUDE_PROPERTIES = {"password", "oldPassword", "newPassword", "confirmPassword"};
     private SwakExpressionEvaluator expressionEvaluator;
-    private LocalVariableTableParameterNameDiscoverer localVariableTableParameterNameDiscoverer;
+    private ParameterNameDiscoverer parameterNameDiscoverer;
     private OperateLogService operateLogService;
 
     private OperateLogProducer operateLogProducer;
@@ -58,7 +59,7 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
 
     public OperateLogInterceptor() {
         this.expressionEvaluator = new SwakExpressionEvaluator();
-        this.localVariableTableParameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+        this.parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
     }
 
     public OperateLogInterceptor(OperateLogService operateLogService) {
@@ -308,7 +309,7 @@ public class OperateLogInterceptor extends SwakAdviceSupport {
     }
 
     private String obtainMethodArgs(Method method, Object[] argValues, PropertyPreExcludeFilter propertyPreExcludeFilter) {
-        String[] argNames = localVariableTableParameterNameDiscoverer.getParameterNames(method);
+        String[] argNames = parameterNameDiscoverer.getParameterNames(method);
         if (argNames == null || ArrayUtils.isEmpty(argNames)) {
             return StringPool.EMPTY;
         }

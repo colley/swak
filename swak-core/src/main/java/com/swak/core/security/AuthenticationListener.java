@@ -3,8 +3,8 @@ package com.swak.core.security;
 
 import com.swak.common.listener.SwakEventListener;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 登录成功或者退出的监听

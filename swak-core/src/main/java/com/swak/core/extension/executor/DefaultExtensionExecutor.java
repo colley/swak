@@ -8,7 +8,7 @@ import com.swak.common.dto.base.BizScenario;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Set;
 
 /**

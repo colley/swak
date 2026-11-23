@@ -1,9 +1,9 @@
 package com.swak.autoconfigure.event;
 
 import org.springframework.boot.Banner;
-import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
+import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 

@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.swak.cache.spring.configuration.SwakCacheAutoConfiguration,\
-com.swak.cache.spring.configuration.DelayedQueueAutoConfiguration

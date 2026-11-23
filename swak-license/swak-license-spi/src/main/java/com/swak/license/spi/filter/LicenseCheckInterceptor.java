@@ -13,11 +13,11 @@ import com.swak.license.spi.config.LicenseVerifyCallback;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public class LicenseCheckInterceptor implements HandlerInterceptor {
     private SwakMvcPatterns swakMvcPatterns;
 
     @Override
-    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         try {
             License license = licenseManager.verify();
             Optional.ofNullable(licenseVerifyCallback).ifPresent(call -> call.call(license));
@@ -60,7 +60,7 @@ public class LicenseCheckInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) throws Exception {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex) throws Exception {
         Optional.ofNullable(licenseVerifyCallback).ifPresent(LicenseVerifyCallback::clear);
         LicenseVerifyContext.remove();
     }

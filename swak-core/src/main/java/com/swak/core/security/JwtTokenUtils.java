@@ -1,7 +1,7 @@
 package com.swak.core.security;
 
 import com.alibaba.fastjson2.JSON;
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.type.TypeReference;
 import com.google.common.collect.Sets;
 import com.swak.common.util.JacksonUtils;
 import com.swak.common.util.StringPool;

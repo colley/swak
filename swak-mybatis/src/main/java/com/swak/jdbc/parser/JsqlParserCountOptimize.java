@@ -25,18 +25,18 @@ import java.util.Optional;
  * @since 2024/3/8 16:21
  */
 public class JsqlParserCountOptimize implements ISqlParser {
-    private static final List<SelectItem> COUNT_SELECT_ITEM = Collections.singletonList(defaultCountSelectItem());
+    private static final List<SelectItem<?>> COUNT_SELECT_ITEM = Collections.singletonList(defaultCountSelectItem());
     private final Log logger = LogFactory.getLog(JsqlParserCountOptimize.class);
 
 	/**
      * 获取jsqlparser中count的SelectItem
      */
-    private static SelectItem defaultCountSelectItem() {
+    private static SelectItem<?> defaultCountSelectItem() {
         Function function = new Function();
         ExpressionList expressionList = new ExpressionList(Collections.singletonList(new LongValue(1)));
         function.setName("COUNT");
         function.setParameters(expressionList);
-        return new SelectExpressionItem(function);
+        return SelectItem.from(function);
     }
 
     @Override
@@ -46,8 +46,7 @@ public class JsqlParserCountOptimize implements ISqlParser {
         }
         SqlInfo sqlInfo = SqlInfo.newInstance();
         try {
-            Select selectStatement = (Select) CCJSqlParserUtil.parse(sql);
-            PlainSelect plainSelect = (PlainSelect) selectStatement.getSelectBody();
+            PlainSelect plainSelect = (PlainSelect) CCJSqlParserUtil.parse(sql);
             Distinct distinct = plainSelect.getDistinct();
             GroupByElement groupBy = plainSelect.getGroupBy();
             List<OrderByElement> orderBy = plainSelect.getOrderByElements();
@@ -60,12 +59,12 @@ public class JsqlParserCountOptimize implements ISqlParser {
             //#95 Github, selectItems contains #{} ${}, which will be translated to ?, and it may be in a function: power(#{myInt},2)
             for (SelectItem item : plainSelect.getSelectItems()) {
                 if (item.toString().contains(StringPool.QUESTION_MARK)) {
-                    return sqlInfo.setSql(SqlParserUtils.getOriginalCountSql(selectStatement.toString()));
+                    return sqlInfo.setSql(SqlParserUtils.getOriginalCountSql(plainSelect.toString()));
                 }
             }
             // 包含 distinct、groupBy不优化
             if (distinct != null || null != groupBy) {
-                return sqlInfo.setSql(SqlParserUtils.getOriginalCountSql(selectStatement.toString()));
+                return sqlInfo.setSql(SqlParserUtils.getOriginalCountSql(plainSelect.toString()));
             }
             // 包含 join 连表,进行判断是否移除 join 连表
             List<Join> joins = plainSelect.getJoins();
@@ -97,7 +96,7 @@ public class JsqlParserCountOptimize implements ISqlParser {
             }
             // 优化 SQL
             plainSelect.setSelectItems(COUNT_SELECT_ITEM);
-            return sqlInfo.setSql(selectStatement.toString());
+            return sqlInfo.setSql(plainSelect.toString());
         } catch (Throwable e) {
             // 无法优化使用原 SQL
             return sqlInfo.setSql(SqlParserUtils.getOriginalCountSql(sql));

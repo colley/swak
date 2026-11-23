@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.util.List;
 import java.util.Objects;
 

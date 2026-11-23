@@ -2,8 +2,8 @@ package com.swak.common.validation.constraints;
 
 import com.swak.common.validation.constraintvalidators.EnumConstraintValidator;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.ANNOTATION_TYPE })

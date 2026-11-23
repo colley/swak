@@ -1,0 +1,2 @@
+com.swak.lock.spring.configuration.ZookeeperConfiguration
+com.swak.lock.spring.configuration.SwakLockAutoConfiguration
