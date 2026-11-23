@@ -96,6 +96,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-data-redis</artifactId>
         </dependency>
+        <!-- Nacos：swak-license-boot-starter 以 provided 声明，测试需要真实加载 NacosConfigManager -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- 测试基础 -->
         <dependency>
