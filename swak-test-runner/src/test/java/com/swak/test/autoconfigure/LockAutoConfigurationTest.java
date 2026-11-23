@@ -3,8 +3,13 @@ package com.swak.test.autoconfigure;
 import com.swak.core.sync.DistributedLock;
 import com.swak.lock.parser.LockOperationSource;
 import com.swak.lock.spring.configuration.SwakLockAutoConfiguration;
+import com.swak.lock.sync.LocalSyncLock;
+import com.swak.lock.sync.RedissonLock;
+import com.swak.lock.sync.ZookeeperLock;
+import org.apache.curator.framework.CuratorFramework;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
@@ -14,14 +19,12 @@ import static org.mockito.Mockito.mock;
 /**
  * 分布式锁的装配条件。
  * <p>
- * <b>已知缺陷（本测试即在固化该现状，修复后需同步修改）</b>：
- * {@code SwakLockAutoConfiguration} 类上直接标注 {@code @ConditionalOnBean(DistributedLock.class)}，
- * 而 {@code DistributedLock} 恰恰由它自己 {@code @Import} 进来的
+ * 回归点：{@code SwakLockAutoConfiguration} 上曾有类级 {@code @ConditionalOnBean(DistributedLock.class)}，
+ * 但 {@code DistributedLock} 恰由它自己 {@code @Import} 的
  * {@code LocalOnlyLockConfiguration}/{@code RedissonLockConfiguration}/{@code ZookeeperLockConfiguration} 提供。
- * Spring 在解析配置类时会先评估类级条件、再处理 {@code @Import}，因此条件永远不成立 ——
+ * Spring 先评估类级条件、再处理 {@code @Import}，条件永不成立 ——
  * 结果是 {@code swak.lock.type} 三个取值全部失效，注解锁链路也不会装配。
- * <p>
- * 当前唯一可用的方式是使用方自己声明 {@code DistributedLock} bean（见 userProvidedLockEnablesAop）。
+ * 现将条件下沉到各 {@code @Bean} 方法，本测试锁定修复后的行为。
  */
 class LockAutoConfigurationTest {
 
@@ -39,12 +42,48 @@ class LockAutoConfigurationTest {
     }
 
     @Test
-    @DisplayName("已知缺陷：swak.lock.type=local_only 不会装配 DistributedLock")
-    void localOnlyTypeIsIgnored() {
+    @DisplayName("swak.lock.type=local_only 装配本地锁与注解锁 AOP 链路")
+    void localOnlyTypeWiresLocalSyncLock() {
         runner.withPropertyValues("swak.lock.type=local_only").run(context -> {
             assertThat(context).hasNotFailed();
+            assertThat(context).hasSingleBean(DistributedLock.class);
+            assertThat(context.getBean(DistributedLock.class)).isInstanceOf(LocalSyncLock.class);
+            assertThat(context).hasSingleBean(LockOperationSource.class);
+            assertThat(context).hasBean("internalLockableAdvisor");
+        });
+    }
+
+    @Test
+    @DisplayName("swak.lock.type=redisson 装配 Redisson 锁")
+    void redissonTypeWiresRedissonLock() {
+        runner.withPropertyValues("swak.lock.type=redisson")
+                .withBean(RedissonClient.class, () -> mock(RedissonClient.class))
+                .run(context -> {
+                    assertThat(context).hasNotFailed();
+                    assertThat(context.getBean(DistributedLock.class)).isInstanceOf(RedissonLock.class);
+                    assertThat(context).hasBean("internalLockableAdvisor");
+                });
+    }
+
+    @Test
+    @DisplayName("swak.lock.type=zk 且存在 CuratorFramework 时装配 Zookeeper 锁")
+    void zookeeperTypeWiresZookeeperLock() {
+        runner.withPropertyValues("swak.lock.type=zk")
+                .withBean(CuratorFramework.class, () -> mock(CuratorFramework.class))
+                .run(context -> {
+                    assertThat(context).hasNotFailed();
+                    assertThat(context.getBean(DistributedLock.class)).isInstanceOf(ZookeeperLock.class);
+                    assertThat(context).hasBean("internalLockableAdvisor");
+                });
+    }
+
+    @Test
+    @DisplayName("swak.lock.type=zk 但缺少 CuratorFramework 时不装配锁")
+    void zookeeperTypeWithoutCuratorDoesNothing() {
+        runner.withPropertyValues("swak.lock.type=zk").run(context -> {
+            assertThat(context).hasNotFailed();
             assertThat(context).doesNotHaveBean(DistributedLock.class);
-            assertThat(context).doesNotHaveBean(SwakLockAutoConfiguration.class);
+            assertThat(context).doesNotHaveBean(LockOperationSource.class);
         });
     }
 
