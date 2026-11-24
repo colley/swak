@@ -160,10 +160,9 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
-                    <!-- 口径：只考核自研业务代码。spectator/javatuples 是第三方移植，
+                    <!-- 口径：只考核自研业务代码。javatuples 是第三方移植，
                          dto/model 是纯数据载体，测它们只会稀释指标 -->
                     <excludes>
-                        <exclude>com/swak/core/spectator/**</exclude>
                         <exclude>com/swak/common/tuple/**</exclude>
                         <exclude>com/swak/common/dto/**</exclude>
                         <exclude>com/swak/core/monitor/model/**</exclude>

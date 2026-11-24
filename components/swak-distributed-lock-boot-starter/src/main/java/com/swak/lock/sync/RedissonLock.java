@@ -1,6 +1,5 @@
 package com.swak.lock.sync;
 
-import com.swak.core.spectator.metrics.Monitors;
 import com.swak.core.sync.DistributedLock;
 import com.swak.lock.config.LockProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +87,6 @@ public class RedissonLock implements DistributedLock {
 
     private boolean handleAcquireLockFailure(String lockId, Exception e) {
         log.error("[Swak-Lock] Failed to acquireLock for lockId: {}", lockId, e);
-        Monitors.recordAcquireLockFailure(e.getClass().getName());
         // A Valid failure to acquire lock when another thread has acquired it returns false.
         // However, when an exception is thrown while acquiring lock, due to connection or others
         // issues,

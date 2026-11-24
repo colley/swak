@@ -1,6 +1,5 @@
 package com.swak.lock.sync;
 
-import com.swak.core.spectator.metrics.Monitors;
 import com.swak.core.sync.DistributedLock;
 import com.swak.lock.config.LockProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -200,7 +199,6 @@ public class ZookeeperLock implements DistributedLock {
 
     private boolean handleAcquireLockFailure(String lockId, Exception e) {
         log.error("[Swak-Lock] Failed to acquireLock for lockId: {}", lockId, e);
-        Monitors.recordAcquireLockFailure(e.getClass().getName());
 
         // 根据配置决定是否忽略异常继续执行
         return properties.isIgnoreLockingExceptions();
