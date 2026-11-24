@@ -38,17 +38,19 @@ public class AnnotationExtensionFinder implements ExtensionFinder, ApplicationCo
 		Object cacheKey = getCacheKey(targetClass);
 		Collection<ExtensionOperation> cached = this.attributeCache.get(cacheKey);
 		if (cached != null) {
-			return (cached != NULL_ATTRIBUTE ? cached : null);
+			// 缓存里用 NULL_ATTRIBUTE 表示「没有扩展点」，对外统一返回空集合，
+			// 否则同一个类第一次拿到空集合、第二次拿到 null，调用方很容易踩空指针
+			return cached == NULL_ATTRIBUTE ? Collections.emptyList() : cached;
 		} else {
 			Collection<ExtensionOperation> operations = computeOperations(targetClass);
 			if (CollectionUtils.isNotEmpty(operations)) {
 				log.trace("[swak-extension] - Adding @Extension class '" + targetClass.getSimpleName()
 						+ "' with attribute: " + operations);
 				this.attributeCache.put(cacheKey, operations);
-			} else {
-				this.attributeCache.put(cacheKey, NULL_ATTRIBUTE);
+				return operations;
 			}
-			return operations;
+			this.attributeCache.put(cacheKey, NULL_ATTRIBUTE);
+			return Collections.emptyList();
 		}
 	}
 
@@ -72,6 +74,10 @@ public class AnnotationExtensionFinder implements ExtensionFinder, ApplicationCo
 
 	@Override
 	public List<ExtensionOperation> find() {
+		if (applicationContext == null) {
+			throw new IllegalStateException(
+					"AnnotationExtensionFinder 尚未注入 ApplicationContext，无法扫描容器内的扩展点");
+		}
 		Map<String, ExtensionPoint> extensionInfos = applicationContext.getBeansOfType(ExtensionPoint.class);
 		if (MapUtils.isEmpty(extensionInfos)) {
 			log.debug("[swak-extension] - No extensions found");

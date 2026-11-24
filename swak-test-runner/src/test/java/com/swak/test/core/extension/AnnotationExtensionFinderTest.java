@@ -50,13 +50,13 @@ class AnnotationExtensionFinderTest {
     }
 
     @Test
-    @DisplayName("已知缺陷：未标注时首次返回空集合、第二次返回 null（缓存哨兵处理不一致）")
-    void missingAnnotationIsInconsistent() {
+    @DisplayName("find(Class)：未标注 @Extension 时两次都返回空集合（缓存哨兵不再返回 null）")
+    void missingAnnotationIsConsistent() {
         Collection<ExtensionOperation> first = finder.find(PlainExtension.class);
         Collection<ExtensionOperation> second = finder.find(PlainExtension.class);
 
         assertThat(first).isEmpty();
-        assertThat(second).isNull();
+        assertThat(second).isEmpty();
     }
 
     @Test
@@ -88,8 +88,10 @@ class AnnotationExtensionFinderTest {
     }
 
     @Test
-    @DisplayName("未注入 ApplicationContext 时 find() 直接 NPE（当前实现没有保护）")
+    @DisplayName("未注入 ApplicationContext 时 find() 抛出带说明的 IllegalStateException")
     void findAllWithoutContextFails() {
-        assertThatThrownBy(finder::find).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(finder::find)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("ApplicationContext");
     }
 }
