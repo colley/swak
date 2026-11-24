@@ -249,12 +249,15 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
 
     @Override
     public Children inSql(boolean condition, String column, String inValue) {
-        return doIt(condition, ()->JdbcRestrictions.addCondition(columnToString(column), IN, String.format("(%s)", inValue)));
+        // 子查询是 SQL 片段而不是绑定值，交给 SqlKeywordSegment 会被拼成 #{column}。
+        return doIt(condition, ()->JdbcRestrictions.apply(
+                columnToString(column) + IN.getKeyword() + String.format("(%s)", inValue)));
     }
 
     @Override
     public Children notInSql(boolean condition, String column, String inValue) {
-        return doIt(condition, ()->JdbcRestrictions.addCondition(columnToString(column), NOT_IN, String.format("(%s)", inValue)));
+        return doIt(condition, ()->JdbcRestrictions.apply(
+                columnToString(column) + NOT_IN.getKeyword() + String.format("(%s)", inValue)));
     }
 
 
@@ -410,9 +413,17 @@ public abstract class WhereStrWrapper<Children extends WhereStrWrapper<Children>
         if (condition) {
             final Children instance = instance();
             consumer.accept(instance);
-            return doIt(true, ()->APPLY, ()->instance);
+            // 只取子 wrapper 的条件部分，避免把整条 SELECT 拼进父级条件。
+            return doIt(true, ()->APPLY, ()-> new NestedSegment(instance::getWhereSqlSegment));
         }
         return getChildren();
+    }
+
+    /**
+     * 仅渲染条件部分（不含 SELECT/FROM），供嵌套条件复用。
+     */
+    public String getWhereSqlSegment(ParamNameValuePairs valuePairs) {
+        return expression.getConditionSqlSegment(valuePairs);
     }
 
     public Children addCondition(SqlSegment sqlSegment) {

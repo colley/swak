@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -75,7 +76,9 @@ public class GroupBySegment extends AbstractSqlSegment {
         }
         StringBuilder buffer = new StringBuilder();
         buffer.append(getSqlKeyword().getSqlSegment(valuePairs))
-                .append(StringUtils.join(groupByColumnList, ","));
+                .append(groupByColumnList.stream()
+                        .map(sqlSegment -> sqlSegment.getSqlSegment(valuePairs))
+                        .collect(Collectors.joining(StringPool.COMMA)));
         if (CollectionUtils.isNotEmpty(having)) {
             buffer.append(SqlKeyword.HAVING.getKeyword());
             buffer.append(whereSqlString(having,valuePairs));

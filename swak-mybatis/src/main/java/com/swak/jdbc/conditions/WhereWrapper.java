@@ -199,12 +199,14 @@ public abstract class WhereWrapper<Children extends WhereWrapper<Children>> exte
 
     @Override
     public <R> Children inSql(boolean condition, SFunction<R, ?> column, String inValue) {
-        return addCondition(condition, ()->JdbcRestrictions.addCondition(columnToString(column), IN, String.format("(%s)", inValue)));
+        return addCondition(condition, ()->JdbcRestrictions.apply(
+                columnToString(column) + IN.getKeyword() + String.format("(%s)", inValue)));
     }
 
     @Override
     public <R> Children notInSql(boolean condition, SFunction<R, ?> column, String inValue) {
-        return addCondition(condition, ()->JdbcRestrictions.addCondition(columnToString(column), NOT_IN, String.format("(%s)", inValue)));
+        return addCondition(condition, ()->JdbcRestrictions.apply(
+                columnToString(column) + NOT_IN.getKeyword() + String.format("(%s)", inValue)));
     }
 
 

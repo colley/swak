@@ -76,6 +76,16 @@ public  class MergeSegments implements SqlSegment{
         return buf.toString();
     }
 
+    /**
+     * 仅渲染条件部分（不含 WHERE 关键字与 group/order），供嵌套条件复用。
+     */
+    public String getConditionSqlSegment(ParamNameValuePairs valuePairs) {
+        if (CollectionUtils.isNotEmpty(normal)) {
+            return normal.getSqlSegment(valuePairs);
+        }
+        return StringPool.EMPTY;
+    }
+
     protected String orderBySql(ParamNameValuePairs paramNameValuePairs) {
         if (CollectionUtils.isNotEmpty(orderBys)) {
             List<String> orderByList = orderBys.stream().map(orderSegment -> orderSegment.getSqlSegment(paramNameValuePairs))

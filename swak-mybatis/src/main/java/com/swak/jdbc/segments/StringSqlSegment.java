@@ -51,6 +51,15 @@ public class StringSqlSegment implements SqlSegment {
         return SqlKeyword.APPLY;
     }
 
+    /**
+     * 供 {@code StringUtils.join} / {@code String.format} 这类走 toString 的拼接使用，
+     * 否则会把对象引用（{@code com.swak.jdbc.segments.StringSqlSegment@1a2b}）拼进 SQL。
+     */
+    @Override
+    public String toString() {
+        return sqlStr;
+    }
+
     public static void main(String[] args) {
         ParamNameValuePairs valuePairs = new ParamNameValuePairTranslator();
         StringSqlSegment sqlSegment = new StringSqlSegment("{0}={1}",new String[]{"name","colley"});

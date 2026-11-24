@@ -23,6 +23,22 @@ public class NormalSegmentList extends AbstractSegmentList{
     @Override
     protected boolean transformList(List<SqlSegment> list,
                                     SqlSegment firstSegment, SqlSegment lastSegment) {
+        if (list.size() == 1 && !MatchSegment.AND_OR.match(firstSegment) && !MatchSegment.NOT.match(firstSegment)) {
+            /*
+             * 单个条件片段（between/in/isNull/inSql/apply 等走的是「不带 APPLY 前缀」的单段注册）。
+             * 这类片段既不是连接符也不是 NOT，必须当作普通条件处理，否则：
+             * 1. 作为第一个条件时会被直接丢弃（整条 WHERE 消失）；
+             * 2. 跟在其他条件后面时不会补 AND，拼出 `a = 1 b = 2` 这样的非法 SQL。
+             */
+            if (!MatchSegment.AND_OR.match(lastValue) && !isEmpty()) {
+                add(SqlKeyword.AND);
+            }
+            if (!executeNot) {
+                list.add(0, SqlKeyword.NOT);
+                executeNot = true;
+            }
+            return true;
+        }
         if (list.size() == 1) {
             /* 只有 and() 以及 or() 以及 not() 会进入 */
             if (!MatchSegment.NOT.match(firstSegment)) {
