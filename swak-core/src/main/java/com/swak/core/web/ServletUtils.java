@@ -49,13 +49,17 @@ public class ServletUtils {
     }
 
     public static boolean internalIp(String ip) {
+        if (Objects.isNull(ip)) {
+            return false;
+        }
         byte[] addr = textToNumericFormatV4(ip);
         return internalIp(addr) || "127.0.0.1".equals(ip);
     }
 
     private static boolean internalIp(byte[] addr) {
-        if (Objects.isNull(addr) || addr.length < 2) {
-            return true;
+        // 解析失败说明不是合法的 IPv4，不能当作内网，否则伪造/异常的来源地址会被误判为可信
+        if (Objects.isNull(addr) || addr.length < 4) {
+            return false;
         }
         final byte b0 = addr[0];
         final byte b1 = addr[1];

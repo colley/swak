@@ -84,9 +84,10 @@ class ServletUtilsTest {
 
         assertThat(ServletUtils.internalIp("172.32.0.1")).isFalse();
         assertThat(ServletUtils.internalIp("8.8.8.8")).isFalse();
-        // 解析失败与空串都会得到 null 字节数组，而 null 被视为内网（当前实现的既有行为）
-        assertThat(ServletUtils.internalIp("not-an-ip")).isTrue();
-        assertThat(ServletUtils.internalIp("")).isTrue();
+        // 解析失败与空串都不是合法 IPv4，不能当作内网
+        assertThat(ServletUtils.internalIp("not-an-ip")).isFalse();
+        assertThat(ServletUtils.internalIp("")).isFalse();
+        assertThat(ServletUtils.internalIp(null)).isFalse();
     }
 
     @Test
