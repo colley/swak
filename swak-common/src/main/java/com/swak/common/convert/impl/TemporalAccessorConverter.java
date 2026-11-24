@@ -49,7 +49,7 @@ public class TemporalAccessorConverter implements Converter<TemporalAccessor> {
             final Calendar calendar = (Calendar) value;
             return parseFromInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
         }
-        return parseFromCharSequence(ConvertUtil.toStr(value,dataFormats));
+        return parseFromCharSequence(ConvertUtil.toStr(value, dataFormats), dataFormats);
     }
 
     @Override
@@ -57,12 +57,26 @@ public class TemporalAccessorConverter implements Converter<TemporalAccessor> {
         if (Objects.isNull(value)) {
             return defaultValue;
         }
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resolveFormat(dataFormats));
+        return formatter.format(value);
+    }
+
+    /**
+     * 解析使用的日期格式。
+     * <p>
+     * {@code Converter#convert(Object, Object)} 这类便捷入口会把 {@code dataFormats} 传成 {@code [null]}，
+     * 因此不能只看数组是否非空，还要判断首个元素是否为空白，否则会拿 null 去建 {@link DateTimeFormatter}。
+     */
+    private String resolveFormat(String... dataFormats) {
         String format = Converter.getGlobalDateFormat();
-        if (ArrayUtils.isNotEmpty(dataFormats)) {
+        if (ArrayUtils.isNotEmpty(dataFormats) && StringUtils.isNotBlank(dataFormats[0])) {
             format = dataFormats[0];
         }
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        return formatter.format(value);
+        if (StringUtils.isBlank(format)) {
+            throw new IllegalArgumentException(
+                    "未指定日期格式，且没有通过 FormatRegisterFactory 注册全局格式");
+        }
+        return format;
     }
 
     /**
@@ -84,14 +98,14 @@ public class TemporalAccessorConverter implements Converter<TemporalAccessor> {
         } else if (MonthDay.class.equals(this.targetType)) {
             return MonthDay.parse(value);
         }
-        String format = Converter.getGlobalDateFormat();
-        if (ArrayUtils.isNotEmpty(dataFormats)) {
-            format = dataFormats[0];
-        }
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        Instant instant = formatter.parse(value, Instant::from);
-        ZoneId zoneId = formatter.getZone();
-        return parseFromInstant(instant, zoneId);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resolveFormat(dataFormats));
+        // 不能只用 Instant::from：它要求文本里带时区或偏移，yyyy-MM-dd HH:mm:ss 这类最常见格式会直接抛
+        // DateTimeException。按「带时区 → 带偏移 → 本地日期时间 → 纯日期 → 纯时间」依次尝试，
+        // 缺时区信息时由后续转换按系统默认时区补齐。
+        TemporalAccessor parsed = formatter.parseBest(value,
+                ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from,
+                LocalDate::from, LocalTime::from);
+        return parseFromTemporalAccessor(parsed);
     }
 
     /**

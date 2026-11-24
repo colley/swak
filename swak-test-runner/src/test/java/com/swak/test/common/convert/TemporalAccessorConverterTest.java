@@ -74,6 +74,30 @@ class TemporalAccessorConverterTest {
     }
 
     @Test
+    @DisplayName("convert(String, dataFormats)：显式格式生效，不再被丢弃退回全局格式")
+    void fromCharSequenceUsesGivenFormats() {
+        TemporalAccessorConverter converter = new TemporalAccessorConverter(LocalDateTime.class);
+
+        // 与全局格式（yyyy-MM-dd HH:mm:ssXXX）完全不同，若 dataFormats 被丢弃必然解析失败
+        assertThat(converter.convert("2024/01/02 03:04:05", null, "yyyy/MM/dd HH:mm:ss"))
+                .isEqualTo(FIXED);
+        assertThat(converter.convert("2024-01-02", null, "yyyy-MM-dd"))
+                .isEqualTo(LocalDateTime.of(2024, 1, 2, 0, 0));
+    }
+
+    @Test
+    @DisplayName("convert(String)：不带时区偏移的格式也能解析，缺省部分按系统时区补齐")
+    void fromCharSequenceWithoutOffset() {
+        TemporalAccessorConverter converter = new TemporalAccessorConverter(LocalDateTime.class);
+
+        assertThat(converter.convert("2024-01-02 03:04:05", null, "yyyy-MM-dd HH:mm:ss"))
+                .isEqualTo(FIXED);
+        assertThat(new TemporalAccessorConverter(LocalTime.class)
+                .convert("03:04:05", null, "HH:mm:ss"))
+                .isEqualTo(LocalTime.of(3, 4, 5));
+    }
+
+    @Test
     @DisplayName("convert(Number)：按毫秒时间戳解析")
     void fromNumber() {
         TemporalAccessorConverter converter = new TemporalAccessorConverter(LocalDateTime.class);
