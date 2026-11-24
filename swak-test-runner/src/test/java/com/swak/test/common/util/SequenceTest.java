@@ -13,10 +13,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * <p>
  * 这里不校验时间戳本身（依赖系统时钟），而是把 workerId / datacenterId
  * 固定后从生成的 ID 里把对应位段抠出来比对，结果与机器、时区无关。
- * <p>
- * 注意：{@code Sequence(long workerId, long datacenterId)} 的入参校验写反了
- * （{@code SwakAssert.state} 的参数是「合法条件」，源码却传了「非法条件」），
- * 导致合法值反而抛异常。本测试锁定的是当前可观测行为，待生产代码修复后需同步调整。
  */
 @DisplayName("Sequence 雪花 ID")
 class SequenceTest {
@@ -49,23 +45,23 @@ class SequenceTest {
     }
 
     @Test
-    @DisplayName("两参构造器的入参校验（当前实现判断取反）")
+    @DisplayName("两参构造器：workerId / datacenterId 允许 0..31，越界抛 ArgumentException")
     void constructorValidation() {
-        assertThatThrownBy(() -> new Sequence(7L, 21L))
+        assertThat(new Sequence(0L, 0L).nextId()).isPositive();
+        assertThat(new Sequence(31L, 31L).nextId()).isPositive();
+
+        assertThatThrownBy(() -> new Sequence(32L, 1L))
                 .isInstanceOf(ArgumentException.class)
                 .hasMessageContaining("worker Id");
-        assertThatThrownBy(() -> new Sequence(0L, 0L))
+        assertThatThrownBy(() -> new Sequence(-1L, 1L))
                 .isInstanceOf(ArgumentException.class)
                 .hasMessageContaining("worker Id");
         assertThatThrownBy(() -> new Sequence(1L, 32L))
                 .isInstanceOf(ArgumentException.class)
-                .hasMessageContaining("worker Id");
-        assertThatThrownBy(() -> new Sequence(32L, 1L))
+                .hasMessageContaining("datacenter Id");
+        assertThatThrownBy(() -> new Sequence(1L, -1L))
                 .isInstanceOf(ArgumentException.class)
                 .hasMessageContaining("datacenter Id");
-
-        // 两个值都越界时两个断言都不触发，构造反而成功
-        assertThat(new Sequence(32L, 32L)).isNotNull();
     }
 
     @Test

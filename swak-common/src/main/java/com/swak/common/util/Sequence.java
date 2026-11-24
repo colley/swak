@@ -67,9 +67,9 @@ public class Sequence {
      * @param datacenterId 序列号
      */
     public Sequence(long workerId, long datacenterId) {
-        SwakAssert.state(workerId > maxWorkerId || workerId < 0,
+        SwakAssert.state(workerId >= 0 && workerId <= maxWorkerId,
                 String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
-        SwakAssert.state(datacenterId > maxDatacenterId || datacenterId < 0,
+        SwakAssert.state(datacenterId >= 0 && datacenterId <= maxDatacenterId,
                 String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
         this.workerId = workerId;
         this.datacenterId = datacenterId;
