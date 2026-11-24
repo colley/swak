@@ -61,7 +61,7 @@ public class SaveWrapper<T> extends AbstractLambdaWrapper<T, SaveWrapper<T>>
     @Override
     public String getSqlSet() {
         if (CollectionUtils.isEmpty(sqlColumns)) {
-            return null;
+            return StringPool.EMPTY;
         }
         List<String> columns = Lists.newArrayList();
         List<String> values = Lists.newArrayList();

@@ -227,7 +227,7 @@ public class LambdaUpdateWrapper<T> extends AbstractLambdaWrapper<T, LambdaUpdat
     @Override
     public String getSqlSet() {
         if (CollectionUtils.isEmpty(sqlSet)) {
-            return null;
+            return StringPool.EMPTY;
         }
         return String.join(StringPool.COMMA, sqlSet);
     }

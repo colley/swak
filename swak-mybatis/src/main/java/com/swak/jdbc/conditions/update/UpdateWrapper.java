@@ -79,7 +79,7 @@ public class UpdateWrapper<T> extends AbstractLambdaWrapper<T, UpdateWrapper<T>>
     @Override
     public String getSqlSet() {
         if (CollectionUtils.isEmpty(sqlSet)) {
-            return null;
+            return StringPool.EMPTY;
         }
         return String.join(StringPool.COMMA, sqlSet);
     }

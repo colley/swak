@@ -215,6 +215,10 @@ public class LambdaSaveWrapper<T> extends AbstractLambdaWrapper<T, LambdaSaveWra
 
     // //属于 insert into table() select * from...
     private String getFromSqlSegment(ParamNameValuePairs valuePairs) {
+        // 未指定数据来源时不追加 SELECT，避免拼出 `SELECT id,... FROM null`。
+        if (StringUtils.isBlank(from.getValue())) {
+            return StringPool.EMPTY;
+        }
         String whereSql = super.getSqlSegment(valuePairs);
         String columnSql = toColumnSqlString(valuePairs);
         if (StringUtils.isEmpty(columnSql)) {

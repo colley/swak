@@ -66,7 +66,8 @@ public abstract class AbstractWrapper<T, Children extends AbstractWrapper<T, Chi
                             .append(StringPool.SPACE)
                             .append(wrapper.hasAlias.isTrue() ? wrapper.alias.getValue() : (wrapper.alias.getValue() + wrapper.getIndex().getValue()))
                             .append(ON.getKeyword())
-                            .append(wrapper.expression.getSqlSegment(valuePairs));
+                            // 只取条件部分，否则会拼出 `ON  WHERE (...)`。
+                            .append(wrapper.expression.getConditionSqlSegment(valuePairs));
                 } else {
                     value.append(StringPool.SPACE)
                             .append(wrapper.getSqlKeyword())
