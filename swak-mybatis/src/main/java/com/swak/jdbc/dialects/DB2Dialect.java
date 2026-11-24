@@ -15,7 +15,8 @@ public class DB2Dialect implements Dialect{
         // 移除原始 SQL 末尾的分号（避免语法错误）
         String cleanSql = originalSql.trim();
         if (cleanSql.endsWith(";")) {
-            cleanSql = cleanSql.substring(0, cleanSql.length() - 1);
+            // 去掉分号后还要再去一次空白，否则拼接会多出一个空格。
+            cleanSql = cleanSql.substring(0, cleanSql.length() - 1).trim();
         }
         String sql = cleanSql + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         //第一个 ? 是 offset，第二个 ? 是 limit
