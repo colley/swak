@@ -31,6 +31,11 @@ import static com.swak.core.SwakConstants.LINE_SEPARATOR;
 @Slf4j
 public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonitorService {
 
+    /**
+     * 抓取的栈深度。不指定深度时 {@code getThreadInfo} 返回的栈数组恒为空，
+     * {@code topStackMonitor} 里的「ActiveThreadDetails」永远不会输出。
+     */
+    private static final int MAX_STACK_DEPTH = 8;
 
     private final AsyncThreadPoolMonitor threadPoolMonitor;
 
@@ -49,8 +54,9 @@ public class ThreadPoolMonitorTask extends CycleTask implements IThreadPoolMonit
         }
         // 1. Fetch all thread stack info once to minimize overhead
         long[] allThreadIds = threadMXBean.getAllThreadIds();
-        Map<Long, ThreadInfo> threadInfoMap = Arrays.stream(allThreadIds)
-                .mapToObj(threadMXBean::getThreadInfo)
+        ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(allThreadIds, MAX_STACK_DEPTH);
+        Map<Long, ThreadInfo> threadInfoMap = Arrays
+                .stream(threadInfos == null ? new ThreadInfo[0] : threadInfos)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(ThreadInfo::getThreadId, info -> info));
 

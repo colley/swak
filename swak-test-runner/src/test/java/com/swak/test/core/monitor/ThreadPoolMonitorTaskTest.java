@@ -112,8 +112,10 @@ class ThreadPoolMonitorTaskTest {
                 .contains("活动线程数量 : 1")
                 .contains("Queue : 1/1 (Usage: 100.0%)")
                 .contains("ALERT: ThreadPool [busy-] queue is critically full")
-                // 缺陷锁定：monitor() 取 ThreadInfo 时未指定栈深度，导致这里永远拿不到栈，ActiveThreadDetails 不会输出
-                .doesNotContain("ActiveThreadDetails");
+                // monitor() 抓取 ThreadInfo 时已指定栈深度，活动线程的执行点能正常输出
+                .contains(">>> ActiveThreadDetails")
+                .contains("[busy-] - [busy-1]")
+                .contains("Executing :");
     }
 
     @Test
