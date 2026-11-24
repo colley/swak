@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -126,8 +125,8 @@ class SystemEnvironmentConfigurableTest {
     }
 
     @Test
-    @DisplayName("已知缺陷：不认识的 activeProfile 会让 sysEnv 变成 null，getCurrentEnv 直接 NPE")
-    void unknownProfileLeavesNullEnv() throws Exception {
+    @DisplayName("不认识的 activeProfile 按 unknown 处理，getCurrentEnv 不会 NPE")
+    void unknownProfileFallsBackToUnknown() throws Exception {
         MockEnvironment environment = new MockEnvironment();
         environment.setActiveProfiles("staging");
 
@@ -136,7 +135,7 @@ class SystemEnvironmentConfigurableTest {
         config.afterPropertiesSet();
 
         assertThat(config.isTestEnv()).isFalse();
-        assertThatThrownBy(config::getCurrentEnv).isInstanceOf(NullPointerException.class);
+        assertThat(config.getCurrentEnv()).isEqualTo("unknown");
     }
 
     @Test

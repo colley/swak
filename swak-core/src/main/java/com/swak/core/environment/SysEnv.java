@@ -31,13 +31,19 @@ public enum SysEnv {
         this.name = name;
     }
 
+    /**
+     * 按 profile 名查找环境枚举。
+     *
+     * @param env profile 名
+     * @return 匹配的枚举；无法识别时返回 {@link #UNKNOWN}，不会返回 null
+     */
     public static SysEnv getEnv(String env) {
         for (SysEnv sysEnv : SysEnv.values()) {
             if (Objects.equals(sysEnv.env, env)) {
                 return sysEnv;
             }
         }
-        return null;
+        return UNKNOWN;
     }
 
     public boolean eq(String sysEnv) {

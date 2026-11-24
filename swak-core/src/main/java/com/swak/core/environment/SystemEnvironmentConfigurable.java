@@ -4,6 +4,7 @@ import com.swak.common.util.GetterUtil;
 import com.swak.core.support.PropertiesFactory;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.EnvironmentAware;
@@ -19,6 +20,7 @@ import java.util.TimeZone;
  * @author colley.ma
  * @since 2021年3月24日 下午12:03:26
  */
+@Slf4j
 @Order(-1)
 public class SystemEnvironmentConfigurable implements EnvironmentAware, InitializingBean {
 
@@ -113,6 +115,10 @@ public class SystemEnvironmentConfigurable implements EnvironmentAware, Initiali
         String[] activeProfiles = environment.getActiveProfiles();
         if (ArrayUtils.isNotEmpty(activeProfiles)) {
             this.sysEnv = SysEnv.getEnv(activeProfiles[0]);
+            if (this.sysEnv == SysEnv.UNKNOWN) {
+                log.warn("[swak] 无法识别的 active profile：{}，按 unknown 处理（可选值：local/dev/test/uat/prod）",
+                        activeProfiles[0]);
+            }
         }
     }
 
