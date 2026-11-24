@@ -45,7 +45,8 @@ public class V4CodecFactory implements CodecFactory {
     protected final ObjectMapper configure(final ObjectMapper mapper) {
         final SimpleModule module = new SimpleModule();
         module.addAbstractTypeMapping(License.class, V4License.class);
-        module.addSerializer(new ValueSerializer<X500Principal>() {
+        // Jackson 3 的 ValueSerializer 无法从泛型推断类型，必须在注册时显式给出。
+        module.addSerializer(X500Principal.class, new ValueSerializer<X500Principal>() {
 
             @Override
             public void serialize(X500Principal value, JsonGenerator gen, SerializationContext provider) {
