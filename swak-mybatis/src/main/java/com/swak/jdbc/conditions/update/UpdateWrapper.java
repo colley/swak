@@ -93,7 +93,9 @@ public class UpdateWrapper<T> extends AbstractLambdaWrapper<T, UpdateWrapper<T>>
     @Override
     public UpdateWrapper<T> set(boolean condition, String column, Object val) {
         if (condition) {
-            sqlSet.add(String.format("%s=%s", column, formatSql("{0}", val)));
+            // 必须立即渲染成带占位符的字符串，直接 %s 拼 SqlSegment 会写出对象引用。
+            sqlSet.add(String.format("%s=%s", column,
+                    formatSql("{0}", val).getSqlSegment(paramNameValuePairs)));
         }
         return typedThis;
     }

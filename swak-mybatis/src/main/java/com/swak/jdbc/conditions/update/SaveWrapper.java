@@ -138,17 +138,21 @@ public class SaveWrapper<T> extends AbstractLambdaWrapper<T, SaveWrapper<T>>
         switch (fieldStrategy) {
             case DEFAULT:
             case NOT_NULL: {
+                // 注意：这里必须 break，否则会落到 IGNORED 分支，把 null 也塞进 INSERT 语句。
                 if (Objects.nonNull(value)) {
                     sqlColumns.add(fieldInfo.getColumn());
                     addValue(fieldInfo.getColumn(), value);
                 }
+                break;
             }
             case IGNORED: {
                 sqlColumns.add(fieldInfo.getColumn());
                 addValue(fieldInfo.getColumn(), value);
+                break;
             }
             case NEVER:
             default: {
+                break;
             }
         }
     }
@@ -212,6 +216,11 @@ public class SaveWrapper<T> extends AbstractLambdaWrapper<T, SaveWrapper<T>>
 
     // //属于 insert into table() select * from...
     private String getFromSqlSegment(ParamNameValuePairs valuePairs) {
+        // 只有显式指定了数据来源时才追加 SELECT，否则普通的 insert values 会被拼出一段
+        // `SELECT id,... FROM null` 的垃圾尾巴。
+        if (StringUtils.isBlank(from.getValue())) {
+            return StringPool.EMPTY;
+        }
         String whereSql = super.getSqlSegment(valuePairs);
         String columnSql = toColumnSqlString(valuePairs);
         if (StringUtils.isEmpty(columnSql)) {
