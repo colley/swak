@@ -145,7 +145,7 @@ class MySqlIdGeneratorServiceImplTest {
     }
 
     @Test
-    @DisplayName("更新连续失败超过 3 次：放弃重试，init 得到 null 号段并 NPE")
+    @DisplayName("更新连续失败超过 3 次：放弃重试，init 抛出带 bizTag 与表名的 IllegalStateException")
     void giveUpAfterThreeRetries() throws Exception {
         FakeIdTable table = new FakeIdTable(1000L, 100L, call -> false);
 
@@ -154,7 +154,10 @@ class MySqlIdGeneratorServiceImplTest {
         assertThatThrownBy(() -> {
             service.afterPropertiesSet();
             service.init();
-        }).isInstanceOf(NullPointerException.class);
+        }).isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("号段拉取失败")
+                .hasMessageContaining("bizTag=order")
+                .hasMessageContaining("table=id_segment");
         assertThat(table.updateCalls.get()).isEqualTo(4);
     }
 

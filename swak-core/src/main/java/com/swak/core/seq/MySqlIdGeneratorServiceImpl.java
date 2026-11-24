@@ -75,10 +75,26 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
         if (!startInit) {
             return;
         }
-        segment[0] = doUpdateNextSegment(bizTag);
+        segment[0] = loadNextSegment();
         setSw(false);
         currentId = new AtomicLong(segment[index()].getMinId()); // 初始id
-        log.error("id 生成器启动成功");
+        log.info("id 生成器启动成功, bizTag={}, 起始ID={}", bizTag, currentId.get());
+    }
+
+    /**
+     * 拉取下一个号段。
+     * <p>
+     * {@link #doUpdateNextSegment} 在异常或乐观锁重试耗尽时返回 null，直接使用会导致调用处 NPE
+     * ——同步路径的 {@code while (isNotLoadOfNextsegment())} 甚至不会退出。这里统一转成带定位信息的失败。
+     */
+    private IdSegment loadNextSegment() {
+        IdSegment next = doUpdateNextSegment(bizTag);
+        if (next == null) {
+            throw new IllegalStateException(String.format(
+                "号段拉取失败，bizTag=%s, table=%s：请确认号段表中存在该 bizTag，且更新未持续冲突",
+                bizTag, seqTableName));
+        }
+        return next;
     }
 
     @Override
@@ -107,13 +123,13 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
                         @Override
                         public Boolean call() throws Exception {
                             final int currentIndex = reIndex();
-                            segment[currentIndex] = doUpdateNextSegment(bizTag);
+                            segment[currentIndex] = loadNextSegment();
                             return true;
                         }
 
                     });
                     taskExecutor.submit(asynLoadSegmentTask);
-                    log.error("启动异步加载任务成功");
+                    log.debug("启动异步加载任务成功");
                 }
 
             } finally {
@@ -142,7 +158,7 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
                         while (isNotLoadOfNextsegment()) {
                             // 强制同步切换
                             final int currentIndex = reIndex();
-                            segment[currentIndex] = doUpdateNextSegment(bizTag);
+                            segment[currentIndex] = loadNextSegment();
                         }
                         setSw(!isSw()); // 切换
                         currentId = new AtomicLong(segment[index()].getMinId()); // 进行切换
@@ -181,7 +197,7 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
                     && isNotLoadOfNextsegment()) {
                     // 使用50%以上，并且没有加载成功过，就进行加载
                     final int currentIndex = reIndex();
-                    segment[currentIndex] = doUpdateNextSegment(bizTag);
+                    segment[currentIndex] = loadNextSegment();
                 }
             } finally {
                 lock.unlock();
@@ -195,7 +211,7 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
                     while (isNotLoadOfNextsegment()) {
                         // 使用50%以上，并且没有加载成功过，就进行加载,直到在功
                         final int currentIndex = reIndex();
-                        segment[currentIndex] = doUpdateNextSegment(bizTag);
+                        segment[currentIndex] = loadNextSegment();
                     }
                     setSw(!isSw()); // 切换
                     currentId = new AtomicLong(segment[index()].getMinId()); // 进行切换
