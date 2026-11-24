@@ -176,8 +176,9 @@ public class SwakFallbackMethod {
     }
 
     private String createErrorMsg(Method commandMethod, Method fallbackMethod, String hint) {
-        return "Incompatible return types. Command method: " + commandMethod + ", fallback method: "
-                + fallbackMethod + ". " + (StringUtils.isNotBlank(hint) ? "Hint: " : "");
+        String msg = "Incompatible return types. Command method: " + commandMethod + ", fallback method: "
+                + fallbackMethod + ".";
+        return StringUtils.isNotBlank(hint) ? msg + " Hint: " + hint : msg;
     }
 
     private List<Type> getParametrizedTypes(Method m) {

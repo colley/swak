@@ -262,14 +262,14 @@ class SwakFallbackMethodTest {
     }
 
     @Test
-    @DisplayName("已知缺陷：异常信息只拼了 \"Hint: \" 前缀，具体原因没有输出")
-    void errorMessageDropsHintContent() throws Exception {
+    @DisplayName("不兼容时异常信息带上具体原因")
+    void errorMessageContainsHint() throws Exception {
         SwakFallbackMethod fallback = fallback("stringFuture", sync());
 
         assertThatThrownBy(() -> fallback.validateReturnType(method("string")))
                 .isInstanceOf(SwakFallBackException.class)
-                .hasMessageContaining("Hint: ")
-                .hasMessageNotContaining("fallback cannot return Future");
+                .hasMessageContaining("Incompatible return types")
+                .hasMessageContaining("Hint: fallback cannot return Future if command isn't asynchronous.");
     }
 
     @Test
