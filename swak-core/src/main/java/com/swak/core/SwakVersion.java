@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class SwakVersion implements Comparable<SwakVersion> {
     public static final SwakVersion CURRENT = new SwakVersion(2, 4, 0);
-    private static final Pattern PREFIX_DIGITS_PATTERN = Pattern.compile("([0-9]).([0-9]).([0-9])");
+    private static final Pattern PREFIX_DIGITS_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
     private static final String VERSION = getVersion(SwakVersion.class, "").toString();
 
     private final int major;
@@ -32,8 +32,7 @@ public class SwakVersion implements Comparable<SwakVersion> {
         if (StringUtils.isNotEmpty(version)) {
             Matcher matcher = PREFIX_DIGITS_PATTERN.matcher(version);
             if (matcher.find()) {
-                String[] vArr = matcher.group(0).split("\\.");
-                return new SwakVersion(vArr[0], vArr[1], vArr[2]);
+                return new SwakVersion(matcher.group(1), matcher.group(2), matcher.group(3));
             }
         }
         return CURRENT;

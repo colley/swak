@@ -59,11 +59,14 @@ class SwakVersionTest {
     }
 
     @Test
-    @DisplayName("已知缺陷：解析正则的每一位只匹配单个数字，10.x 会被截断成 x")
-    void multiDigitVersionIsTruncated() {
-        // 正则 "([0-9]).([0-9]).([0-9])" 未转义点号且位数固定，这是当前可观测行为
+    @DisplayName("解析多位数字版本，并忽略 -SNAPSHOT 之类的后缀")
+    void multiDigitVersionIsParsed() {
         assertThat(SwakVersion.getVersion(SwakVersionTest.class, "12.4.0"))
-                .isEqualTo(new SwakVersion(2, 4, 0));
+                .isEqualTo(new SwakVersion(12, 4, 0));
+        assertThat(SwakVersion.getVersion(SwakVersionTest.class, "3.0.0-SNAPSHOT"))
+                .isEqualTo(new SwakVersion(3, 0, 0));
+        assertThat(SwakVersion.getVersion(SwakVersionTest.class, "v1.10.100"))
+                .isEqualTo(new SwakVersion(1, 10, 100));
     }
 
     @Test
