@@ -28,7 +28,9 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,15 +57,92 @@ public final class SwakMethodProvider {
     }
 
     private static int getParameterCount(String desc) {
-        return parseParams(desc).length;
+        return parseParameterDescriptors(desc).size();
     }
 
-    private static String[] parseParams(String desc) {
-        String params = desc.split("\\)")[0].replace("(", "");
-        if (params.length() == 0) {
-            return new String[0];
+    /**
+     * 按 JVM 方法描述符切分参数，返回每个参数的类型描述符（如 {@code Ljava/lang/String;}、{@code I}、{@code [I}）。
+     * <p>
+     * 不能用 {@code split(";")}：基本类型没有分号，{@code (II)V} 会被算成 1 个参数，数组类型也会被拆错。
+     */
+    private static List<String> parseParameterDescriptors(String desc) {
+        List<String> descriptors = new ArrayList<>(4);
+        int start = desc.indexOf('(');
+        int end = desc.indexOf(')');
+        if (start < 0 || end < 0) {
+            throw new IllegalArgumentException("illegal method descriptor: " + desc);
         }
-        return params.split(";");
+        int i = start + 1;
+        while (i < end) {
+            int tokenStart = i;
+            while (i < end && desc.charAt(i) == '[') {
+                i++;
+            }
+            if (i >= end) {
+                throw new IllegalArgumentException("illegal method descriptor: " + desc);
+            }
+            if (desc.charAt(i) == 'L') {
+                int semicolon = desc.indexOf(';', i);
+                if (semicolon < 0 || semicolon >= end) {
+                    throw new IllegalArgumentException("illegal method descriptor: " + desc);
+                }
+                i = semicolon + 1;
+            } else {
+                i++;
+            }
+            descriptors.add(desc.substring(tokenStart, i));
+        }
+        return descriptors;
+    }
+
+    private static Class<?> resolveDescriptor(String descriptor, ClassLoader classLoader)
+            throws ClassNotFoundException {
+        if (descriptor.startsWith("[")) {
+            return Array.newInstance(resolveDescriptor(descriptor.substring(1), classLoader), 0).getClass();
+        }
+        switch (descriptor.charAt(0)) {
+            case 'Z':
+                return boolean.class;
+            case 'B':
+                return byte.class;
+            case 'C':
+                return char.class;
+            case 'S':
+                return short.class;
+            case 'I':
+                return int.class;
+            case 'J':
+                return long.class;
+            case 'F':
+                return float.class;
+            case 'D':
+                return double.class;
+            case 'V':
+                return void.class;
+            case 'L':
+                String className = descriptor.substring(1, descriptor.length() - 1).replace('/', '.');
+                return Class.forName(className, false, classLoader);
+            default:
+                throw new ClassNotFoundException("illegal type descriptor: " + descriptor);
+        }
+    }
+
+    /**
+     * 从声明类的 class 资源读取字节码。用 {@code new ClassReader(String)} 会走系统类加载器，
+     * 在插件、热部署等自定义类加载器场景下找不到目标类。
+     */
+    private static ClassReader openClassReader(Class<?> type) throws IOException {
+        String resource = type.getName().replace('.', '/') + ".class";
+        ClassLoader classLoader = type.getClassLoader();
+        InputStream in = classLoader != null
+                ? classLoader.getResourceAsStream(resource)
+                : ClassLoader.getSystemResourceAsStream(resource);
+        if (in == null) {
+            throw new IOException("Cannot read bytecode of " + type.getName());
+        }
+        try (InputStream stream = in) {
+            return new ClassReader(stream);
+        }
     }
 
     public SwakFallbackMethod getFallbackMethod(Class<?> type, Method commandMethod) {
@@ -144,9 +223,9 @@ public final class SwakMethodProvider {
                 return cache.get(bridgeMethod);
             }
 
-            ClassReader classReader = new ClassReader(aClass.getName());
+            ClassReader classReader = openClassReader(aClass);
             final MethodSignature methodSignature = new MethodSignature();
-            classReader.accept(new ClassVisitor(ASM5) {
+            classReader.accept(new ClassVisitor(ASM9) {
                 @Override
                 public MethodVisitor visitMethod(int access, String name, String desc,
                                                  String signature, String[] exceptions) {
@@ -159,7 +238,8 @@ public final class SwakMethodProvider {
                 }
             }, 0);
             Method method =
-                    aClass.getDeclaredMethod(methodSignature.name, methodSignature.getParameterTypes());
+                    aClass.getDeclaredMethod(methodSignature.name,
+                            methodSignature.getParameterTypes(aClass.getClassLoader()));
             cache.put(bridgeMethod, method);
             return method;
 
@@ -172,16 +252,14 @@ public final class SwakMethodProvider {
         String name;
         String desc;
 
-        public Class<?>[] getParameterTypes() throws ClassNotFoundException {
+        public Class<?>[] getParameterTypes(ClassLoader classLoader) throws ClassNotFoundException {
             if (desc == null) {
                 return new Class[0];
             }
-            String[] params = parseParams(desc);
-            Class<?>[] parameterTypes = new Class[params.length];
-
-            for (int i = 0; i < params.length; i++) {
-                String arg = params[i].substring(1).replace("/", ".");
-                parameterTypes[i] = Class.forName(arg);
+            List<String> descriptors = parseParameterDescriptors(desc);
+            Class<?>[] parameterTypes = new Class[descriptors.size()];
+            for (int i = 0; i < descriptors.size(); i++) {
+                parameterTypes[i] = resolveDescriptor(descriptors.get(i), classLoader);
             }
             return parameterTypes;
         }
@@ -191,7 +269,7 @@ public final class SwakMethodProvider {
         private MethodSignature methodSignature;
 
         public MethodFinder(MethodSignature methodSignature) {
-            super(ASM5);
+            super(ASM9);
             this.methodSignature = methodSignature;
         }
 

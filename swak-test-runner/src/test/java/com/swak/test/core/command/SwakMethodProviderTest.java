@@ -207,13 +207,39 @@ class SwakMethodProviderTest {
     }
 
     @Test
-    @DisplayName("已知缺陷：ASM5 读不了嵌套类的 NestHost 属性，unbride 直接失败")
-    void unbrideNestedClassFails() throws Exception {
+    @DisplayName("unbride：嵌套类的 bridge 方法也能还原（ASM9 可读 NestHost 属性）")
+    void unbrideNestedClassSupported() throws Exception {
         Method bridge = findBridge(NestedStringService.class);
 
-        assertThatThrownBy(() -> provider.unbride(bridge, NestedStringService.class))
-                .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessageContaining("ASM7");
+        Method generic = provider.unbride(bridge, NestedStringService.class);
+
+        assertThat(generic.getName()).isEqualTo("value");
+        assertThat(generic.getReturnType()).isEqualTo(String.class);
+        assertThat(generic.isBridge()).isFalse();
+    }
+
+    @Test
+    @DisplayName("unbride：基本类型参数的 bridge 描述符能正确数出参数个数")
+    void unbrideBridgeWithPrimitiveParameters() throws Exception {
+        Method bridge = findBridge(IntegerServiceFixture.class);
+        assertThat(bridge.getParameterTypes()).containsExactly(int.class, String.class);
+
+        Method generic = provider.unbride(bridge, IntegerServiceFixture.class);
+
+        assertThat(generic.getParameterTypes()).containsExactly(int.class, String.class);
+        assertThat(generic.getReturnType()).isEqualTo(Integer.class);
+    }
+
+    @Test
+    @DisplayName("unbride：数组参数的 bridge 方法能正确解析为数组类型")
+    void unbrideBridgeWithArrayParameter() throws Exception {
+        Method bridge = findBridge(StringArrayServiceFixture.class);
+        assertThat(bridge.getParameterTypes()).containsExactly(String[].class);
+
+        Method generic = provider.unbride(bridge, StringArrayServiceFixture.class);
+
+        assertThat(generic.getParameterTypes()).containsExactly(String[].class);
+        assertThat(generic.getReturnType()).isEqualTo(String.class);
     }
 
     private static Method findBridge(Class<?> type) {
