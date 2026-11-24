@@ -78,6 +78,38 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- 这些模块没有 starter 传递进来，但属于「全部组件」，需显式声明才会进聚合覆盖率 -->
+        <dependency>
+            <groupId>io.gitee.mcolley</groupId>
+            <artifactId>swak-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gitee.mcolley</groupId>
+            <artifactId>swak-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gitee.mcolley</groupId>
+            <artifactId>swak-i18n</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gitee.mcolley</groupId>
+            <artifactId>swak-excel-boot-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gitee.mcolley</groupId>
+            <artifactId>swak-license-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.gitee.mcolley</groupId>
+            <artifactId>swak-dubbo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- 组件以 provided 声明的第三方依赖 -->
         <dependency>
             <groupId>org.redisson</groupId>
@@ -123,6 +155,30 @@
 
     <build>
         <plugins>
+            <!-- 聚合所有被测模块的覆盖率，产出 target/site/jacoco-aggregate/ -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 口径：只考核自研业务代码。spectator/javatuples 是第三方移植，
+                         dto/model 是纯数据载体，测它们只会稀释指标 -->
+                    <excludes>
+                        <exclude>com/swak/core/spectator/**</exclude>
+                        <exclude>com/swak/common/tuple/**</exclude>
+                        <exclude>com/swak/common/dto/**</exclude>
+                        <exclude>com/swak/core/monitor/model/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>report-aggregate</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- 测试模块不产出 javadoc / sources / test-jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -140,5 +196,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+          覆盖率门禁：mvn verify -Pcoverage-gate
+          默认不激活，避免达标前把日常构建打红；阈值可用 -Dcoverage.minimum=0.85 覆盖。
+        -->
+        <profile>
+            <id>coverage-gate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>coverage-gate</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

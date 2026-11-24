@@ -424,6 +424,20 @@
 					<skip>${skip_maven_deploy}</skip>
 				</configuration>
 			</plugin>
+
+			<!-- 覆盖率：所有模块挂 agent；聚合报告与阈值校验在 swak-test-runner -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
