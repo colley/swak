@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import java.util.List;
@@ -65,12 +66,14 @@ class AutoConfigurationImportsTest {
     }
 
     @Test
-    @DisplayName("每个注册的自动配置类都能被类加载器加载，且带 @Configuration")
+    @DisplayName("每个注册的自动配置类都能被类加载器加载，且带 @Configuration（含元注解）")
     void everyDeclaredClassIsLoadableAndConfigured() {
         for (String className : EXPECTED_CLASS_NAMES) {
             Class<?> type = loadClass(className);
-            assertThat(type.isAnnotationPresent(Configuration.class))
-                    .as("%s 应标注 @Configuration", className)
+            // @AutoConfiguration 自身被 @Configuration(proxyBeanMethods = false) 标注，
+            // 所以这里要用元注解查找，不能只看类上的直接注解
+            assertThat(AnnotatedElementUtils.hasAnnotation(type, Configuration.class))
+                    .as("%s 应标注 @Configuration 或 @AutoConfiguration", className)
                     .isTrue();
         }
     }

@@ -4,7 +4,6 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.swak.license.config.LicenseConfigServiceImpl;
 import com.swak.license.nacos.NacosLicenseConfigAdapter;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +36,12 @@ class NacosLicenseEndToEndTest {
         return NacosSupport.nacosAvailable();
     }
 
+    /**
+     * 注意：<b>不要</b>在这里或 tearDown 里调 {@code getConfigService().shutDown()}。
+     * SCA 的 {@code NacosConfigManager} 把 ConfigService 放在<b>静态字段</b>里，整个 JVM 共用一份；
+     * 关掉之后，同一 JVM 里后续测试新建的上下文仍会拿到这个已关闭的实例
+     * （HTTP 读还能用，但 gRPC 推送通道已死），表现为「配置变更事件永远收不到」的假失败。
+     */
     @BeforeEach
     void setUp() {
         NacosConfigProperties properties = new NacosConfigProperties();
@@ -49,11 +54,6 @@ class NacosLicenseEndToEndTest {
         licenseConfigService = new LicenseConfigServiceImpl();
         ReflectionTestUtils.setField(licenseConfigService, "nacosLicenseConfigAdapter", adapter);
         ReflectionTestUtils.setField(licenseConfigService, "defaultLicenseSource", LOCAL_DEFAULT);
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        nacosConfigManager.getConfigService().shutDown();
     }
 
     @Test
