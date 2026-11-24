@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -68,14 +67,9 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
     private String seqTableName;
 
     /**
-     * 跟踪调用方法调用次数
+     * 乐观锁更新号段失败时的最大重试次数
      */
-    private ThreadLocal<AtomicInteger> invokeNum = new ThreadLocal<AtomicInteger>() {
-        @Override
-        protected AtomicInteger initialValue() {
-            return new AtomicInteger(0);
-        };
-    };
+    private static final int MAX_UPDATE_RETRY = 3;
 
     public void init() {
         if (!startInit) {
@@ -250,6 +244,16 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
     }
 
     private IdSegment updateId(String bizTag) throws Exception {
+        return updateId(bizTag, 0);
+    }
+
+    /**
+     * 拉取下一段号段，乐观锁冲突（update 影响行数不为 1）时重试。
+     *
+     * @param attempt 已经失败的次数，从 0 开始
+     * @return 新号段；重试耗尽返回 null
+     */
+    private IdSegment updateId(String bizTag, int attempt) throws Exception {
         String querySql = String.format(SEQ_QUERY_SQL, this.seqTableName);
         String updateSql = String.format(SEQ_UPDATE_SQL, this.seqTableName);
         final IdSegment currentSegment = new IdSegment();
@@ -286,21 +290,13 @@ public class MySqlIdGeneratorServiceImpl implements IdGenerator, InitializingBea
             newSegment.setMaxId(newMaxId);
             return newSegment;
 
-        } else {
-            AtomicInteger num = invokeNum.get();
-            int newValue = num.incrementAndGet();
-            invokeNum.set(num);
-            // 递归更新，如果三次还没有 更新成功,直接打印错误日志，并返回，将原有调用次数归位
-            if (newValue > 3) {
-                log.error("更新下一个段位返回row=" + row + "失败", +newMaxId);
-                num.set(0);
-                invokeNum.set(num);
-            } else {
-                updateId(bizTag);
-            }
+        }
+        // 递归更新，如果三次还没有更新成功，直接打印错误日志并返回
+        if (attempt >= MAX_UPDATE_RETRY) {
+            log.error("更新下一个段位失败，row={}, newMaxId={}", row, newMaxId);
             return null;
         }
-
+        return updateId(bizTag, attempt + 1);
     }
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {

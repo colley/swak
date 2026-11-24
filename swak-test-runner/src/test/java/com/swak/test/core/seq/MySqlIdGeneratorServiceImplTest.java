@@ -115,17 +115,33 @@ class MySqlIdGeneratorServiceImplTest {
     }
 
     @Test
-    @DisplayName("更新号段失败一次后重试成功：外层仍返回 null 导致 init NPE（缺陷锁定）")
-    void retryAfterSingleUpdateFailureStillReturnsNull() throws Exception {
+    @DisplayName("更新号段失败一次后重试成功：拿到的是重试那次的号段")
+    void retryAfterSingleUpdateFailureSucceeds() throws Exception {
         FakeIdTable table = new FakeIdTable(1000L, 100L, call -> call > 1);
 
         service = newService(table, false);
+        service.afterPropertiesSet();
+        service.init();
 
-        assertThatThrownBy(() -> {
-            service.afterPropertiesSet();
-            service.init();
-        }).isInstanceOf(NullPointerException.class);
         assertThat(table.updateCalls.get()).isEqualTo(2);
+        assertThat(service.nextId()).isEqualTo(1001L);
+    }
+
+    @Test
+    @DisplayName("重试计数不会跨调用累积：每次拉取都独立享有 3 次重试机会")
+    void retryCountIsResetPerLoad() throws Exception {
+        // 奇数次 update 失败、偶数次成功：init 与后续每次拉段都要「失败一次再成功」
+        FakeIdTable table = new FakeIdTable(1000L, 100L, call -> call % 2 == 0);
+
+        service = newService(table, false);
+        service.afterPropertiesSet();
+        service.init();
+
+        List<Long> ids = drain(260);
+
+        assertUniqueAndIncreasing(ids);
+        // 260 个 ID 至少要跨 3 个号段，每次都要重试一次
+        assertThat(table.updateCalls.get()).isGreaterThanOrEqualTo(6);
     }
 
     @Test
